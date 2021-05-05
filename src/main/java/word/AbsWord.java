@@ -16,6 +16,8 @@ public abstract class AbsWord {
         return false;
     }
     
+    public abstract double getSentimentValue();
+    
     public abstract boolean checkIntegrity();
     
     public String getTag() {

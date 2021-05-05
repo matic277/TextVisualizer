@@ -11,9 +11,12 @@ public class FileReader {
     String file;
     List<String> lines;
     
+    StringBuilder textBuilder;
+    
     public FileReader(String file) {
         this.file = file;
         this.lines = new LinkedList<>();
+        this.textBuilder = new StringBuilder();
     }
     
     public void readFile() {
@@ -23,5 +26,10 @@ public class FileReader {
     
     private void processLine(String s) {
         lines.add(s);
+        textBuilder.append(s);
+    }
+    
+    public String getText() {
+        return textBuilder.toString();
     }
 }

@@ -3,7 +3,7 @@ package word;
 public class NGramEntry extends AbsWord {
     
     int seqNumber;
-
+    
     public NGramEntry(String source, int sequenceNumber) {
         super(source, null);
         this.seqNumber = sequenceNumber;
@@ -14,11 +14,16 @@ public class NGramEntry extends AbsWord {
     public int getSequenceNumber() {
         return seqNumber;
     }
-
+    
     @Override
     public boolean checkIntegrity() {
         // TODO Auto-generated method stub
         return true;
+    }
+    
+    @Override
+    public double getSentimentValue() {
+        throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
     }
     
     @Override

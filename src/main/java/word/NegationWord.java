@@ -14,6 +14,11 @@ public class NegationWord extends AbsWord {
     }
     
     @Override
+    public double getSentimentValue() {
+        throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
     public boolean checkIntegrity() {
         if (sourceText.length() < 2 || sourceText.length() > 10) return false;
         return true;

@@ -9,8 +9,8 @@ public abstract class AbsMeasurableWord extends AbsWord {
     // pleasantness get amplified by
     protected double magnitude = 1.3;
     
-    protected double positiveThreshold = 0.3;
-    protected double neutralThreshold = -0.3;
+    public static final double POSITIVE_THRESHOLD = 0.3;
+    public static final double NEUTRAL_THRESHOLD = -0.3;
     
     // for all: [-1, 1]
     protected double pleasantness = 0;  // (unpleasant) - (pleasant)
@@ -27,15 +27,15 @@ public abstract class AbsMeasurableWord extends AbsWord {
     }
     
     public boolean isPositivePleasantness() {
-        return pleasantness > positiveThreshold;
+        return pleasantness > POSITIVE_THRESHOLD;
     }
     
     public boolean isNeutralPleasantness() {
-        return pleasantness >= neutralThreshold && pleasantness <= positiveThreshold;
+        return pleasantness >= NEUTRAL_THRESHOLD && pleasantness <= POSITIVE_THRESHOLD;
     }
     
     public boolean isNegativePleasantness() {
-        return pleasantness < neutralThreshold;
+        return pleasantness < NEUTRAL_THRESHOLD;
     }
     
     public void magnifyPleasantness() {
@@ -78,6 +78,11 @@ public abstract class AbsMeasurableWord extends AbsWord {
     
     public double getImagery() {
         return imagery;
+    }
+    
+    @Override
+    public double getSentimentValue() {
+        return this.pleasantness;
     }
     
     @Override

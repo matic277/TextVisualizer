@@ -68,10 +68,10 @@ public class Acronym extends AbsMeasurableWord {
                 AbsMeasurableWord absWord = (AbsMeasurableWord) dictionary.getEntry(word);
                 double pleasantness = absWord.getPleasantness();
                 
-                if (pleasantness < neutralThreshold) {
+                if (pleasantness < NEUTRAL_THRESHOLD) {
                     negativeWordsNum++;
                     negativeWordsSum += pleasantness;
-                } else if (pleasantness < positiveThreshold) {
+                } else if (pleasantness < POSITIVE_THRESHOLD) {
                     neutralWordsNum++;
                     neutralWordsSum += pleasantness;
                 } else {

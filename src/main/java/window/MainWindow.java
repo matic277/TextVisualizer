@@ -1,10 +1,12 @@
 package window;
 
+import main.Sentence;
 import panel.BottomPanel;
 import panel.MainPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class MainWindow {
     
@@ -16,8 +18,11 @@ public class MainWindow {
     
     final Color bgColor = Color.white;
     
-    public MainWindow(Dimension windowSize) {
+    List<Sentence> sentences;
+    
+    public MainWindow(Dimension windowSize, List<Sentence> sentences) {
         this.windowSize = windowSize;
+        this.sentences = sentences;
         
         frame = new JFrame();
         frame.setSize(windowSize);
@@ -36,5 +41,9 @@ public class MainWindow {
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.pack();
+    }
+    
+    public List<Sentence> getSentences() {
+        return this.sentences;
     }
 }

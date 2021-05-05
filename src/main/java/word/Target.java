@@ -14,6 +14,11 @@ public class Target extends AbsWord {
     }
     
     @Override
+    public double getSentimentValue() {
+        throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
     public boolean checkIntegrity() {
         return true;
     }
