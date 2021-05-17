@@ -32,7 +32,7 @@ public class Sentence {
         String[] tokens = sentence.split(" ");
         words = t.classifyAndGetWords(tokens);
     
-        System.out.println("processed, words="+words.size());
+//        System.out.println("processed, words="+words.size());
     }
     
     public ArrayList<AbsWord> getWords() {

@@ -10,6 +10,9 @@ public class Main {
     public static void main(String[] args) {
         FileReader reader = new FileReader("./texts/SherlockHolmes-AStudyInScarlet.txt");
         reader.readFile();
+        
+        
+        
         TextProcessor textProc = new TextProcessor(reader.getText());
         textProc.processText();
         SwingUtilities.invokeLater(() -> {

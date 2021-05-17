@@ -11,8 +11,7 @@ import java.util.List;
 public class MainWindow {
     
     protected JFrame frame;
-    protected JPanel mainPanel;
-    protected JPanel bottomPanel;
+    protected MainPanel mainPanel;
     
     protected Dimension windowSize;
     
@@ -36,10 +35,8 @@ public class MainWindow {
         Dimension mainSize = new Dimension(windowSize.width, windowSize.height * 2/3);
         Dimension bottomSize = new Dimension(windowSize.width, windowSize.height - mainSize.height);
         mainPanel = new MainPanel(mainSize, this);
-        bottomPanel = new BottomPanel(bottomSize, this);
         
-        frame.add(mainPanel, BorderLayout.CENTER);
-        frame.add(bottomPanel, BorderLayout.SOUTH);
+        frame.add(mainPanel);
         frame.pack();
     }
     
