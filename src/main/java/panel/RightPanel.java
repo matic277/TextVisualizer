@@ -1,14 +1,22 @@
 package panel;
 
+import main.Pair;
+import main.Sentence;
 import main.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 public class RightPanel extends JPanel {
     
-    public RightPanel() {
-        this.setOpaque(true);
+    BottomPanel parent;
+    Map<Pair<Integer, String>, List<Sentence>> chapters;
+    
+    public RightPanel(BottomPanel parent) {
+        this.parent = parent;
+        this.chapters = parent.parent.getChapters();
         this.setBackground(Color.CYAN);
         JLabel lbl = new JLabel(" RIGHT PANEL ");
         lbl.setOpaque(true);

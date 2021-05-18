@@ -11,12 +11,11 @@ public class Main {
         FileReader reader = new FileReader("./texts/SherlockHolmes-AStudyInScarlet.txt");
         reader.readFile();
         
-        
-        
-        TextProcessor textProc = new TextProcessor(reader.getText());
+        TextProcessor textProc = new TextProcessor(reader.getChaptersMap());
         textProc.processText();
+        
         SwingUtilities.invokeLater(() -> {
-            new MainWindow(new Dimension(800, 600), textProc.sentences);
+            new MainWindow(new Dimension(800, 600), textProc.getProcessedChapters());
         });
     }
 }

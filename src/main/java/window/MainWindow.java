@@ -1,5 +1,6 @@
 package window;
 
+import main.Pair;
 import main.Sentence;
 import panel.BottomPanel;
 import panel.MainPanel;
@@ -7,6 +8,7 @@ import panel.MainPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 public class MainWindow {
     
@@ -17,11 +19,11 @@ public class MainWindow {
     
     final Color bgColor = Color.white;
     
-    List<Sentence> sentences;
+    Map<Pair<Integer, String>, List<Sentence>> chapters;
     
-    public MainWindow(Dimension windowSize, List<Sentence> sentences) {
+    public MainWindow(Dimension windowSize, Map<Pair<Integer, String>, List<Sentence>> chapters) {
         this.windowSize = windowSize;
-        this.sentences = sentences;
+        this.chapters = chapters;
         
         frame = new JFrame();
         frame.setSize(windowSize);
@@ -40,7 +42,7 @@ public class MainWindow {
         frame.pack();
     }
     
-    public List<Sentence> getSentences() {
-        return this.sentences;
+    public Map<Pair<Integer, String>, List<Sentence>> getChapters() {
+        return this.chapters;
     }
 }

@@ -22,7 +22,6 @@ public class TextBox extends JComponent {
     final Color NEGATIVE_WORD_COLOR = Color.decode("#ea4335");
     
     public TextBox() {
-        this.setPreferredSize(size);
         this.setLayout(new WrapLayout());
         this.setBackground(Color.pink);
     

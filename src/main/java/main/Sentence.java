@@ -18,6 +18,14 @@ public class Sentence {
     private double sentiment;
     
     private final double magnifyValue = 2;
+    public int numOfNegativeWords,
+            sumOfNegativeWords,
+            numOfNeutralWords,
+            sumOfNeutralWords,
+            numOfPositiveWords,
+            sumOfPositiveWords;
+    
+
     
     public Sentence(String sentence) {
         this.sentence = sentence;
@@ -31,8 +39,37 @@ public class Sentence {
         // create word tokens
         String[] tokens = sentence.split(" ");
         words = t.classifyAndGetWords(tokens);
+        
+        doSomeStatistics();
     
 //        System.out.println("processed, words="+words.size());
+    }
+    
+    private void doSomeStatistics() {
+        for (AbsWord word : words) {
+            // AffectionWord, Hastag, Smiley, Acronym, Phrase, (Emoji)
+            if (word instanceof AbsMeasurableWord) {
+                AbsMeasurableWord mw = (AbsMeasurableWord) word;
+                double pleasantness = mw.getPleasantness();
+    
+                if (mw.isNegativePleasantness()) {
+                    numOfNegativeWords++;
+                    sumOfNegativeWords += pleasantness;
+                } else if (mw.isNeutralPleasantness()) {
+                    numOfNeutralWords++;
+                    sumOfNeutralWords += pleasantness;
+        
+                } else {
+                    numOfPositiveWords++;
+                    sumOfPositiveWords += pleasantness;
+                }
+            }
+
+            // URL, Target, StopWord, Other, NegationWord
+            else {
+                numOfNeutralWords++;
+            }
+        }
     }
     
     public ArrayList<AbsWord> getWords() {

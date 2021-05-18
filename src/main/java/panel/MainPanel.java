@@ -1,12 +1,13 @@
 package panel;
 
+import main.Pair;
 import main.Sentence;
-import main.Utils;
 import window.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 public class MainPanel extends JSplitPane {
     
@@ -27,15 +28,15 @@ public class MainPanel extends JSplitPane {
 //        this.setPreferredSize(size);
         this.setVisible(true);
         
-        
-        topPanel = new TopPanel();
-        bottomPanel = new BottomPanel(null, this);
+        TopBox topBox = new TopBox(null);
+        topPanel = new TopPanel(this, topBox);
+        bottomPanel = new BottomPanel(this);
     
         this.setTopComponent(topPanel);
         this.setBottomComponent(bottomPanel);
     
         this.setDividerLocation(400);
-
+        this.setResizeWeight(1);
     }
     
 //    @Override
@@ -52,7 +53,7 @@ public class MainPanel extends JSplitPane {
 //    }
     
     
-    public List<Sentence> getSentences() {
-        return this.parent.getSentences();
+    public Map<Pair<Integer, String>, List<Sentence>> getChapters() {
+        return this.parent.getChapters();
     }
 }

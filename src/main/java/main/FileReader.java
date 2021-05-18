@@ -95,4 +95,8 @@ public class FileReader {
     public String getText() {
         return textBuilder.toString();
     }
+    
+    public Map<Pair<Integer, String>, String> getChaptersMap() {
+        return this.chapters;
+    }
 }

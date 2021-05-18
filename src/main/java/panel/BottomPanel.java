@@ -13,31 +13,21 @@ import java.util.List;
 public class BottomPanel extends JSplitPane {
     
     MainPanel parent;
-    Dimension panelSize;
     
     LeftPanel leftPanel;
     RightPanel rightPanel;
     
-    List<Sentence> sentences;
     
-    public BottomPanel(Dimension size, MainPanel parent) {
+    public BottomPanel(MainPanel parent) {
         super(HORIZONTAL_SPLIT, null, null);
         this.parent = parent;
-        this.panelSize = size;
-//        this.sentences = parent.getSentences();
-        
-//        this.setOpaque(true);
-//        this.setSize(size);
-//        this.setPreferredSize(size);
-//        this.setLayout(null);
-//        this.setVisible(true);
         
         leftPanel = new LeftPanel(this, new TextBox());
-        rightPanel = new RightPanel();
+        rightPanel = new RightPanel(this);
         
         this.setLeftComponent(leftPanel);
         this.setRightComponent(rightPanel);
-    
+        
         this.setDividerLocation(400);
     }
     
