@@ -17,24 +17,32 @@ public class SlidingWindow extends Rectangle {
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
     Color color = Color.black;
-    Stroke stroke = new BasicStroke(4f);
+    Stroke stroke = new BasicStroke(3f);
     
     public SlidingWindow(TopPanel parent) {
         this.parent = parent;
         
-        this.setBounds(30, 100, 100, 74);
+        this.setBounds(30, 100, 100, 70);
     }
     
     public void paint(Graphics g) {
         Graphics2D gr = (Graphics2D) g;
+        gr.setColor(color);
+        
+        // vertical lines, draw before antialiasing hints!
+        gr.setStroke(stroke);
+        gr.drawRect(x+1, y-3, width-3, height+10);
+        
         gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
-        gr.setColor(color);
-        gr.setStroke(stroke);
-        gr.drawRoundRect(x, y, width, height, 7, 7);
+        // top
+        gr.fillRoundRect(x, y-8,  width, 10, 5, 5);
+        // bottom
+        gr.fillRoundRect(x, y+height+5,  width, 5, 5, 5);
         
-        gr.drawString("[" + x + ", " + y + "]", x, y-4);
+//        gr.setColor(Color.white);
+//        gr.drawString("[" + x + ", " + y + "]", x, y-4);
     }
     
     public List<SentenceLabel> getHoveredSentences(JPanel mainSentencePanel) {
