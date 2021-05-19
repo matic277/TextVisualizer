@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class TextBox extends JComponent {
     
@@ -20,7 +21,7 @@ public class TextBox extends JComponent {
     
     public TextBox() {
         this.setLayout(new WrapLayout());
-        this.setBackground(Color.pink);
+        this.setBackground(Utils.GRAY);
         
         this.setLayout(new BorderLayout());
         
@@ -31,7 +32,7 @@ public class TextBox extends JComponent {
         mainPanel.setLayout(new BorderLayout());
         
         sentencesPanel = new JPanel();
-        sentencesPanel.setBackground(Color.red);
+        sentencesPanel.setBackground(Color.white);
         sentencesPanel.setLayout(new BoxLayout(sentencesPanel, BoxLayout.Y_AXIS));
         mainPanel.add(sentencesPanel, BorderLayout.CENTER);
         
@@ -41,7 +42,7 @@ public class TextBox extends JComponent {
         JLabel title = new JLabel(" Selected sentences ");
         title.setPreferredSize(new Dimension(300, 30));
         title.setOpaque(true);
-        title.setBackground(Color.pink);
+        title.setBackground(Utils.GRAY);
         title.setFont(Utils.getFont(14));
         titlePanel.add(title, BorderLayout.CENTER);
         mainPanel.add(titlePanel, BorderLayout.NORTH);
@@ -73,23 +74,44 @@ public class TextBox extends JComponent {
     }
     
     public void onSentenceClick(Sentence clickedSentence) {
-    
         JPanel sentencePanel = new JPanel();
         sentencePanel.setLayout(new WrapLayout());
         sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
-//        for (int i=0; i<clickedSentence.getWords().size()-1; i++) {
-//            WordLabel lbl = new WordLabel(this, clickedSentence.getWords().get());
-//            words.add(lbl);
-//        }
+        sentencePanel.setBackground(Color.white);
         
         for (AbsWord word : clickedSentence.getWords()) {
             WordLabel lbl = new WordLabel(this, word);
             words.add(lbl);
             sentencePanel.add(lbl);
         }
-    
+        
         sentencesPanel.removeAll();
         sentencesPanel.add(sentencePanel);
+        
+        // need to call this otherwise this components doesn't get updated
+        // immediately, but only after resize happens
+        this.parent.updateUI();
+    }
+    
+    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
+        sentencesPanel.removeAll();
+        words.clear();
+        
+        for (SentenceLabel slbl : hoveredSentences) {
+            JPanel sentencePanel = new JPanel();
+            for (AbsWord word : slbl.getSentence().getWords()) {
+                sentencePanel.setLayout(new WrapLayout());
+                sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
+                sentencePanel.setBackground(Color.white);
+                sentencePanel.setBackground(Utils.getRandomColor());
+                WordLabel lbl = new WordLabel(this, word);
+                words.add(lbl);
+                sentencePanel.add(lbl);
+            }
+//            sentencesPanel.setAlignmentX(LEFT_ALIGNMENT);
+            
+            sentencesPanel.add(sentencePanel);
+        }
         
         // need to call this otherwise this components doesn't get updated
         // immediately, but only after resize happens

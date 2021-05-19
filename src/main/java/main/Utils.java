@@ -6,7 +6,7 @@ import java.util.Random;
 public class Utils {
     
     public static final Color bgColor = new Color(245, 245, 250);
-    public static final Color borderColor = new Color(160, 160, 170);
+    public static final Color borderColor = new Color(224, 224, 224);
     public static final Color RED = Color.decode("#ea4335");
     public static final Color GRAY = Color.decode("#BFBDBD");
     public static final Color GRAY2 = Color.decode("#E0E0E0");
@@ -32,9 +32,7 @@ public class Utils {
         return new Font("Tahoma", Font.BOLD, size);
     }
     
-    public static Font getFont(int size) {
-        return new Font("Tahoma", Font.PLAIN, size);
-    }
+    public static Font getFont(int size) { return new Font("Roboto Mono Medium", Font.PLAIN, size); }
     
     public static String randomString(int len) {
         StringBuilder str = new StringBuilder();

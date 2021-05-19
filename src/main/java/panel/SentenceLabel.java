@@ -67,4 +67,8 @@ public class SentenceLabel extends JLabel {
             @Override public void mouseExited(MouseEvent e) { }
         });
     }
+    
+    public Sentence getSentence() {
+        return this.sentence;
+    }
 }

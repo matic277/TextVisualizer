@@ -31,11 +31,7 @@ public class TopBox extends JPanel {
     public TopBox(TopPanel parent) {
         this.parent = parent;
         
-        chaptersPanel = new JPanel();
-        chaptersPanel.setLayout(new WrapLayout());
-        chaptersPanel.setOpaque(true);
-//        chaptersPanel.setBackground(new Color(0, 0, 255, 100));
-        this.add(chaptersPanel);
+        this.setLayout(new WrapLayout());
         
         slider = new SlidingWindow(parent);
     }
@@ -56,7 +52,7 @@ public class TopBox extends JPanel {
                     super.paint(g);
                     
                     g.setColor(Color.black);
-                    g.drawString("[" + getBounds().x + ", " + getBounds().y + "]", 5, 10);
+                    g.drawString("[" + getBounds().x + ", " + getBounds().y + "]", 5, 15);
                 }
             };
             mainPanel.setOpaque(true);
@@ -71,6 +67,7 @@ public class TopBox extends JPanel {
             mainPanel.add(title, BorderLayout.NORTH);
             
             JPanel sentencesPanel = new JPanel();
+            sentencesPanel.setName("Sentence panel for chapter " + k.getB());
             sentencesPanel.setOpaque(true);
             sentencesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
             mainPanel.add(sentencesPanel, BorderLayout.CENTER);
@@ -83,28 +80,36 @@ public class TopBox extends JPanel {
                 sentencesPanel.add(lbl);
             });
             
-            chaptersPanel.add(mainPanel);
+            this.add(mainPanel);
         });
         
         listener = new SlidingWindowListener();
+        this.setFocusable(true);
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
     }
     
     public void setParent(TopPanel topPanel) {
+        this.slider.setParent(topPanel);
         this.parent = topPanel;
         this.chapters = parent.chapters;
+    }
+    
+    public BottomPanel getBottomPanel() {
+        return this.parent.parent.bottomPanel;
     }
     
     class SlidingWindowListener implements MouseMotionListener, MouseListener {
     
         boolean isSelected = false;
+        JPanel snappedPannel;
+        Integer dx, dy;
         
         Point mouse = new Point(0, 0);
         TopBox parent = TopBox.this;
         
         List<JPanel> chapterPanels = new ArrayList<>(20); {
-            chapterPanels.addAll(Arrays.stream(chaptersPanel.getComponents())
+            chapterPanels.addAll(Arrays.stream(parent.getComponents())
                     .map(c -> (JPanel)c)
                     .collect(Collectors.toList()));
         }
@@ -123,30 +128,52 @@ public class TopBox extends JPanel {
             mouse.setLocation(e.getPoint());
 
             isSelected = slider.contains(mouse.x, mouse.y);
+            
+            if (isSelected) {
+                dx = mouse.x - slider.x;
+                dy = mouse.y - slider.y;
+            }
         }
         
         @Override
         public void mouseReleased(MouseEvent e) {
             mouse.setLocation(e.getPoint());
             isSelected = false;
+            dx = null; dy = null;
         }
         
         @Override
         public void mouseDragged(MouseEvent e) {
             mouse.setLocation(e.getPoint());
             if (isSelected) {
+//                slider.setColor(Color.black);
                 
-                slider.setColor(Color.black);
+                snappedPannel = null;
                 for (JPanel p : this.chapterPanels) {
                     if (p.getBounds().contains(mouse.getLocation())) {
-                        slider.setColor(Color.red);
+//                        slider.setColor(Color.red);
+                        snappedPannel = (JPanel) p.getComponents()[1];
                         JLabel chapterTxt = (JLabel) p.getComponents()[0];
-                        System.out.println("Chapter that contains slider: " + chapterTxt.getText() + " => " + p.getBounds());
+//                        System.out.println("Chapter that contains slider: " + chapterTxt.getText());
                         break;
                     }
                 }
                 
-                slider.setLocation(mouse.x, mouse.y);
+                // is snapped to some chapter panel
+                if (snappedPannel != null) {
+                    JPanel snapCmp = (JPanel) snappedPannel.getParent();
+                    
+                    slider.setLocation(mouse.x - dx, snapCmp.getBounds().y);
+                    
+                    JPanel sentencesPanel = (JPanel) snapCmp.getComponents()[1];
+                    List<SentenceLabel> sentences = slider.getHoveredSentences(sentencesPanel);
+                    parent.getBottomPanel().onSentenceHover(sentences);
+                    
+                } else {
+                    slider.setLocation(mouse.x - dx, mouse.y - dy);
+                }
+
+                
                 parent.updateUI();
             }
         }
@@ -155,5 +182,6 @@ public class TopBox extends JPanel {
         
         @Override public void mouseEntered(MouseEvent e) { }
         @Override public void mouseExited(MouseEvent e) { }
+    
     }
 }

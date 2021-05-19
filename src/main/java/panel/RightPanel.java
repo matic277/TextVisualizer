@@ -27,10 +27,10 @@ public class RightPanel extends JPanel {
     
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
-        JLabel title = new JLabel("Word and sentence statistics");
+        JLabel title = new JLabel(" Word and sentence statistics");
         title.setPreferredSize(new Dimension(300, 30));
         title.setOpaque(true);
-        title.setBackground(Color.pink);
+        title.setBackground(Utils.GRAY);
         title.setFont(Utils.getFont(14));
         title.setPreferredSize(new Dimension(title.getPreferredSize().width, title.getPreferredSize().height+5));
         titlePanel.add(title, BorderLayout.CENTER);
@@ -40,7 +40,7 @@ public class RightPanel extends JPanel {
         mainPanel.setLayout(new BorderLayout());
         
         sentencetoStr = new JPanel();
-        sentencetoStr.setBackground(Color.red);
+        sentencetoStr.setBackground(Color.white);
     
         mainPanel.add(titlePanel, BorderLayout.NORTH);
         mainPanel.add(sentencetoStr, BorderLayout.CENTER);
@@ -59,5 +59,9 @@ public class RightPanel extends JPanel {
         
         // needs to be called
         parent.updateUI();
+    }
+    
+    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
+        // TODO
     }
 }

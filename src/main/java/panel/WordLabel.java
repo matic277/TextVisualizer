@@ -19,6 +19,7 @@ public class WordLabel extends JLabel {
         this.word = word;
         
         this.setOpaque(true);
+        this.setFont(Utils.getFont(14));
         
         if (word.hasSentimentValue()) {
             this.setBackground(

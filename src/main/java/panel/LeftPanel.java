@@ -22,10 +22,13 @@ public class LeftPanel extends JScrollPane {
         this.chapters = parent.parent.getChapters();
         this.textBox = content;
         this.textBox.setParent(this);
-
     }
     
     public void onSentenceClick(Sentence clickedSentence) {
         textBox.onSentenceClick(clickedSentence);
+    }
+    
+    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
+        textBox.onSentenceHover(hoveredSentences);
     }
 }

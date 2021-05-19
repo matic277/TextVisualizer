@@ -35,6 +35,11 @@ public class BottomPanel extends JSplitPane {
         rightPanel.onSentenceClick(clickedSentence);
         leftPanel.onSentenceClick(clickedSentence);
     }
+    
+    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
+        rightPanel.onSentenceHover(hoveredSentences);
+        leftPanel.onSentenceHover(hoveredSentences);
+    }
 
 //    @Override
 //    public void paintComponent(Graphics g) {
