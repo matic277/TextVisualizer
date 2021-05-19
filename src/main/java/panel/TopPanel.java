@@ -23,6 +23,14 @@ public class TopPanel extends JScrollPane {
         topBox.setParent(this);
         topBox.init();
         
-        this.setBackground(Color.red);
+//        this.setBackground(Color.red);
+//        this.add(slider);
     }
+    
+//    @Override
+//    public void paint(Graphics g) {
+//        super.paint(g);
+//
+//        slider.paint(g);
+//    }
 }
