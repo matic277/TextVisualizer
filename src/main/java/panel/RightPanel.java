@@ -28,7 +28,7 @@ public class RightPanel extends JPanel {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel(" Word and sentence statistics");
-        title.setPreferredSize(new Dimension(300, 30));
+        title.setPreferredSize(new Dimension(300, 27));
         title.setOpaque(true);
         title.setBackground(Utils.GRAY);
         title.setFont(Utils.getFont(14));
