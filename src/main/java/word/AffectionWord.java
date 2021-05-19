@@ -9,6 +9,7 @@ public class AffectionWord extends AbsMeasurableWord {
     // use this constructor when reading from file and building hashtable
     public AffectionWord(String sourceText, String pleasantness, String activation, String imagery) {
         super(sourceText, null);
+        super.tag = "AFT";
         
         // -2 for normalizing from [1, 3] to [-1, 1]
         this.pleasantness = Double.parseDouble(pleasantness) - 2;

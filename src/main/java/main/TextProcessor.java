@@ -22,7 +22,9 @@ public class TextProcessor {
             String[] rawSentences = v.split("\\.");
             List<Sentence> sentences = new ArrayList<>(rawSentences.length + 1);
             for (String sentence : rawSentences) {
-                Sentence s = new Sentence(sentence);
+                if (sentence.isBlank() || sentence.isEmpty()) continue;
+                if (sentence.length() < 5) System.out.println("Suspect sentence: " + sentence);
+                Sentence s = new Sentence(sentence + ".");
                 sentences.add(s);
             }
             processedChapters.put(k, sentences);

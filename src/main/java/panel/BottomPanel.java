@@ -31,6 +31,11 @@ public class BottomPanel extends JSplitPane {
         this.setDividerLocation(400);
     }
     
+    public void onSentenceClick(Sentence clickedSentence) {
+        rightPanel.onSentenceClick(clickedSentence);
+        leftPanel.onSentenceClick(clickedSentence);
+    }
+
 //    @Override
 //    public void paintComponent(Graphics g) {
 //        Graphics2D gr = (Graphics2D) g;

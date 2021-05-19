@@ -37,6 +37,9 @@ public class FileReader {
     
     private void processLine(String s) {
         if (s.isEmpty() || s.isBlank()) return;
+        if (s.length() < 4) {
+            System.out.println("Suspect line length: " + s);
+        }
         
         // contains chapter and is relatively short
         if (s.toLowerCase().contains("chapter") && s.length() < 14) {

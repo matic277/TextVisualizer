@@ -12,21 +12,52 @@ import java.util.Map;
 public class RightPanel extends JPanel {
     
     BottomPanel parent;
+    
+    JPanel mainPanel;
+    JPanel sentencetoStr;
+    
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
     public RightPanel(BottomPanel parent) {
         this.parent = parent;
         this.chapters = parent.parent.getChapters();
         this.setBackground(Color.CYAN);
-        JLabel lbl = new JLabel(" RIGHT PANEL ");
-        lbl.setOpaque(true);
-        lbl.setBackground(Color.green);
-        lbl.setFont(Utils.getFont(14));
-        lbl.setPreferredSize(new Dimension(lbl.getPreferredSize().width, lbl.getPreferredSize().height+5));
-//        this.setPreferredSize(new Dimension(300, 300));
-//        this.setSize(new Dimension(300, 300));
-//        this.setMaximumSize(new Dimension(300, 300));
-//        this.setMinimumSize(new Dimension(300, 300));
-        this.add(lbl);
+    
+        this.setLayout(new BorderLayout());
+    
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout());
+        JLabel title = new JLabel("Word and sentence statistics");
+        title.setPreferredSize(new Dimension(300, 30));
+        title.setOpaque(true);
+        title.setBackground(Color.pink);
+        title.setFont(Utils.getFont(14));
+        title.setPreferredSize(new Dimension(title.getPreferredSize().width, title.getPreferredSize().height+5));
+        titlePanel.add(title, BorderLayout.CENTER);
+        
+        mainPanel = new JPanel();
+        mainPanel.setBackground(Color.blue);
+        mainPanel.setLayout(new BorderLayout());
+        
+        sentencetoStr = new JPanel();
+        sentencetoStr.setBackground(Color.red);
+    
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+        mainPanel.add(sentencetoStr, BorderLayout.CENTER);
+        mainPanel.setMinimumSize(new Dimension(50,50));
+        this.add(mainPanel, BorderLayout.CENTER);
+    }
+    
+    public void onSentenceClick(Sentence clickedSentence) {
+        sentencetoStr.removeAll();
+        JLabel lbl = new JLabel("<html>"+clickedSentence.toString()
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll("\\n", "<br>") +
+                "</html>");
+        sentencetoStr.add(lbl);
+        
+        // needs to be called
+        parent.updateUI();
     }
 }

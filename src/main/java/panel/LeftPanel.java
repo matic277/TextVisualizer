@@ -24,4 +24,8 @@ public class LeftPanel extends JScrollPane {
         this.textBox.setParent(this);
 
     }
+    
+    public void onSentenceClick(Sentence clickedSentence) {
+        textBox.onSentenceClick(clickedSentence);
+    }
 }

@@ -133,7 +133,7 @@ public class Sentence {
         return sentiment;
     }
     
-    public String getSentence() {
+    public String getSentenceString() {
         return sentence;
     }
     
@@ -156,10 +156,11 @@ public class Sentence {
         return sb.toString();
     }
     
+    static final DecimalFormat format = new DecimalFormat("#.###");
+    static final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    
     @Override
     public String toString() {
-        DecimalFormat format = new DecimalFormat("#.###");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         format.setDecimalFormatSymbols(symbols);
         

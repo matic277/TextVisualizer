@@ -12,33 +12,41 @@ import java.util.List;
 
 public class TextBox extends JComponent {
     
-    Dimension size;
-    List<JLabel> words = new LinkedList<>();
+    List<WordLabel> words = new LinkedList<>();
     LeftPanel parent;
     
-    final Color UNMEASURABLE_WORD_COLOR = Color.gray;
-    final Color POSITIVE_WORD_COLOR = Color.decode("#34A853");
-    final Color NEUTRAL_WORD_COLOR = Color.decode("#E0E0E0");
-    final Color NEGATIVE_WORD_COLOR = Color.decode("#ea4335");
+    JPanel mainPanel;
+    JPanel sentencesPanel;
     
     public TextBox() {
         this.setLayout(new WrapLayout());
         this.setBackground(Color.pink);
-    
-//        this.setSize(new Dimension(100, 100));
-//        this.setPreferredSize(new Dimension(100, 100));
         
-        for (int i=0; i<100; i++) {
-            JLabel lbl = new JLabel(" " + i + " ");
-            lbl.setOpaque(true);
-            lbl.setBackground(Color.green);
-            lbl.setFont(Utils.getFont(14));
-            lbl.addMouseListener(new LabelListener(this));
-//            lbl.setPreferredSize(new Dimension(75, 25));
-            this.add(lbl);
-        }
+        this.setLayout(new BorderLayout());
         
-//        initWords();
+        
+        mainPanel = new JPanel();
+        mainPanel.setOpaque(true);
+        mainPanel.setBackground(Color.blue);
+        mainPanel.setLayout(new BorderLayout());
+        
+        sentencesPanel = new JPanel();
+        sentencesPanel.setBackground(Color.red);
+        sentencesPanel.setLayout(new BoxLayout(sentencesPanel, BoxLayout.Y_AXIS));
+        mainPanel.add(sentencesPanel, BorderLayout.CENTER);
+        
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout());
+//        titlePanel.setBackground(Color.yellow);
+        JLabel title = new JLabel(" Selected sentences ");
+        title.setPreferredSize(new Dimension(300, 30));
+        title.setOpaque(true);
+        title.setBackground(Color.pink);
+        title.setFont(Utils.getFont(14));
+        titlePanel.add(title, BorderLayout.CENTER);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+        
+        this.add(mainPanel, BorderLayout.CENTER);
     }
     
 //    public void paint(Graphics g) {
@@ -56,44 +64,35 @@ public class TextBox extends JComponent {
 ////        gr.drawRect(5, 5,  this.getWidth()-10, this.getHeight() - 10);
 //    }
     
-//    public void initWords() {
-//        for (Sentence sentence : parent.sentences) {
-//            for (AbsWord word : sentence.getWords()) {
-//                JLabel lbl = new JLabel(" " + word.getSourceText()+" ");
-//                lbl.setOpaque(true);
-//                lbl.setBackground(
-//                        word.hasSentimentValue() ?
-//                                word.getSentimentValue() < AbsMeasurableWord.NEUTRAL_THRESHOLD ?
-//                                    NEGATIVE_WORD_COLOR : word.getSentimentValue() > AbsMeasurableWord.POSITIVE_THRESHOLD ?
-//                                    POSITIVE_WORD_COLOR : NEUTRAL_WORD_COLOR
-//                                : UNMEASURABLE_WORD_COLOR
-//                );
-//                lbl.setFont(Utils.getFont(14));
-//                lbl.setPreferredSize(new Dimension(lbl.getPreferredSize().width, lbl.getPreferredSize().height+5));
-//                this.words.add(lbl);
-//                this.add(lbl);
-//            }
-//        }
-//    }
-
-    public void generateRandomWords() {
-        for (int i=0; i<150; i++) {
-            JLabel lbl = new JLabel(" " + Utils.randomString(3 + Utils.RAND.nextInt(6))+" ");
-            lbl.setOpaque(true);
-            lbl.setBackground(new Color(Utils.RAND.nextInt(255), Utils.RAND.nextInt(255), Utils.RAND.nextInt(255)));
-            lbl.setFont(Utils.getFont(14));
-            lbl.setPreferredSize(new Dimension(lbl.getPreferredSize().width, lbl.getPreferredSize().height+5));
-            words.add(lbl);
-            this.add(lbl);
-        }
-        System.out.println(words.get(0).getPreferredSize());
-    }
-    
     public void setParent(LeftPanel leftPanel) {
         this.parent = leftPanel;
         this.setSize(new Dimension(300, 100));
 //        this.setPreferredSize(new Dimension(300, 100));
 //        this.setMaximumSize(new Dimension(300, 100));
         this.updateUI();
+    }
+    
+    public void onSentenceClick(Sentence clickedSentence) {
+    
+        JPanel sentencePanel = new JPanel();
+        sentencePanel.setLayout(new WrapLayout());
+        sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
+//        for (int i=0; i<clickedSentence.getWords().size()-1; i++) {
+//            WordLabel lbl = new WordLabel(this, clickedSentence.getWords().get());
+//            words.add(lbl);
+//        }
+        
+        for (AbsWord word : clickedSentence.getWords()) {
+            WordLabel lbl = new WordLabel(this, word);
+            words.add(lbl);
+            sentencePanel.add(lbl);
+        }
+    
+        sentencesPanel.removeAll();
+        sentencesPanel.add(sentencePanel);
+        
+        // need to call this otherwise this components doesn't get updated
+        // immediately, but only after resize happens
+        this.parent.updateUI();
     }
 }

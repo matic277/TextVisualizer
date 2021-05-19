@@ -22,9 +22,7 @@ public abstract class AbsMeasurableWord extends AbsWord {
     }
     
     @Override
-    public boolean hasSentimentValue() {
-        return true;
-    }
+    public boolean hasSentimentValue() { return true; }
     
     public boolean isPositivePleasantness() {
         return pleasantness > POSITIVE_THRESHOLD;
@@ -85,10 +83,11 @@ public abstract class AbsMeasurableWord extends AbsWord {
         return this.pleasantness;
     }
     
+    static final DecimalFormat format = new DecimalFormat("#.###");
+    static final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    
     @Override
     public String toString() {
-        DecimalFormat format = new DecimalFormat("#.###");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         format.setDecimalFormatSymbols(symbols);
         return "[" + getTag() + ", " + getSentimentTag() +
