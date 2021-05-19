@@ -17,6 +17,8 @@ public class Sentence {
     
     private double sentiment;
     
+    public int sentenceNumber;
+    
     private final double magnifyValue = 2;
     public int numOfNegativeWords,
             sumOfNegativeWords,
@@ -25,10 +27,9 @@ public class Sentence {
             numOfPositiveWords,
             sumOfPositiveWords;
     
-
-    
-    public Sentence(String sentence) {
+    public Sentence(String sentence, int sentenceNumber) {
         this.sentence = sentence;
+        this.sentenceNumber = sentenceNumber;
         processSentence();
         calculateSentiment();
     }

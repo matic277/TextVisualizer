@@ -73,48 +73,5 @@ public class TextBox extends JComponent {
         this.updateUI();
     }
     
-    public void onSentenceClick(Sentence clickedSentence) {
-        JPanel sentencePanel = new JPanel();
-        sentencePanel.setLayout(new WrapLayout());
-        sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
-        sentencePanel.setBackground(Color.white);
-        
-        for (AbsWord word : clickedSentence.getWords()) {
-            WordLabel lbl = new WordLabel(this, word);
-            words.add(lbl);
-            sentencePanel.add(lbl);
-        }
-        
-        sentencesPanel.removeAll();
-        sentencesPanel.add(sentencePanel);
-        
-        // need to call this otherwise this components doesn't get updated
-        // immediately, but only after resize happens
-        this.parent.updateUI();
-    }
-    
-    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
-        sentencesPanel.removeAll();
-        words.clear();
-        
-        for (SentenceLabel slbl : hoveredSentences) {
-            JPanel sentencePanel = new JPanel();
-            for (AbsWord word : slbl.getSentence().getWords()) {
-                sentencePanel.setLayout(new WrapLayout());
-                sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
-                sentencePanel.setBackground(Color.white);
-                sentencePanel.setBackground(Utils.getRandomColor());
-                WordLabel lbl = new WordLabel(this, word);
-                words.add(lbl);
-                sentencePanel.add(lbl);
-            }
-//            sentencesPanel.setAlignmentX(LEFT_ALIGNMENT);
-            
-            sentencesPanel.add(sentencePanel);
-        }
-        
-        // need to call this otherwise this components doesn't get updated
-        // immediately, but only after resize happens
-        this.parent.updateUI();
-    }
+
 }

@@ -21,10 +21,11 @@ public class TextProcessor {
         chapters.forEach((k, v) -> {
             String[] rawSentences = v.split("\\.");
             List<Sentence> sentences = new ArrayList<>(rawSentences.length + 1);
+            int sentenceNumber = 0;
             for (String sentence : rawSentences) {
                 if (sentence.isBlank() || sentence.isEmpty()) continue;
                 if (sentence.length() < 5) System.out.println("Suspect sentence: " + sentence);
-                Sentence s = new Sentence(sentence + ".");
+                Sentence s = new Sentence(sentence + ".", ++sentenceNumber);
                 sentences.add(s);
             }
             processedChapters.put(k, sentences);

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class TopBox extends JPanel {
@@ -31,8 +30,7 @@ public class TopBox extends JPanel {
     public TopBox(TopPanel parent) {
         this.parent = parent;
         
-        this.setLayout(new WrapLayout());
-        
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         slider = new SlidingWindow(parent);
     }
     
@@ -44,6 +42,8 @@ public class TopBox extends JPanel {
     }
     
     public void init() {
+        this.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
+        
         // create panel for each chapter
         chapters.forEach((k, v) -> {
             JPanel mainPanel = new JPanel() {
@@ -52,13 +52,14 @@ public class TopBox extends JPanel {
                     super.paint(g);
                     
                     g.setColor(Color.black);
-                    g.drawString("[" + getBounds().x + ", " + getBounds().y + "]", 5, 15);
+                    g.drawString("[" + getLocation().x + ", " + getLocation().y + "]", 5, 15);
                 }
             };
             mainPanel.setOpaque(true);
             mainPanel.setBorder(new StrokeBorder(new BasicStroke(2)));
             mainPanel.setLayout(new BorderLayout());
             mainPanel.setBackground(Color.white);
+            mainPanel.setName("Main panel for chapter " + k.getB());
             
             JLabel title = new JLabel(k.getB());
             title.setBorder(new StrokeBorder(new BasicStroke(1)));
@@ -80,7 +81,9 @@ public class TopBox extends JPanel {
                 sentencesPanel.add(lbl);
             });
             
+            mainPanel.setMaximumSize(mainPanel.getPreferredSize());
             this.add(mainPanel);
+            this.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         });
         
         listener = new SlidingWindowListener();
@@ -110,7 +113,8 @@ public class TopBox extends JPanel {
         
         List<JPanel> chapterPanels = new ArrayList<>(20); {
             chapterPanels.addAll(Arrays.stream(parent.getComponents())
-                    .map(c -> (JPanel)c)
+                    .filter(c -> (c instanceof JPanel))
+                    .map(c -> (JPanel) c)
                     .collect(Collectors.toList()));
         }
         
@@ -120,7 +124,6 @@ public class TopBox extends JPanel {
             System.out.println("click");
     
             System.out.println(chapterPanels.size());
-            
         }
         
         @Override
@@ -149,31 +152,28 @@ public class TopBox extends JPanel {
 //                slider.setColor(Color.black);
                 
                 snappedPannel = null;
+                Rectangle chapterBounds = new Rectangle();
                 for (JPanel p : this.chapterPanels) {
-                    if (p.getBounds().contains(mouse.getLocation())) {
-//                        slider.setColor(Color.red);
-                        snappedPannel = (JPanel) p.getComponents()[1];
-                        JLabel chapterTxt = (JLabel) p.getComponents()[0];
-//                        System.out.println("Chapter that contains slider: " + chapterTxt.getText());
+                    chapterBounds.setBounds(p.getLocation().x, p.getLocation().y, p.getWidth(), p.getHeight());
+                    if (chapterBounds.contains(mouse.getLocation())) {
+                        snappedPannel = p;
                         break;
                     }
                 }
                 
                 // is snapped to some chapter panel
                 if (snappedPannel != null) {
-                    JPanel snapCmp = (JPanel) snappedPannel.getParent();
+                    slider.setLocation(mouse.x - dx, snappedPannel.getLocation().y);
                     
-                    slider.setLocation(mouse.x - dx, snapCmp.getBounds().y);
-                    
-                    JPanel sentencesPanel = (JPanel) snapCmp.getComponents()[1];
-                    List<SentenceLabel> sentences = slider.getHoveredSentences(sentencesPanel);
+                    List<SentenceLabel> sentences = slider.getHoveredSentences(snappedPannel);
                     parent.getBottomPanel().onSentenceHover(sentences);
                     
                 } else {
                     slider.setLocation(mouse.x - dx, mouse.y - dy);
                 }
-
                 
+                // needs to be called, otherwise sliders
+                // position doesn't get updated
                 parent.updateUI();
             }
         }

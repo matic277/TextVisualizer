@@ -2,6 +2,7 @@ package window;
 
 import main.Pair;
 import main.Sentence;
+import main.Utils;
 import panel.BottomPanel;
 import panel.MainPanel;
 
@@ -15,28 +16,21 @@ public class MainWindow {
     protected JFrame frame;
     protected MainPanel mainPanel;
     
-    protected Dimension windowSize;
-    
-    final Color bgColor = Color.white;
-    
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
-    public MainWindow(Dimension windowSize, Map<Pair<Integer, String>, List<Sentence>> chapters) {
-        this.windowSize = windowSize;
+    public MainWindow(Map<Pair<Integer, String>, List<Sentence>> chapters) {
         this.chapters = chapters;
         
         frame = new JFrame();
-        frame.setSize(windowSize);
-        frame.setPreferredSize(windowSize);
+        frame.setSize(new Dimension(Utils.INITIAL_WINDOW_WIDTH, Utils.INITIAL_WINDOW_HEIGHT));
+        frame.setPreferredSize(new Dimension(Utils.INITIAL_WINDOW_WIDTH, Utils.INITIAL_WINDOW_HEIGHT));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         
         try { UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); }
         catch (Exception e) {e.printStackTrace();}
         
-        Dimension mainSize = new Dimension(windowSize.width, windowSize.height * 2/3);
-        Dimension bottomSize = new Dimension(windowSize.width, windowSize.height - mainSize.height);
-        mainPanel = new MainPanel(mainSize, this);
+        mainPanel = new MainPanel(this);
         
         frame.add(mainPanel);
         frame.pack();

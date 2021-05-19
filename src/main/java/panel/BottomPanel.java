@@ -22,13 +22,13 @@ public class BottomPanel extends JSplitPane {
         super(HORIZONTAL_SPLIT, null, null);
         this.parent = parent;
         
-        leftPanel = new LeftPanel(this, new TextBox());
+        leftPanel = new LeftPanel(this);
         rightPanel = new RightPanel(this);
         
         this.setLeftComponent(leftPanel);
         this.setRightComponent(rightPanel);
         
-        this.setDividerLocation(400);
+        this.setDividerLocation(Utils.INITIAL_LEFT_MENU_WIDTH);
     }
     
     public void onSentenceClick(Sentence clickedSentence) {

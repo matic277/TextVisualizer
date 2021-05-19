@@ -23,7 +23,7 @@ public class Main {
         textProc.processText();
         
         SwingUtilities.invokeLater(() -> {
-            new MainWindow(new Dimension(800, 600), textProc.getProcessedChapters());
+            new MainWindow(textProc.getProcessedChapters());
         });
     }
 }

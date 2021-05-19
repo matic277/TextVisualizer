@@ -2,6 +2,7 @@ package panel;
 
 import main.Pair;
 import main.Sentence;
+import main.Utils;
 import window.MainWindow;
 
 import javax.swing.*;
@@ -12,16 +13,14 @@ import java.util.Map;
 public class MainPanel extends JSplitPane {
     
     MainWindow parent;
-    Dimension panelSize;
     
     // contains vertically split panels:
     TopPanel topPanel;
     BottomPanel bottomPanel;
     
-    public MainPanel(Dimension size, MainWindow parent) {
+    public MainPanel(MainWindow parent) {
         super(VERTICAL_SPLIT, null, null);
         this.parent = parent;
-        this.panelSize = size;
         
         this.setOpaque(true);
 //        this.setSize(size);
@@ -35,7 +34,7 @@ public class MainPanel extends JSplitPane {
         this.setTopComponent(topPanel);
         this.setBottomComponent(bottomPanel);
     
-        this.setDividerLocation(400);
+        this.setDividerLocation(Utils.INITIAL_WINDOW_HEIGHT - Utils.INITIAL_BOTTOM_MENU_HEIGHT);
         this.setResizeWeight(1);
     }
     

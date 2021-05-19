@@ -11,9 +11,9 @@ import java.awt.*;
 public class WordLabel extends JLabel {
     
     AbsWord word;
-    TextBox parent;
+    LeftPanel parent;
     
-    public WordLabel (TextBox parent, AbsWord word) {
+    public WordLabel (LeftPanel parent, AbsWord word) {
         super(" " + word.getSourceText() + " ");
         this.parent = parent;
         this.word = word;

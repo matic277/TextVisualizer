@@ -32,17 +32,19 @@ public class SlidingWindow extends Rectangle {
         
         gr.setColor(color);
         gr.setStroke(stroke);
-        gr.drawRoundRect(x, y, width, height, 10, 10);
+        gr.drawRoundRect(x, y, width, height, 7, 7);
         
         gr.drawString("[" + x + ", " + y + "]", x, y-4);
     }
     
-    public List<SentenceLabel> getHoveredSentences(JPanel sentencePanel) {
+    public List<SentenceLabel> getHoveredSentences(JPanel mainSentencePanel) {
+        JPanel sentencesPanel = (JPanel) mainSentencePanel.getComponents()[1];
         List<SentenceLabel> hovered = new ArrayList<>(20);
-        Component[] sentenceCmps = sentencePanel.getComponents();
+        Component[] sentenceCmps = sentencesPanel.getComponents();
         
         for (int i=0; i<sentenceCmps.length; i++) {
-            if (this.getBounds().contains(sentenceCmps[i].getLocationOnScreen())) {
+            // true X position of sentenceLabel => mainSentencePanel.x + sentenceLabel.x
+            if (this.getBounds().contains(sentenceCmps[i].getLocation().x + mainSentencePanel.getX(), mainSentencePanel.getY())) {
                 SentenceLabel slbl = (SentenceLabel) sentenceCmps[i];
                 hovered.add(slbl);
             }

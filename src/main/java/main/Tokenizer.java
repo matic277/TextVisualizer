@@ -73,9 +73,8 @@ public class Tokenizer {
 //		System.out.println("number of sentences: " + sentences.size());
 //		sentences.forEach(sb -> System.out.println("-> '" + sb.toString() + "'"));
         
-        
         ArrayList<Sentence> sentences2 = new ArrayList<Sentence>(sentences.size());
-        sentences.forEach(sb -> sentences2.add(new Sentence(sb.toString())));
+        sentences.forEach(sb -> sentences2.add(new Sentence(sb.toString(), -1)));
         return sentences2;
     }
     

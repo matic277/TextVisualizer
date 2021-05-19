@@ -24,6 +24,12 @@ public class Utils {
     public static final Stroke BOLDER_STROKE = new BasicStroke(2f);
     public static final Stroke BOLDEST_STROKE = new BasicStroke(5f);
     
+    public static final int INITIAL_WINDOW_WIDTH = 1600;
+    public static final int INITIAL_WINDOW_HEIGHT = 1200;
+    public static final int INITIAL_LEFT_MENU_WIDTH = 700;
+//    public static final int MAXIMUM_LEFT_MENU_WIDTH = 0;
+    public static final int INITIAL_BOTTOM_MENU_HEIGHT = 300;
+    
     
     
     public static final Random RAND = new Random();
