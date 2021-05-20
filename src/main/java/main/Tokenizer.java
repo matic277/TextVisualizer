@@ -10,7 +10,14 @@ import java.util.stream.IntStream;
 public class Tokenizer {
     
     // Class is a collection of functions
-    private String suspects = "-'!? ¨\"#$%&/()=*ÐŠÈÆŽŠðšæèž:;,_~¡^¢°²`ÿ´½¨¸.*\"<>¤ßè×÷\\â€¦™«";
+    private String suspects = "-'!? ¨“\"#$%&/()=*ÐŠÈÆŽŠðšæèž:;,_~¡^¢°²`ÿ´½¨¸.*\"<>¤ßè×÷\\â€¦™«";
+    private String[] suspects2 = {
+            "\"", "-", "'", "!", "\\?", " ", "¨", "#", "$", "\\.", "“",
+            "%", "&", "/", "\\(", "\\)", "=", "Ð", "Š", "È", "Æ", "Ž",
+            "Š", "ð", "š", "æ", "è", "ž", ":", ";", "\\,", "_", "~", "¡", "^",
+            "¢", "°", "²", "`", "ÿ", "´", "½", "¨", "¸", "\\*", "<", ">",
+            "¤", "ß", "è", "×", "÷", "\\\\", "â", "€", "¦", "™", "\\+", "«"
+    };
     private String[] sentSepRegEx = new String[] {"\\.", "\\!", "\\?"};
     private String[] sentSep = new String[] {".", "!", "?"};
 
@@ -147,15 +154,25 @@ public class Tokenizer {
     private String cleanToken1(String token) {
         String chars = suspects.replace("-", "");
         for (int i=0; i<chars.length(); i++) {
-            token = token.replace(chars.charAt(i) + "", "");
+            token = token.replace("" + chars.charAt(i), "");
         }
         return token;
     }
     
     private String cleanToken2(String token) {
-        for (int i=0; i<suspects.length(); i++) {
-            token = token.replace(suspects.charAt(i) + "", "");
+        String x = token;
+        boolean b = false;
+        if (x.contains("beautiful")) {
+            b = true;
+            System.out.println("Before='" + x + "'.");
         }
+        for (int i=0; i<suspects2.length; i++) {
+            token = token.replaceAll(suspects2[i], "");
+            if (token.isEmpty())
+                System.out.println("empty");
+        }
+        if (b) System.out.println("After='"+token+"'.");
+//        System.out.println("I don't like these \"double\" quotes".replace("\"", " "));
         return token;
     }
 
@@ -169,6 +186,10 @@ public class Tokenizer {
             if (token.length() == 0) continue;
             
             String rawToken = token;
+    
+            if (rawToken.toLowerCase().contains("beautiful")) {
+                System.out.println("");
+            }
             
             /*
             TYPE CHECKING:

@@ -24,6 +24,7 @@ public class RightPanel extends JPanel {
         this.setBackground(Color.CYAN);
     
         this.setLayout(new BorderLayout());
+        this.setBackground(Utils.GRAY3);
     
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
@@ -36,11 +37,11 @@ public class RightPanel extends JPanel {
         titlePanel.add(title, BorderLayout.CENTER);
         
         mainPanel = new JPanel();
-        mainPanel.setBackground(Color.blue);
+        mainPanel.setBackground(Utils.GRAY3);
         mainPanel.setLayout(new BorderLayout());
         
         sentencetoStr = new JPanel();
-        sentencetoStr.setBackground(Color.white);
+        sentencetoStr.setBackground(Utils.GRAY3);
     
         mainPanel.add(titlePanel, BorderLayout.NORTH);
         mainPanel.add(sentencetoStr, BorderLayout.CENTER);

@@ -10,6 +10,8 @@ import javax.swing.border.StrokeBorder;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -23,7 +25,7 @@ public class TextBox extends JPanel {
     
     public TextBox() {
         this.setLayout(new WrapLayout());
-        this.setBackground(Utils.GRAY);
+        this.setBackground(Utils.GRAY3);
         
         this.setLayout(new BorderLayout());
         
@@ -38,7 +40,7 @@ public class TextBox extends JPanel {
         this.add(titlePanel, BorderLayout.NORTH);
         
         sentencesPanel = new JPanel();
-        sentencesPanel.setBackground(Color.white);
+        sentencesPanel.setBackground(Utils.GRAY3);
         sentencesPanel.setLayout(new BoxLayout(sentencesPanel, BoxLayout.Y_AXIS));
         this.add(sentencesPanel, BorderLayout.CENTER);
         
@@ -51,10 +53,10 @@ public class TextBox extends JPanel {
         JPanel sentencePanel = new JPanel();
         sentencePanel.setLayout(new WrapLayout());
         sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
-        sentencePanel.setBackground(Color.white);
+        sentencePanel.setBackground(Utils.GRAY3);
         
         for (AbsWord word : clickedSentence.getWords()) {
-            WordLabel lbl = new WordLabel(this.parent, word);
+            WordLabel lbl = new WordLabel(this.parent, sentencePanel, word);
             sentencePanel.add(lbl);
         }
         
@@ -67,6 +69,7 @@ public class TextBox extends JPanel {
     
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
         sentencesPanel.removeAll();
+        sentencesPanel.setPreferredSize(new Dimension(500, 500));
         
         for (SentenceLabel slbl : hoveredSentences) {
             JPanel mainPanel = new JPanel();
@@ -74,16 +77,34 @@ public class TextBox extends JPanel {
             mainPanel.setLayout(new BorderLayout());
 //            sentenceMainPanel.setAlignmentX(LEFT_ALIGNMENT);
             mainPanel.setOpaque(true);
-//            mainPanel.setBackground(Color.red);
+            mainPanel.setBackground(Utils.GRAY3);
+            mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+            mainPanel.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // TODO
+                }
+        
+                @Override public void mouseEntered(MouseEvent e) {
+                    mainPanel.setBackground(Color.white);
+                    mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                }
+        
+                @Override public void mouseExited(MouseEvent e) {
+                    mainPanel.setBackground(Utils.GRAY3);
+                    mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                }
+        
+                @Override public void mousePressed(MouseEvent e) { }
+                @Override public void mouseReleased(MouseEvent e) { }
+            });
 //            mainPanel.setBackground(Utils.getRandomColor());
             
             JLabel sentNumLbl = new JLabel(""+slbl.getSentence().sentenceNumber, SwingConstants.CENTER);
             sentNumLbl.setFont(Utils.getFont(12));
-//            sentNumLbl.setHorizontalTextPosition(SwingConstants.RIGHT);
-//            sentNumLbl.setVerticalTextPosition(SwingConstants.RIGHT);
             sentNumLbl.setBorder(new StrokeBorder(new BasicStroke(1)));
             sentNumLbl.setOpaque(true);
-            sentNumLbl.setBackground(Utils.GRAY);
+            sentNumLbl.setBackground(Utils.GRAY2);
             sentNumLbl.setMinimumSize(new Dimension(30, 10));
             sentNumLbl.setPreferredSize(new Dimension(30, 10));
             mainPanel.add(sentNumLbl, BorderLayout.WEST);
@@ -91,12 +112,15 @@ public class TextBox extends JPanel {
             JPanel sentencePanel = new JPanel();
 //            sentencePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
-            sentencePanel.setBackground(Color.white);
+            sentencePanel.setBackground(Utils.GRAY3);
             sentencePanel.setOpaque(false);
-            sentencePanel.addComponentListener(new ComponentListener() {
+            mainPanel.addComponentListener(new ComponentListener() {
                 @Override public void componentResized(ComponentEvent e) {
-//                    sentencePanel.revalidate();
+//                    System.out.println("resized="+e.getComponent().getWidth());
+                    sentencePanel.revalidate();
                     sentencePanel.doLayout();
+//                    mainPanel.revalidate();
+//                    mainPanel.doLayout();
                     }
                 @Override public void componentMoved(ComponentEvent e) { }
                 @Override public void componentShown(ComponentEvent e) { }
@@ -106,7 +130,7 @@ public class TextBox extends JPanel {
 //            sentencePanel.setBackground(Utils.getRandomColor());
     
             for (AbsWord word : slbl.getSentence().getWords()) {
-                WordLabel lbl = new WordLabel(this.parent, word);
+                WordLabel lbl = new WordLabel(this.parent, mainPanel, word);
                 sentencePanel.add(lbl);
             }
             mainPanel.add(sentencePanel, BorderLayout.CENTER);

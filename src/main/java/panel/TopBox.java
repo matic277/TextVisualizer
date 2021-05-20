@@ -32,6 +32,8 @@ public class TopBox extends JPanel {
         
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         slider = new SlidingWindow(parent);
+        
+        this.setBackground(Utils.GRAY3);
     }
     
     @Override

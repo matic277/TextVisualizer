@@ -26,9 +26,11 @@ public class LeftPanel extends JScrollPane {
         this.chapters = parent.parent.getChapters();
         
         content.setParent(this);
-    
+        
         this.getVerticalScrollBar().setUnitIncrement(16);
-        this.getHorizontalScrollBar().setUnitIncrement(16);
+//        this.getHorizontalScrollBar().setUnitIncrement(16);
+        this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.setHorizontalScrollBar(null);
     }
     
     public void onSentenceClick(Sentence clickedSentence) {
