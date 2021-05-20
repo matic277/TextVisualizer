@@ -78,7 +78,7 @@ public class DictionaryCollection {
     public IDictionary getSmileyDictionary() {
         return smileys;
     }
-    public IDictionary getWhissellDictionary() {
+    public WhissellDictionary getWhissellDictionary() {
         return whissell;
     }
     public IDictionary getStopwordDictionary() {

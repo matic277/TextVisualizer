@@ -37,23 +37,29 @@ public class BottomPanel extends JSplitPane {
         
         
         // hacky stuff
-        leftPanel.addComponentListener(new ComponentListener() {
-            @Override public void componentResized(ComponentEvent e) {
-                box.sentencesPanel.setPreferredSize(new Dimension(
-                        leftPanel.getSize().width,
-                        box.sentencesPanel.getHeight()));
-                box.sentencesPanel.revalidate();
-                box.sentencesPanel.doLayout();
-                box.updateUI();
-                box.doLayout();
-            }
-            @Override public void componentMoved(ComponentEvent e) { }
-            @Override public void componentShown(ComponentEvent e) { }
-            @Override public void componentHidden(ComponentEvent e) { }
-        });
-        box.sentencesPanel.setPreferredSize(new Dimension(leftPanel.getSize().width, 1000));
-        box.updateUI();
-        box.doLayout();
+//        leftPanel.addComponentListener(new ComponentListener() {
+//            @Override public void componentResized(ComponentEvent e) {
+//                System.out.println(box.sentencesPanel.getHeight());
+////                box.sentencesPanel.setPreferredSize(new Dimension(
+////                        leftPanel.getSize().width ,
+////                        box.sentencesPanel.getHeight()));
+//                box.sentencesPanel.setPreferredSize(box.getSize());
+////                box.setPreferredSize(box.getSize());
+//                box.sentencesPanel.revalidate();
+//                box.sentencesPanel.doLayout();
+//                box.updateUI();
+//                box.doLayout();
+//                leftPanel.revalidate();
+//                leftPanel.updateUI();
+//                leftPanel.doLayout();
+//            }
+//            @Override public void componentMoved(ComponentEvent e) { }
+//            @Override public void componentShown(ComponentEvent e) { }
+//            @Override public void componentHidden(ComponentEvent e) { }
+//        });
+//        box.setPreferredSize(new Dimension(leftPanel.getSize().width, 1000));
+//        box.updateUI();
+//        box.doLayout();
     }
     
     public void onSentenceClick(Sentence clickedSentence) {

@@ -42,6 +42,7 @@ public class TextBox extends JPanel {
         sentencesPanel = new JPanel();
         sentencesPanel.setBackground(Utils.GRAY3);
         sentencesPanel.setLayout(new BoxLayout(sentencesPanel, BoxLayout.Y_AXIS));
+//        sentencesPanel.setLayout(new VerticalFlowLayout(0, 0));
         this.add(sentencesPanel, BorderLayout.CENTER);
         
         this.setMinimumSize(new Dimension(0, 0));
@@ -49,11 +50,12 @@ public class TextBox extends JPanel {
     
     public void onSentenceClick(Sentence clickedSentence) {
         sentencesPanel.removeAll();
+        sentencesPanel.setPreferredSize(parent.getSize());
         
         JPanel sentencePanel = new JPanel();
         sentencePanel.setLayout(new WrapLayout());
         sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
-        sentencePanel.setBackground(Utils.GRAY3);
+        sentencePanel.setBackground(Utils.RED);
         
         for (AbsWord word : clickedSentence.getWords()) {
             WordLabel lbl = new WordLabel(this.parent, sentencePanel, word);
@@ -69,7 +71,10 @@ public class TextBox extends JPanel {
     
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
         sentencesPanel.removeAll();
-        sentencesPanel.setPreferredSize(new Dimension(500, 500));
+//        sentencesPanel.doLayout();
+//        sentencesPanel.revalidate();
+//        sentencesPanel.repaint();
+//        sentencesPanel.setPreferredSize(new Dimension(500, 500));
         
         for (SentenceLabel slbl : hoveredSentences) {
             JPanel mainPanel = new JPanel();
@@ -79,25 +84,25 @@ public class TextBox extends JPanel {
             mainPanel.setOpaque(true);
             mainPanel.setBackground(Utils.GRAY3);
             mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-            mainPanel.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    // TODO
-                }
-        
-                @Override public void mouseEntered(MouseEvent e) {
-                    mainPanel.setBackground(Color.white);
-                    mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                }
-        
-                @Override public void mouseExited(MouseEvent e) {
-                    mainPanel.setBackground(Utils.GRAY3);
-                    mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                }
-        
-                @Override public void mousePressed(MouseEvent e) { }
-                @Override public void mouseReleased(MouseEvent e) { }
-            });
+//            mainPanel.addMouseListener(new MouseListener() {
+//                @Override
+//                public void mouseClicked(MouseEvent e) {
+//                    // TODO
+//                }
+//
+//                @Override public void mouseEntered(MouseEvent e) {
+//                    mainPanel.setBackground(Color.white);
+//                    mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+//                }
+//
+//                @Override public void mouseExited(MouseEvent e) {
+//                    mainPanel.setBackground(Utils.GRAY3);
+//                    mainPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+//                }
+//
+//                @Override public void mousePressed(MouseEvent e) { }
+//                @Override public void mouseReleased(MouseEvent e) { }
+//            });
 //            mainPanel.setBackground(Utils.getRandomColor());
             
             JLabel sentNumLbl = new JLabel(""+slbl.getSentence().sentenceNumber, SwingConstants.CENTER);
@@ -114,18 +119,18 @@ public class TextBox extends JPanel {
             sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
             sentencePanel.setBackground(Utils.GRAY3);
             sentencePanel.setOpaque(false);
-            mainPanel.addComponentListener(new ComponentListener() {
-                @Override public void componentResized(ComponentEvent e) {
-//                    System.out.println("resized="+e.getComponent().getWidth());
-                    sentencePanel.revalidate();
-                    sentencePanel.doLayout();
+//            mainPanel.addComponentListener(new ComponentListener() {
+//                @Override public void componentResized(ComponentEvent e) {
+////                    System.out.println("resized="+e.getComponent().getWidth());
+//                    sentencePanel.revalidate();
+//                    sentencePanel.doLayout();
 //                    mainPanel.revalidate();
 //                    mainPanel.doLayout();
-                    }
-                @Override public void componentMoved(ComponentEvent e) { }
-                @Override public void componentShown(ComponentEvent e) { }
-                @Override public void componentHidden(ComponentEvent e) { }
-            });
+//                    }
+//                @Override public void componentMoved(ComponentEvent e) { }
+//                @Override public void componentShown(ComponentEvent e) { }
+//                @Override public void componentHidden(ComponentEvent e) { }
+//            });
     
 //            sentencePanel.setBackground(Utils.getRandomColor());
     
@@ -142,10 +147,18 @@ public class TextBox extends JPanel {
 //            mainPanel.doLayout();
             
             sentencesPanel.add(mainPanel);
-            sentencePanel.revalidate();
-            sentencePanel.doLayout();
-            sentencePanel.updateUI();
+//            sentencePanel.revalidate();
+//            sentencePanel.doLayout();
+//            sentencePanel.updateUI();
         }
+        
+//        this.revalidate();
+//        this.doLayout();
+//        this.updateUI();
+//
+//        parent.revalidate();
+//        parent.updateUI();
+//        parent.doLayout();
         
         // need to call this otherwise this components doesn't get updated
         // immediately, but only after resize happens

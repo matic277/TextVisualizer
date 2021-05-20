@@ -3,6 +3,7 @@ package panel;
 import main.Utils;
 import word.AbsMeasurableWord;
 import word.AbsWord;
+import word.StopWord;
 
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
@@ -14,13 +15,13 @@ import java.awt.event.MouseListener;
 public class WordLabel extends JLabel {
     
     AbsWord word;
-    LeftPanel parent;
+    JComponent parent;
     JPanel containerParent;
     
     private final Color NORMAL_COLOR;
     private Color HOVERED_COLOR;
     
-    public WordLabel (LeftPanel parent, JPanel containerParent, AbsWord word) {
+    public WordLabel (JComponent parent, JPanel containerParent, AbsWord word) {
         super(" " + word.getSourceText() + " ");
         this.parent = parent;
         this.containerParent = containerParent;
@@ -44,6 +45,10 @@ public class WordLabel extends JLabel {
             // transparent with border
             this.setBorder(new StrokeBorder(new BasicStroke(1)));
             
+            if (word instanceof StopWord) {
+                this.setForeground(Utils.GRAY.darker().darker());
+            }
+            
             NORMAL_COLOR = new Color(240, 240, 240);
             HOVERED_COLOR = Color.white;
         }
@@ -65,6 +70,8 @@ public class WordLabel extends JLabel {
             
             @Override public void mouseExited(MouseEvent e) {
                 WordLabel.this.setBackground(WordLabel.this.NORMAL_COLOR);
+                WordLabel.this.containerParent.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                WordLabel.this.containerParent.setBackground(Utils.GRAY3);
                 WordLabel.this.parent.repaint();
             }
             

@@ -1,6 +1,8 @@
 package main;
 
 
+import dictionary.DictionaryCollection;
+import dictionary.WhissellDictionary;
 import word.*;
 
 import java.util.ArrayList;
@@ -10,9 +12,9 @@ import java.util.stream.IntStream;
 public class Tokenizer {
     
     // Class is a collection of functions
-    private String suspects = "-'!? ¨“\"#$%&/()=*ÐŠÈÆŽŠðšæèž:;,_~¡^¢°²`ÿ´½¨¸.*\"<>¤ßè×÷\\â€¦™«";
+    private String suspects = "-'!? ¨“\"#$%&/()=*ÐŠÈÆŽŠðšæèž:;”“,_~¡^¢°²`ÿ´½¨¸.*\"<>¤ßè×÷\\â€¦™«";
     private String[] suspects2 = {
-            "\"", "-", "'", "!", "\\?", " ", "¨", "#", "$", "\\.", "“",
+            "\"", "-", "'", "!", "\\?", " ", "¨", "#", "$", "\\.", "“", "”",
             "%", "&", "/", "\\(", "\\)", "=", "Ð", "Š", "È", "Æ", "Ž",
             "Š", "ð", "š", "æ", "è", "ž", ":", ";", "\\,", "_", "~", "¡", "^",
             "¢", "°", "²", "`", "ÿ", "´", "½", "¨", "¸", "\\*", "<", ">",
@@ -162,14 +164,14 @@ public class Tokenizer {
     private String cleanToken2(String token) {
         String x = token;
         boolean b = false;
-        if (x.contains("beautiful")) {
+        if (x.contains("married")) {
             b = true;
             System.out.println("Before='" + x + "'.");
         }
         for (int i=0; i<suspects2.length; i++) {
             token = token.replaceAll(suspects2[i], "");
-            if (token.isEmpty())
-                System.out.println("empty");
+//            if (token.isEmpty())
+//                System.out.println("empty");
         }
         if (b) System.out.println("After='"+token+"'.");
 //        System.out.println("I don't like these \"double\" quotes".replace("\"", " "));
@@ -187,7 +189,7 @@ public class Tokenizer {
             
             String rawToken = token;
     
-            if (rawToken.toLowerCase().contains("beautiful")) {
+            if (rawToken.toLowerCase().contains("nothing")) {
                 System.out.println("");
             }
             
@@ -226,20 +228,21 @@ public class Tokenizer {
             else if (Emoji.isType(rawToken)) {
                 words.add(new Emoji(rawToken, null));
             }
-
+            
+            
             
             // from here on out, the order of type checking is important
             // always check first for negation words or stop-words, since
             // Whissell dictionary contains some of them
             
+            // TODO skip?
             // NEGATION WORD
-            else if (NegationWord.isType(checkToken1)) {
-                words.add(new NegationWord(rawToken, checkToken1));
-
-            }
-            else if (NegationWord.isType(checkToken2)) {
-                words.add(new NegationWord(rawToken, checkToken2));
-            }
+//            else if (NegationWord.isType(checkToken1)) {
+//                words.add(new NegationWord(rawToken, checkToken1));
+//            }
+//            else if (NegationWord.isType(checkToken2)) {
+//                words.add(new NegationWord(rawToken, checkToken2));
+//            }
             
             // ACRONYM
             else if (Acronym.isType(checkToken1)) {
@@ -258,6 +261,20 @@ public class Tokenizer {
             else if (StopWord.isType(checkToken2)) {
                 words.add(new StopWord(rawToken, checkToken2));
             }
+    
+//            if (rawToken.toLowerCase().contains("married")) {
+//                boolean x = AffectionWord.isType(checkToken1);
+//                System.out.println(checkToken1 + " -> "+x);
+//
+//                AbsWord w = DictionaryCollection.getDictionaryCollection().getWhissellDictionary().getEntry(checkToken1);
+//                System.out.println(w);
+//
+//                DictionaryCollection.getDictionaryCollection().getWhissellDictionary().getHashmap().forEach((k, v) -> {
+//                    System.out.println("'"+k+"' -> " + v);
+//                });
+//
+//                System.out.println();
+//            }
             
             // AFFECTION WORD
             else if (AffectionWord.isType(checkToken1)) {
