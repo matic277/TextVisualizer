@@ -9,12 +9,7 @@ import word.StopWord;
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
 import java.awt.*;
-import java.awt.color.ColorSpace;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class WordLabel extends JLabel {
     
@@ -24,9 +19,6 @@ public class WordLabel extends JLabel {
     JPanel containerParent;
     
     RightPanel rightPanel;
-    
-    public MouseListener containerParentlistener;
-    MouseListener wordListener;
     
     public final Color NORMAL_COLOR;
     public final Color HOVERED_COLOR;

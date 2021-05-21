@@ -15,8 +15,10 @@ public class TopPanel extends JPanel {
     MainPanel parent;
     
     JPanel controlPanel;
-        JSlider sentenceWidthSlider;
-        JSlider sliderWidthSlider;
+        JPanel sentenceSliderPanel;
+            JSlider sentenceWidthSlider;
+        JPanel sliderSliderPanel;
+            JSlider sliderWidthSlider;
     
     ChaptersPanel chaptersPanel;
     
@@ -46,11 +48,15 @@ public class TopPanel extends JPanel {
     }
     
     private void initSliderWidthSlider() {
+        sliderSliderPanel = new JPanel();
+        sliderSliderPanel.setLayout(new BorderLayout());
+        
+        JLabel title = new JLabel("Width of sentences");
+        title.setFont(Utils.getFont(12));
+        
         int sliderMin = 80, sliderMax = 200;
         sliderWidthSlider = new JSlider(sliderMin, sliderMax, Utils.INITIAL_SLIDER_WIDTH);
-//        sentenceWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
         Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
-        //calibri
         Font lblFont = new Font("Calibri", Font.BOLD, 12);
         JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);
         JLabel maxLbl = new JLabel(sliderMax+""); maxLbl.setFont(lblFont);
@@ -64,10 +70,19 @@ public class TopPanel extends JPanel {
         sliderWidthSlider.setFont(Utils.getFont(12));
         sliderWidthSlider.setEnabled(true);
         sliderWidthSlider.addChangeListener(c -> onSliderWidthChange());
-        controlPanel.add(sliderWidthSlider);
+    
+        sliderSliderPanel.add(title, BorderLayout.NORTH);
+        sliderSliderPanel.add(sliderWidthSlider, BorderLayout.CENTER);
+        controlPanel.add(sliderSliderPanel);
     }
     
     private void initSentenceWindthSlider() {
+        sentenceSliderPanel = new JPanel();
+        sentenceSliderPanel.setLayout(new BorderLayout());
+        
+        JLabel title = new JLabel("Width of sentences");
+        title.setFont(Utils.getFont(12));
+        
         int sliderMin = 1, sliderMax = 16;
         sentenceWidthSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.width);
 //        sentenceWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -85,7 +100,10 @@ public class TopPanel extends JPanel {
         sentenceWidthSlider.setFont(Utils.getFont(12));
         sentenceWidthSlider.setEnabled(true);
         sentenceWidthSlider.addChangeListener(c -> onSentenceWidthChange());
-        controlPanel.add(sentenceWidthSlider);
+    
+        sentenceSliderPanel.add(title, BorderLayout.NORTH);
+        sentenceSliderPanel.add(sentenceWidthSlider, BorderLayout.CENTER);
+        controlPanel.add(sentenceSliderPanel);
     }
     
     private void onSliderWidthChange() {

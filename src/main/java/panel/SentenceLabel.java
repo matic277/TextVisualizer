@@ -13,6 +13,21 @@ public class SentenceLabel extends JLabel {
     Sentence sentence;
     ChaptersPanel parent;
     
+    public boolean isHighlightedBySlider = false;
+    
+    private Color COLOR_POSITVE = Utils.GREEN;
+    private Color COLOR_NEUTRAL = Utils.GRAY2;
+    private Color COLOR_NEGATIVE = Utils.RED;
+    
+    private static Color NORMAL_COLOR_POSTIVE = Utils.GREEN;
+    private static Color HOVERED_COLOR_POSITIVE = Utils.GREEN.brighter();
+    
+    private static Color NORMAL_COLOR_NEUTRAL = Utils.GRAY2;
+    private static Color HOVERED_COLOR_NEUTRAL = Utils.GRAY2.brighter();
+    
+    private static Color NORMAL_COLOR_NEGATIVE = Utils.RED;
+    private static Color HOVERED_COLOR_NEGATIVE = Utils.RED.brighter();
+    
     int posHeight, neuHeight, negHeight;
     
     public SentenceLabel(ChaptersPanel parent, Sentence sentence) {
@@ -46,14 +61,29 @@ public class SentenceLabel extends JLabel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        g.setColor(Utils.RED);
+        g.setColor(COLOR_NEGATIVE);
         g.fillRect(0, 0, this.getWidth(), negHeight);
         
-        g.setColor(Utils.GRAY);
+        g.setColor(COLOR_NEUTRAL);
         g.fillRect(0, negHeight,this.getWidth(), neuHeight);
         
-        g.setColor(Utils.GREEN);
+        g.setColor(COLOR_POSITVE);
         g.fillRect(0, negHeight + neuHeight,this.getWidth(), posHeight);
+    }
+    
+    public void highlight() {
+        COLOR_POSITVE  = HOVERED_COLOR_POSITIVE;
+        COLOR_NEUTRAL  = HOVERED_COLOR_NEUTRAL;
+        COLOR_NEGATIVE = HOVERED_COLOR_NEGATIVE;
+        this.parent.repaint();
+    }
+    
+    public void unhighlight() {
+        isHighlightedBySlider = false;
+        COLOR_POSITVE  = NORMAL_COLOR_POSTIVE;
+        COLOR_NEUTRAL  = NORMAL_COLOR_NEUTRAL;
+        COLOR_NEGATIVE = NORMAL_COLOR_NEGATIVE;
+        this.parent.repaint();
     }
     
     private void addListener() {
@@ -64,10 +94,14 @@ public class SentenceLabel extends JLabel {
                 System.out.println(clickedSentence.getSentenceString());
                 SentenceLabel.this.parent.parent.parent.getBottomPanel().onSentenceClick(clickedSentence);
             }
+            @Override public void mouseEntered(MouseEvent e) {
+                highlight();
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                if (!isHighlightedBySlider) unhighlight();
+            }
             @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }
-            @Override public void mouseEntered(MouseEvent e) { }
-            @Override public void mouseExited(MouseEvent e) { }
         });
     }
     

@@ -119,6 +119,7 @@ public class ChaptersPanel extends JScrollPane {
         
         boolean isSelected = false;
         JPanel snappedPannel;
+        JPanel lastSnappedPannel;
         Integer dx, dy;
         
         Point mouse = new Point(0, 0);
@@ -149,9 +150,21 @@ public class ChaptersPanel extends JScrollPane {
             if (isSelected) {
                 snappedPannel = null;
                 
+                // only need for un-highlighting
+                if (lastSnappedPannel != null) {
+                    JPanel sentencesPanel = (JPanel) lastSnappedPannel.getComponents()[1];
+                    Component[] sentenceCmps = sentencesPanel.getComponents();
+    
+                    for (int i=0; i<sentenceCmps.length; i++) {
+                        SentenceLabel slbl = (SentenceLabel) sentenceCmps[i];
+                        slbl.unhighlight();
+                    }
+                }
+                
                 for (JPanel p : parent.chapterPanels) {
                     if (p.getBounds().contains(mouse.getLocation())) {
                         snappedPannel = p;
+                        lastSnappedPannel = p;
                         break;
                     }
                 }

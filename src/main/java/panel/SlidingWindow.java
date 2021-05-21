@@ -44,16 +44,21 @@ public class SlidingWindow extends Rectangle {
         gr.fillRoundRect(x, y+height-5,  width+1, 5, 5, 5);
     }
     
+    // Also highlights/unhighlights hovered sentences
     public List<SentenceLabel> getHoveredSentences(JPanel mainSentencePanel) {
         JPanel sentencesPanel = (JPanel) mainSentencePanel.getComponents()[1];
         List<SentenceLabel> hovered = new ArrayList<>(20);
         Component[] sentenceCmps = sentencesPanel.getComponents();
         
         for (int i=0; i<sentenceCmps.length; i++) {
+            SentenceLabel slbl = (SentenceLabel) sentenceCmps[i];
             // true X position of sentenceLabel => mainSentencePanel.x + sentenceLabel.x
             if (this.getBounds().contains(sentenceCmps[i].getLocation().x + mainSentencePanel.getX(), mainSentencePanel.getY())) {
-                SentenceLabel slbl = (SentenceLabel) sentenceCmps[i];
+                slbl.isHighlightedBySlider = true;
+                slbl.highlight();
                 hovered.add(slbl);
+            } else {
+                slbl.unhighlight();
             }
         }
         
