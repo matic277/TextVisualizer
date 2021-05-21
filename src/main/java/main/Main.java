@@ -11,13 +11,15 @@ public class Main {
         // available fonts
 //        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 //        for ( int i = 0; i < fonts.length; i++ ) System.out.println(fonts[i]);
+    
+//        System.out.println(Double.parseDouble("−0.143"));
         
         FileReader reader = new FileReader("./texts/SherlockHolmes-AStudyInScarlet.txt");
         reader.readFile();
-        
+
         TextProcessor textProc = new TextProcessor(reader.getChaptersMap());
         textProc.processText();
-        
+
         SwingUtilities.invokeLater(() -> {
             new MainWindow(textProc.getProcessedChapters());
         });

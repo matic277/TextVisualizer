@@ -37,17 +37,14 @@ public abstract class AbsMeasurableWord extends AbsWord {
     @Override
     public boolean hasSentimentValue() { return true; }
     
-    public boolean isPositivePleasantness() {
-        return pleasantness > POSITIVE_THRESHOLD;
-    }
+    public boolean isPositivePleasantness() { return pleasantness > POSITIVE_THRESHOLD; }
+    public static boolean isPositivePleasantness(double pleasantness) { return pleasantness > POSITIVE_THRESHOLD; }
     
-    public boolean isNeutralPleasantness() {
-        return pleasantness >= NEUTRAL_THRESHOLD && pleasantness <= POSITIVE_THRESHOLD;
-    }
+    public boolean isNeutralPleasantness() { return pleasantness >= NEUTRAL_THRESHOLD && pleasantness <= POSITIVE_THRESHOLD; }
+    public static boolean isNeutralPleasantness(double pleasantness) { return pleasantness >= NEUTRAL_THRESHOLD && pleasantness <= POSITIVE_THRESHOLD; }
     
-    public boolean isNegativePleasantness() {
-        return pleasantness < NEUTRAL_THRESHOLD;
-    }
+    public boolean isNegativePleasantness() { return pleasantness < NEUTRAL_THRESHOLD; }
+    public static boolean isNegativePleasantness(double pleasantness) { return pleasantness < NEUTRAL_THRESHOLD; }
     
     public void magnifyPleasantness() {
         pleasantness *= magnitude;

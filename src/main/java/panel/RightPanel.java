@@ -238,19 +238,21 @@ public class RightPanel extends JScrollPane {
     
     // 1 can be clicked or an entire sentence
     public void onWordsClick(List<AbsWord> words) {
-        System.out.println();
-        System.out.println("selected words=> " + words.size() + " : "+ Arrays.toString(words.stream().map(AbsWord::getSourceText).toArray()));
-        
-        String[][] tableValues = new String[words.size()][tableHeader.length];
-        
-        System.out.println("StatsMap for " + words.get(0).getSourceText() + " ("+words.get(0).getClass().getSimpleName()+"):");
-        words.get(0).getStatsMap().forEach((k, v) -> {
-            System.out.println("  "+k+" -> "+v);
-        });
-        
+//        System.out.println();
+//        System.out.println("selected words=> " + words.size() + " : "+ Arrays.toString(words.stream().map(AbsWord::getSourceText).toArray()));
+//
+//
+//        System.out.println("StatsMap for " + words.get(0).getSourceText() + " ("+words.get(0).getClass().getSimpleName()+"):");
+//        words.get(0).getStatsMap().forEach((k, v) -> {
+//            System.out.println("  "+k+" -> "+v);
+//        });
+//
 //        System.out.println("table header: " + Arrays.deepToString(tableHeader));
         
+        
+        // init table content
         int i = 0;
+        String[][] tableValues = new String[words.size()][tableHeader.length];
         for (AbsWord word : words) {
             for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
                 int columnIndex = columnIndexMap.get(entry.getKey());
@@ -261,10 +263,13 @@ public class RightPanel extends JScrollPane {
             }
             i++;
         }
+        // create JTable
         JTable stats = new JTable(tableValues, tableHeader);
         stats.setFont(Utils.getFont(12));
         stats.getTableHeader().setFont(Utils.getBoldFont(13));
-        TableColumn col = stats.getColumnModel().getColumn(1);
+        
+        // custom column renderers
+        TableColumn col = stats.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
         col.setCellRenderer(new CustomRenderer());
         
         statsPanel.removeAll();
@@ -280,9 +285,26 @@ public class RightPanel extends JScrollPane {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
         {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            setForeground(Color.blue);
-            System.out.println(c.getClass().getSimpleName());
-            System.out.println(value + ", " + value.getClass().getSimpleName());
+//            setForeground(Color.blue);
+            
+//            System.out.println(c.getClass().getSimpleName());
+//            System.out.println(value + ", " + value.getClass().getSimpleName());
+            
+            if (value != null && value instanceof String s) {
+                String num = s;
+                // What a fucking mess
+                // MeasAbsWord.DecimalFormat formats negative words with strange "-"
+                // sign, that can't be reverse parsed from string (encoding problem) ???
+                double pleasantness = -99;
+                if (!NumberUtils.isNumber(s.charAt(0)+"")) {
+                    num = "-" + s.substring(1);
+                }
+                pleasantness = Double.parseDouble(num);
+                
+                setForeground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
+                        Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
+                            Color.DARK_GRAY : Utils.RED);
+            }
             
             return c;
         }
