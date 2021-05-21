@@ -22,7 +22,7 @@ public class SlidingWindow extends Rectangle {
     public SlidingWindow(TopPanel parent) {
         this.parent = parent;
         
-        this.setBounds(30, 100, 100, 70);
+        this.setBounds(30, 100, 100, 90);
     }
     
     public void paint(Graphics g) {
@@ -31,18 +31,15 @@ public class SlidingWindow extends Rectangle {
         
         // vertical lines, draw before antialiasing hints!
         gr.setStroke(stroke);
-        gr.drawRect(x+1, y-3, width-3, height+10);
+        gr.drawRect(x+1, y+2, width-2, height-4);
         
         gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
         // top
-        gr.fillRoundRect(x, y-8,  width, 10, 5, 5);
+        gr.fillRoundRect(x, y,  width+1, 11, 5, 5);
         // bottom
-        gr.fillRoundRect(x, y+height+5,  width, 5, 5, 5);
-        
-//        gr.setColor(Color.white);
-//        gr.drawString("[" + x + ", " + y + "]", x, y-4);
+        gr.fillRoundRect(x, y+height-5,  width, 5, 2, 2);
     }
     
     public List<SentenceLabel> getHoveredSentences(JPanel mainSentencePanel) {

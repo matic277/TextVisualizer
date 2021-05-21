@@ -165,7 +165,7 @@ public class TopBox extends JPanel {
                 
                 // is snapped to some chapter panel
                 if (snappedPannel != null) {
-                    slider.setLocation(mouse.x - dx, snappedPannel.getLocation().y);
+                    slider.setLocation(mouse.x - dx, snappedPannel.getLocation().y-10);
                     
                     List<SentenceLabel> sentences = slider.getHoveredSentences(snappedPannel);
                     parent.getBottomPanel().onSentenceHover(sentences);
