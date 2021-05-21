@@ -1,5 +1,6 @@
 package panel;
 
+import com.ibm.icu.text.UTF16;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -54,7 +56,11 @@ public class RightPanel extends JScrollPane {
             columnIndexMap.put(key, key.order);
         }
     }
-    private final DefaultTableModel tableModel = new DefaultTableModel(tableHeader, 0);
+    private final DefaultTableModel tableModel = new DefaultTableModel(tableHeader, 0) {
+        @Override public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
@@ -140,12 +146,20 @@ public class RightPanel extends JScrollPane {
         
         // create JTable
         table = new JTable(tableModel);
-        table.setFont(Utils.getFont(12));
-        table.getTableHeader().setFont(Utils.getBoldFont(13));
-    
+        table.setFont(Utils.getFont(13));
+        table.getTableHeader().setFont(Utils.getBoldFont(14));
+        table.setAutoCreateRowSorter(true);
+        
         // custom column renderers
         TableColumn col = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
         col.setCellRenderer(new CustomRenderer());
+        
+        // sorter
+        TableRowSorter<DefaultTableModel> tabSorter = new TableRowSorter<>(tableModel);
+        tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
+        tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.ACTIVATION), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
+        tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.IMAGERY), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
+        table.setRowSorter(tabSorter);
         
         statsPanel.add(new JScrollPane(table), BorderLayout.CENTER);
         
@@ -313,15 +327,7 @@ public class RightPanel extends JScrollPane {
 //            System.out.println(value + ", " + value.getClass().getSimpleName());
             
             if (value != null && value instanceof String s) {
-                String num = s;
-                // What a fucking mess
-                // MeasAbsWord.DecimalFormat formats negative words with strange "-"
-                // sign, that can't be reverse parsed from string (encoding problem) ???
-                double pleasantness = -99;
-                if (!NumberUtils.isNumber(s.charAt(0)+"")) {
-                    num = "-" + s.substring(1);
-                }
-                pleasantness = Double.parseDouble(num);
+                double pleasantness = parseStringToDouble(s);
                 
                 setForeground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
                         Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
@@ -333,5 +339,15 @@ public class RightPanel extends JScrollPane {
             
             return c;
         }
+    }
+    
+    // What a fucking mess
+    // MeasAbsWord.DecimalFormat formats negative words with strange "-"
+    // sign, that can't be reverse parsed from string (encoding problem) ???
+    public static double parseStringToDouble(String s) {
+        if (!NumberUtils.isNumber(s.charAt(0)+"")) {
+            s = "-" + s.substring(1);
+        }
+        return Double.parseDouble(s);
     }
 }

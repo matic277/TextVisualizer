@@ -22,7 +22,7 @@ public class SlidingWindow extends Rectangle {
     public SlidingWindow(TopPanel parent) {
         this.parent = parent;
         
-        this.setBounds(30, 100, 100, 90);
+        this.setBounds(30, 100, 120, 90);
     }
     
     public void paint(Graphics g) {
