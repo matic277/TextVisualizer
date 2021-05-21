@@ -9,17 +9,20 @@ public class Emoji extends AbsMeasurableWord {
     
     // when tokenizing
     public Emoji(String source, String processed) {
-        super(source, processed);
-        super.tag = "EMJ";
+        super(source, processed, "EMJ");
         
         EmojiDictionary emojiDictionary = (EmojiDictionary) DictionaryCollection.getDictionaryCollection().getEmojiDictionary();
         this.processedText = emojiDictionary.getEntry(source).getProcessedText().replace(" ", "-");
         this.pleasantness = emojiDictionary.getEntry(source).getPleasantness();
+        
+        // Update
+        this.statsMap.put(MapKey.PLEASANTNESS, this.pleasantness+"");
+        this.statsMap.put(MapKey.PROCESSED, this.processedText+"");
     }
     
     //when building hastable dictionary
     public Emoji(String codepoint, String description, String sentiment) {
-        super(codepoint, description);
+        super(codepoint, description, "EMJ");
         super.tag = "EMJ";
         super.pleasantness = Double.parseDouble(sentiment);
     }

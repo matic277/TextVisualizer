@@ -12,6 +12,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,35 +21,33 @@ public class LeftPanel extends JScrollPane {
     BottomPanel parent;
     
     JPanel mainPanel;
-    JPanel sentencetoStr;
+    JPanel titlePanel;
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
     public LeftPanel(BottomPanel parent) {
         this.parent = parent;
         this.chapters = parent.parent.getChapters();
-        this.setBackground(Color.CYAN);
-    
+        this.setOpaque(true);
+        this.setBackground(Utils.GRAY3);
+        
         this.getVerticalScrollBar().setUnitIncrement(16);
 //        this.getHorizontalScrollBar().setUnitIncrement(16);
         this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         this.setHorizontalScrollBar(null);
-    
-//        this.setLayout(new BorderLayout());
-//        this.setBackground(Utils.GRAY3);
-//
-//        JPanel titlePanel = new JPanel();
-//        titlePanel.setLayout(new BorderLayout());
-//        JLabel title = new JLabel(" Word and sentence statistics");
-//        title.setPreferredSize(new Dimension(300, 27));
-//        title.setOpaque(true);
-//        title.setBackground(Utils.GRAY);
-//        title.setFont(Utils.getFont(14));
-//        title.setPreferredSize(new Dimension(title.getPreferredSize().width, title.getPreferredSize().height+5));
-//        titlePanel.add(title, BorderLayout.CENTER);
+        
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout());
+        JLabel title = new JLabel(" Chapter sentences preview ");
+        title.setPreferredSize(new Dimension(300, 27));
+        title.setOpaque(true);
+        title.setBackground(Utils.GRAY);
+        title.setFont(Utils.getFont(14));
+        title.setPreferredSize(new Dimension(title.getPreferredSize().width, title.getPreferredSize().height+5));
+        titlePanel.add(title, BorderLayout.CENTER);
         
         mainPanel = new JPanel();
-        mainPanel.setBackground(Utils.GRAY2);
+        mainPanel.setBackground(Utils.GRAY3);
 //        mainPanel.setLayout(new WrapLayout(0, 0, WrapLayout.LEFT));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 //        mainPanel.setLayout(new GridLayout(15, 2, 0, 0));
@@ -64,6 +63,7 @@ public class LeftPanel extends JScrollPane {
 //                var x = new Object() {int x = 0;};
 //                System.out.println(self.mainPanel.getComponents().length);
                 Arrays.stream(self.mainPanel.getComponents()).forEach(c -> {
+                    if (!(c instanceof JPanel)) return;
 //                    if (x.x <= 0)
 //                    System.out.println("width=>" + c.getWidth()+" : " +((JPanel)c).getLayout().preferredLayoutSize((JPanel)c).width);
 
@@ -94,21 +94,12 @@ public class LeftPanel extends JScrollPane {
     }
     
     public void onSentenceClick(Sentence clickedSentence) {
-        // TODO
-//        sentencetoStr.removeAll();
-//        JLabel lbl = new JLabel("<html>"+clickedSentence.toString()
-//                .replaceAll("<", "&lt;")
-//                .replaceAll(">", "&gt;")
-//                .replaceAll("\\n", "<br>") +
-//                "</html>");
-//        sentencetoStr.add(lbl);
-//
-//        // needs to be called
-//        parent.updateUI();
+        // Do nothing ?
     }
     
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
         mainPanel.removeAll();
+        mainPanel.add(titlePanel); // TODO: readding everytime, fix later
         
         for (SentenceLabel hoveredSentence : hoveredSentences) {
 //            JPanel rowPanel = new JPanel();
@@ -116,12 +107,12 @@ public class LeftPanel extends JScrollPane {
             
             
             // Not used
-            JLabel sentNumLbl = new JLabel(""+hoveredSentence.getSentence().sentenceNumber, SwingConstants.CENTER);
-            sentNumLbl.setFont(Utils.getFont(12));
-            sentNumLbl.setBorder(new StrokeBorder(new BasicStroke(1)));
-            sentNumLbl.setOpaque(true);
-            sentNumLbl.setBackground(Utils.GRAY2);
-            sentNumLbl.setPreferredSize(new Dimension(30, 30));
+//            JLabel sentNumLbl = new JLabel(""+hoveredSentence.getSentence().sentenceNumber, SwingConstants.CENTER);
+//            sentNumLbl.setFont(Utils.getFont(12));
+//            sentNumLbl.setBorder(new StrokeBorder(new BasicStroke(1)));
+//            sentNumLbl.setOpaque(true);
+//            sentNumLbl.setBackground(Utils.GRAY2);
+//            sentNumLbl.setPreferredSize(new Dimension(30, 30));
             // Not used
             
             
@@ -130,38 +121,66 @@ public class LeftPanel extends JScrollPane {
             sentencePanel.setBackground(Utils.GRAY3);
             sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
             sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
-//            sentencePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
             sentencePanel.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    // TODO
+                @Override public void mouseClicked(MouseEvent e) {
+                    // all words are clicked
+                    LeftPanel.this.parent.rightPanel.onWordsClick(hoveredSentence.sentence.getWords());
+                    parent.rightPanel.onSentenceClick(hoveredSentence.sentence);
                 }
                 @Override public void mouseEntered(MouseEvent e) {
                     sentencePanel.setBackground(Color.white);
                     sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                    sentencePanel.repaint();
                 }
                 @Override public void mouseExited(MouseEvent e) {
-                    sentencePanel.setBackground(Utils.GRAY3);
                     sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                    sentencePanel.setBackground(Utils.GRAY3);
+                    sentencePanel.repaint();
                 }
                 @Override public void mousePressed(MouseEvent e) { }
                 @Override public void mouseReleased(MouseEvent e) { }
             });
             
-//            sentencePanel.add(sentNumLbl);
-            
             hoveredSentence.getSentence().getWords().forEach(w -> {
                 WordLabel lbl = new WordLabel(this, sentencePanel, w);
+                lbl.setRightPanel(this.parent.rightPanel);
+                lbl.setParentSentence(hoveredSentence.sentence);
+                lbl.setWordListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // only one word is clicked
+                        parent.rightPanel.onSentenceClick(hoveredSentence.sentence);
+                        parent.rightPanel.onWordsClick(Collections.singletonList(w));
+                    }
+                    @Override public void mouseEntered(MouseEvent e) {
+                        lbl.setBackground(lbl.HOVERED_COLOR);
+                        sentencePanel.setBackground(Color.white);
+                        sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                        sentencePanel.repaint();
+                    }
+                    @Override public void mouseExited(MouseEvent e) {
+                        lbl.setBackground(lbl.NORMAL_COLOR);
+                        sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                        sentencePanel.setBackground(Utils.GRAY3);
+                        sentencePanel.repaint();
+                    }
+                    @Override public void mousePressed(MouseEvent e) { }
+                    @Override public void mouseReleased(MouseEvent e) { }
+                });
                 sentencePanel.add(lbl);
             });
             
             // adding row with label on left, screws up in combination with WrapLayout
             // elements start vibrating as they reach their locations (probably a screw-up by WrapLayout)
             mainPanel.add(sentencePanel);
-//            mainPanel.add(sentNumLbl);
         }
         
+        // Re-do the layouts:
+        // Only needed if bottom panel is stretched far up then
+        // when slider gets moved, the sentencePanels get stretched
+        // to fill vertical space. This prevents that.
         Arrays.stream(this.mainPanel.getComponents()).forEach(c -> {
+            if (!(c instanceof JPanel)) return;
             // Crucial!
             //                     parentWidth - scrollBarWidth(arrox)  ,    preferredHeight of layout
             c.setPreferredSize(new Dimension(this.getSize().width-25, ((JPanel)c).getLayout().preferredLayoutSize((JPanel)c).height));

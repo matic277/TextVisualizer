@@ -3,6 +3,7 @@ package main;
 import window.MainWindow;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class Main {
     

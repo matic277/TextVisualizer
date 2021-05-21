@@ -8,18 +8,19 @@ public class Smiley extends AbsMeasurableWord {
     
     // when creating dictionary hashtable
     public Smiley(String source, String plesantness) {
-        super(source, null);
-        super.tag = "SML";
+        super(source, null, "SML");
         this.pleasantness = Double.parseDouble(plesantness);
     }
     
     // when tokenizing
     public Smiley(String source) {
-        super(source, null);
-        super.tag = "SML";
+        super(source, null, "SML");
         
         SmileyDictionary dictionary = (SmileyDictionary) DictionaryCollection.getDictionaryCollection().getSmileyDictionary();
         this.pleasantness = dictionary.getEntry(source).getPleasantness();
+        
+        // update
+        statsMap.put(MapKey.PLEASANTNESS, this.pleasantness+"");
     }
     
     public static boolean isType(String s) {

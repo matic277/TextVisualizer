@@ -3,24 +3,30 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import word.AbsMeasurableWord;
 import word.AbsWord;
 
 import javax.swing.*;
-import javax.swing.border.StrokeBorder;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RightPanel extends JScrollPane {
     
     BottomPanel parent;
     
+    Sentence selectedSentence; // contents of sentencePanel
+    
     JPanel mainPanel;
         // NORTH
         JPanel mainSentencePanel;
-                                  // NORTH is title
+                                  // NORTH is titlePanel
             JPanel sentencePanel; // CENTER
             JPanel buttonsPanel;  // SOUTH
                 JButton clearBtn;
@@ -28,7 +34,9 @@ public class RightPanel extends JScrollPane {
         
         // CENTER
         JPanel wordStatsPanel;
-            JPanel statsPanel;
+                                  // NORTH is titlePanel
+            JPanel statsPanel;    // CENTER
+                                  // SOUTH is empty
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
@@ -65,6 +73,24 @@ public class RightPanel extends JScrollPane {
         sentencePanel.add(new JLabel("content"));
         sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
         sentencePanel.setBackground(Utils.GRAY3);
+        sentencePanel.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {
+                // all words are clicked
+                onWordsClick(selectedSentence.getWords());
+            }
+            @Override public void mouseEntered(MouseEvent e) {
+                sentencePanel.setBackground(Color.white);
+                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                sentencePanel.repaint();
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                sentencePanel.setBackground(Utils.GRAY3);
+                sentencePanel.repaint();
+            }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+        });
         mainSentencePanel.add(sentencePanel, BorderLayout.CENTER);
         
         buttonsPanel = new JPanel();
@@ -87,7 +113,7 @@ public class RightPanel extends JScrollPane {
         JPanel titlePanel2 = new JPanel();
         titlePanel2.setLayout(new BorderLayout());
         
-        JLabel title2 = new JLabel(" Word and sentence statistics");
+        JLabel title2 = new JLabel(" Word statistics");
         title2.setPreferredSize(new Dimension(300, 27));
         title2.setOpaque(true);
         title2.setBackground(Utils.GRAY);
@@ -149,94 +175,90 @@ public class RightPanel extends JScrollPane {
 
     public void onSentenceClick(Sentence clickedSentence) {
         sentencePanel.removeAll();
-//        if (sentencePanel != null) mainPanel.remove(sentencePanel);
-        
-        
+        this.selectedSentence = clickedSentence;
         
         // SELECTED SENTENCE
-//        this.sentencePanel = new JPanel();
-//        sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
-//        sentencePanel.setBackground(Utils.GRAY3);
-
         for (AbsWord word : clickedSentence.getWords()) {
             WordLabel lbl = new WordLabel(this, sentencePanel, word);
+            lbl.setRightPanel(this);
+            lbl.setParentSentence(clickedSentence);
+            lbl.setWordListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // only one word is clicked
+                    parent.rightPanel.onWordsClick(Collections.singletonList(word));
+                }
+                @Override public void mouseEntered(MouseEvent e) {
+                    lbl.setBackground(lbl.HOVERED_COLOR);
+                    sentencePanel.setBackground(Color.white);
+                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                    sentencePanel.repaint();
+                }
+                @Override public void mouseExited(MouseEvent e) {
+                    lbl.setBackground(lbl.NORMAL_COLOR);
+                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                    sentencePanel.setBackground(Utils.GRAY3);
+                    sentencePanel.repaint();
+                }
+                @Override public void mousePressed(MouseEvent e) { }
+                @Override public void mouseReleased(MouseEvent e) { }
+            });
             sentencePanel.add(lbl);
-            // remove selectable background (because its also implemented in WordLbl)
-            // (because listener overlapping problem)
-            sentencePanel.removeMouseListener(lbl.containerParentlistener);
         }
-//        mainPanel.add(sentencePanel, BorderLayout.CENTER);
+        
+        // some resizing
         sentencePanel.setPreferredSize(new Dimension(this.getSize().width-20, sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height));
-        System.out.println("Pref.size=> " + sentencePanel.getSize());
+//        System.out.println("Pref.size=> " + sentencePanel.getSize());
         sentencePanel.setMaximumSize(sentencePanel.getPreferredSize());
         sentencePanel.setMinimumSize(sentencePanel.getPreferredSize());
         sentencePanel.revalidate();
         sentencePanel.doLayout();
         
-        
-        
-        // SENTENCE STATS
-        if (this.statsPanel != null) wordStatsPanel.remove(statsPanel);
-    
-        statsPanel = new JPanel();
-        statsPanel.setBackground(Utils.GRAY3);
-        JLabel stats = new JLabel("<html>"+clickedSentence.toString()
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll("\\n", "<br>") +
-                "</html>");
-        stats.setOpaque(false);
-        System.out.println(stats.getText());
-        statsPanel.add(stats);
-        wordStatsPanel.add(statsPanel, BorderLayout.CENTER);
-        
-        
         // need to call this otherwise this components doesn't get updated
         // immediately, but only after resize happens
         this.parent.updateUI();
-        
     }
-//
-//    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
-//        sentencesPanel.removeAll();
-//
-//        for (SentenceLabel slbl : hoveredSentences) {
-//            JPanel mainPanel = new JPanel();
-//            mainPanel.setLayout(new BorderLayout());
-////            sentenceMainPanel.setAlignmentX(LEFT_ALIGNMENT);
-//            mainPanel.setBackground(Color.white);
-//            mainPanel.setBackground(Utils.getRandomColor());
-//
-//            JLabel sentNumLbl = new JLabel(""+slbl.getSentence().sentenceNumber, SwingConstants.CENTER);
-//            sentNumLbl.setFont(Utils.getFont(12));
-////            sentNumLbl.setHorizontalTextPosition(SwingConstants.RIGHT);
-////            sentNumLbl.setVerticalTextPosition(SwingConstants.RIGHT);
-//            sentNumLbl.setBorder(new StrokeBorder(new BasicStroke(1)));
-//            sentNumLbl.setOpaque(true);
-//            sentNumLbl.setBackground(Utils.GRAY);
-//            sentNumLbl.setMinimumSize(new Dimension(30, 10));
-//            sentNumLbl.setPreferredSize(new Dimension(30, 10));
-//            mainPanel.add(sentNumLbl, BorderLayout.WEST);
-//
-//            JPanel sentencePanel = new JPanel();
-//            sentencePanel.setLayout(new WrapLayout());
-//            sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
-//            sentencePanel.setBackground(Color.white);
-////            sentencePanel.setBackground(Utils.getRandomColor());
-//
-//            for (AbsWord word : slbl.getSentence().getWords()) {
-//                WordLabel lbl = new WordLabel(this, word);
-//                sentencePanel.add(lbl);
-//            }
-//            mainPanel.add(sentencePanel, BorderLayout.CENTER);
-//
-////            sentencesPanel.setAlignmentX(LEFT_ALIGNMENT);
-//
-//            sentencesPanel.add(mainPanel);
-//        }
-//
-//        // need to call this otherwise this components doesn't get updated
-//        // immediately, but only after resize happens
-//        this.parent.updateUI();
-//    }
+    
+    // map: MapKey -> columnIndex (based off MapKey.order ordering)
+    private final Map<AbsMeasurableWord.MapKey, Integer> columnIndexMap = new HashMap<>(10);
+    private final String[] tableHeader = new String[AbsMeasurableWord.MapKey.values().length]; {
+        int i = 0;
+        for (AbsMeasurableWord.MapKey key : Arrays.stream(AbsMeasurableWord.MapKey.values())
+                                             .sorted(Comparator.comparingInt(e -> e.order)).collect(Collectors.toList())) {
+            tableHeader[i++] = key.printValue;
+            columnIndexMap.put(key, key.order);
+        }
+    }
+    
+    // 1 can be clicked or an entire sentence
+    public void onWordsClick(List<AbsWord> words) {
+        System.out.println();
+        System.out.println("selected words=> " + words.size() + " : "+ Arrays.toString(words.stream().map(AbsWord::getSourceText).toArray()));
+        
+        String[][] tableValues = new String[words.size()][tableHeader.length];
+        
+        System.out.println("StatsMap for " + words.get(0).getSourceText() + " ("+words.get(0).getClass().getSimpleName()+"):");
+        words.get(0).getStatsMap().forEach((k, v) -> {
+            System.out.println("  "+k+" -> "+v);
+        });
+    
+//        System.out.println("table header: " + Arrays.deepToString(tableHeader));
+        
+        int i = 0;
+        for (AbsWord word : words) {
+            for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
+                int columnIndex = columnIndexMap.get(entry.getKey());
+                tableValues[i][columnIndex] = entry.getValue();
+            }
+            i++;
+        }
+        JTable stats = new JTable(tableValues, tableHeader);
+        statsPanel.removeAll();
+        statsPanel.add(new JScrollPane(stats));
+        
+        statsPanel.revalidate();
+        statsPanel.updateUI();
+        statsPanel.repaint();
+    }
+    
 }

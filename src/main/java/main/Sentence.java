@@ -32,6 +32,8 @@ public class Sentence {
         this.sentenceNumber = sentenceNumber;
         processSentence();
         calculateSentiment();
+        
+        for (AbsWord w : words) w.updateKeyMap();
     }
     
     private void processSentence() {
@@ -166,7 +168,7 @@ public class Sentence {
         format.setDecimalFormatSymbols(symbols);
         
         StringBuilder sb = new StringBuilder("\t|\t|-> Sentence: ");
-        sb.append("\"").append(sentence).append("\"");
+//        sb.append("\"").append(sentence).append("\"");
         sb.append("\n");
         
         for (AbsWord w : words) {

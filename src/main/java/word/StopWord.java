@@ -2,15 +2,22 @@ package word;
 
 import dictionary.DictionaryCollection;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class StopWord extends AbsWord {
     
     public StopWord(String source, String processed) {
-        super(source, processed);
-        super.tag = "STP";
+        super(source, processed, "STP");
     }
     
     public static boolean isType(String s) {
         return DictionaryCollection.getDictionaryCollection().getStopwordDictionary().contains(s);
+    }
+    
+    @Override
+    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
+        return Collections.emptyMap();
     }
     
     @Override

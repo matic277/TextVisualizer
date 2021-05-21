@@ -5,8 +5,7 @@ public class Hashtag extends AbsMeasurableWord {
     String[] words;
 
     public Hashtag(String source, String processed) {
-        super(source, null);
-        super.tag = "HTG";
+        super(source, null, "HTG");
         sourceText = source;
 
         // removes # from hashtag:

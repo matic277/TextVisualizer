@@ -36,7 +36,7 @@ public class Utils {
     public static final Random RAND = new Random();
     
     public static Font getBoldFont(int size) {
-        return new Font("Tahoma", Font.BOLD, size);
+        return new Font("Roboto Mono SemiBold", Font.BOLD, size);
     }
     
     public static Font getFont(int size) { return new Font("Roboto Mono Medium", Font.PLAIN, size); }

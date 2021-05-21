@@ -1,12 +1,14 @@
 package word;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class URL extends AbsWord {
     
     String sourceText;
     
     public URL(String source) {
-        super(source, null);
-        super.tag = "URL";
+        super(source, null, "URL");
     }
     
     public static boolean isType(String s) {
@@ -20,6 +22,11 @@ public class URL extends AbsWord {
     @Override
     public double getSentimentValue() {
         throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
+    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
+        return Collections.emptyMap();
     }
     
     @Override

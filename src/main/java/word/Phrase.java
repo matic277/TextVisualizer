@@ -3,7 +3,7 @@ package word;
 public class Phrase extends AbsMeasurableWord {
     
     public Phrase(String source) {
-        super(source, null);
+        super(source, null, "PHR");
     }
 
     @Override

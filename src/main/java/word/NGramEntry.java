@@ -1,11 +1,14 @@
 package word;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class NGramEntry extends AbsWord {
     
     int seqNumber;
     
     public NGramEntry(String source, int sequenceNumber) {
-        super(source, null);
+        super(source, null, "NGM");
         this.seqNumber = sequenceNumber;
         this.tag = "NGM";
         // TODO Auto-generated constructor stub
@@ -24,6 +27,11 @@ public class NGramEntry extends AbsWord {
     @Override
     public double getSentimentValue() {
         throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
+    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
+        return Collections.emptyMap();
     }
     
     @Override

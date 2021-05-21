@@ -5,6 +5,7 @@ import dictionary.DictionaryCollection;
 import dictionary.IDictionary;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 public class Acronym extends AbsMeasurableWord {
     
@@ -17,20 +18,24 @@ public class Acronym extends AbsMeasurableWord {
     // String x is useless but something is needed to differentiate
     // between the two constructors - this is dumb, TODO: fix
     public Acronym(String acronymn, String fullText, String x) {
-        super(acronymn, null);
-        super.tag = "ACR";
+        super(acronymn, null, "ACR");
         
         this.fullText = fullText;
+        
+        this.statsMap.put(MapKey.TOKENS, Arrays.deepToString(listOfWords));
         
         // process the full-text pleasantness
         // with the use of Whissell dictionary
         calculatePleasantness();
+        
+        // TODO: should update imagery, activation aswel?
+        // update
+        this.statsMap.put(MapKey.PLEASANTNESS, this.pleasantness+"");
     }
     
     // use when tokenizing
     public Acronym(String source, String processed) {
-        super(source, processed);
-        super.tag = "ACR";
+        super(source, processed, "ACR");
         
         Acronym a = (Acronym) DictionaryCollection.getDictionaryCollection().getAcronymDictionary().getEntry(processed);
         this.fullText = a.getFullText();
@@ -38,6 +43,10 @@ public class Acronym extends AbsMeasurableWord {
         // process the full-text pleasantness
         // with the use of Whissell dictionary
         calculatePleasantness();
+    
+        // TODO: should update imagery, activation aswel?
+        // update
+        this.statsMap.put(MapKey.PLEASANTNESS, this.pleasantness+"");
     }
     
     public static boolean isType(String s) {

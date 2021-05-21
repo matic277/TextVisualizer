@@ -2,6 +2,7 @@ package word;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Map;
 
 public abstract class AbsMeasurableWord extends AbsWord {
     
@@ -17,8 +18,20 @@ public abstract class AbsMeasurableWord extends AbsWord {
     protected double activation = 0;    // (passive) - (active)
     protected double imagery = 0;       // (difficult to form a mental picture of this word) - (easy to form a mental picture)
     
-    public AbsMeasurableWord(String source, String processed) {
-        super(source, processed);
+    public AbsMeasurableWord(String source, String processed, String tag) {
+        super(source, processed, tag);
+        
+        updateKeyMap();
+    }
+    
+    public void updateKeyMap() {
+        statsMap.put(MapKey.PLEASANTNESS, this.pleasantness+"");
+        statsMap.put(MapKey.ACTIVATION, this.activation+"");
+        statsMap.put(MapKey.IMAGERY, this.imagery+"");
+        statsMap.put(MapKey.SOURCE, this.sourceText+"");
+        statsMap.put(MapKey.PROCESSED, this.processedText+"");
+        statsMap.put(MapKey.TOKENS, "-");
+        statsMap.put(MapKey.TAG, this.getTag());
     }
     
     @Override
@@ -81,6 +94,11 @@ public abstract class AbsMeasurableWord extends AbsWord {
     @Override
     public double getSentimentValue() {
         return this.pleasantness;
+    }
+    
+    @Override
+    public Map<MapKey, String> getStatsMap() {
+        return this.statsMap;
     }
     
     static final DecimalFormat format = new DecimalFormat("#.###");
