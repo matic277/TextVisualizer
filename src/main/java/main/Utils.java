@@ -23,7 +23,8 @@ public class Utils {
     public static final Dimension MENU_BUTTON_SIZE_WIDE = new Dimension(100, 40);
     public static final Dimension MENU_CHECKBOX_SIZE = new Dimension(125, 15);
     
-    public static final Dimension SENTENCE_SIZE = new Dimension(7, 50);
+    public static final Dimension SENTENCE_SIZE = new Dimension(5, 50);
+    public static final int INITIAL_SLIDER_WIDTH = 120;
     
     public static final Stroke PLAIN_STROKE = new BasicStroke(1);
     public static final Stroke BOLD_STROKE = new BasicStroke(1.7f);

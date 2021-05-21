@@ -2,6 +2,7 @@ package panel;
 
 import main.Pair;
 import main.Sentence;
+import main.Utils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -22,7 +23,7 @@ public class SlidingWindow extends Rectangle {
     public SlidingWindow(ChaptersPanel parent) {
         this.parent = parent;
         
-        this.setBounds(30, 100, 120, 90);
+        this.setBounds(30, 100, Utils.INITIAL_SLIDER_WIDTH, 90);
     }
     
     public void paint(Graphics g) {

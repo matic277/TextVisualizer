@@ -6,6 +6,7 @@ import main.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ public class TopPanel extends JPanel {
     MainPanel parent;
     
     JPanel controlPanel;
+        JSlider sentenceWidthSlider;
+        JSlider sliderWidthSlider;
+    
     ChaptersPanel chaptersPanel;
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
@@ -24,12 +28,72 @@ public class TopPanel extends JPanel {
         
         controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        controlPanel.add(new JLabel("CONTENT"));
+    
+//        sliderInfo = new JLabel("Change node radius");
+//        sliderInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        sliderInfo.setSize(new Dimension(30, 100));
+//        sliderInfo.setFont(Tools.getFont(12));
+//        drawingOptionsPnl.add(sliderInfo);
+        
+        initSentenceWindthSlider();
+        initSliderWidthSlider();
         
         chaptersPanel = new ChaptersPanel(this);
         
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.NORTH);
         this.add(chaptersPanel, BorderLayout.CENTER);
+    }
+    
+    private void initSliderWidthSlider() {
+        int sliderMin = 80, sliderMax = 200;
+        sliderWidthSlider = new JSlider(sliderMin, sliderMax, Utils.INITIAL_SLIDER_WIDTH);
+//        sentenceWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
+        //calibri
+        Font lblFont = new Font("Calibri", Font.BOLD, 12);
+        JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);
+        JLabel maxLbl = new JLabel(sliderMax+""); maxLbl.setFont(lblFont);
+        sliderMap.put(sliderMin, minLbl);
+        sliderMap.put(sliderMax, maxLbl);
+        sliderWidthSlider.setLabelTable(sliderMap);
+        sliderWidthSlider.setMajorTickSpacing(40);
+        sliderWidthSlider.setPaintTicks(true);
+        sliderWidthSlider.setPaintLabels(true);
+        sliderWidthSlider.setPreferredSize(new Dimension(100, 40));
+        sliderWidthSlider.setFont(Utils.getFont(12));
+        sliderWidthSlider.setEnabled(true);
+        sliderWidthSlider.addChangeListener(c -> onSliderWidthChange());
+        controlPanel.add(sliderWidthSlider);
+    }
+    
+    private void initSentenceWindthSlider() {
+        int sliderMin = 1, sliderMax = 16;
+        sentenceWidthSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.width);
+//        sentenceWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
+        Font lblFont = new Font("Calibri", Font.BOLD, 12);
+        JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);
+        JLabel maxLbl = new JLabel(sliderMax+""); maxLbl.setFont(lblFont);
+        sliderMap.put(sliderMin, minLbl);
+        sliderMap.put(sliderMax, maxLbl);
+        sentenceWidthSlider.setLabelTable(sliderMap);
+        sentenceWidthSlider.setMajorTickSpacing(5);
+        sentenceWidthSlider.setPaintTicks(true);
+        sentenceWidthSlider.setPaintLabels(true);
+        sentenceWidthSlider.setPreferredSize(new Dimension(100, 40));
+        sentenceWidthSlider.setFont(Utils.getFont(12));
+        sentenceWidthSlider.setEnabled(true);
+        sentenceWidthSlider.addChangeListener(c -> onSentenceWidthChange());
+        controlPanel.add(sentenceWidthSlider);
+    }
+    
+    private void onSliderWidthChange() {
+        chaptersPanel.onSliderWidthChange(sliderWidthSlider.getValue());
+    }
+    
+    private void onSentenceWidthChange() {
+        int newWidth = sentenceWidthSlider.getValue();
+        chaptersPanel.onSentenceWidthChange(newWidth);
     }
 }

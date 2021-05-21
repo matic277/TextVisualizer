@@ -21,6 +21,7 @@ public class ChaptersPanel extends JScrollPane {
     TopPanel parent;
     
     JPanel mainPanel;
+    List<JPanel> chapterPanels = new ArrayList<>(20);
     
     SlidingWindow slider;
     SlidingWindowListener listener;
@@ -40,7 +41,8 @@ public class ChaptersPanel extends JScrollPane {
             }
         };
         mainPanel.setBackground(Utils.GRAY3);
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+//        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new WrapLayout(WrapLayout.CENTER));
         
         init(); // should be called before instantiating slider listener!
         
@@ -85,16 +87,32 @@ public class ChaptersPanel extends JScrollPane {
             
             v.forEach(s -> {
                 SentenceLabel lbl = new SentenceLabel(this, s);
-                lbl.setPreferredSize(Utils.SENTENCE_SIZE);
-                lbl.setOpaque(true);
                 lbl.init();
                 sentencesPanel.add(lbl);
             });
             
             chapterPanel.setMaximumSize(chapterPanel.getPreferredSize());
+            chapterPanels.add(chapterPanel);
             mainPanel.add(chapterPanel);
             mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         });
+    }
+    
+    public void onSentenceWidthChange(int newWidth) {
+        chapterPanels.forEach(chapterPanel -> {
+            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
+            for (Component sentenceCmp : sentencesPanel.getComponents()) {
+                JLabel sentence = (JLabel) sentenceCmp;
+                sentence.setPreferredSize(new Dimension(newWidth, sentence.getHeight()));
+                sentence.setMinimumSize(new Dimension(newWidth, sentence.getHeight()));
+            }
+            sentencesPanel.revalidate();
+        });
+    }
+    
+    public void onSliderWidthChange(int newWidth) {
+        slider.setSize(newWidth, slider.height);
+        this.repaint();
     }
     
     class SlidingWindowListener implements MouseMotionListener, MouseListener {
@@ -105,13 +123,6 @@ public class ChaptersPanel extends JScrollPane {
         
         Point mouse = new Point(0, 0);
         ChaptersPanel parent = ChaptersPanel.this;
-        
-        List<JPanel> chapterPanels = new ArrayList<>(20); {
-            chapterPanels.addAll(Arrays.stream(parent.mainPanel.getComponents())
-                    .filter(c -> (c instanceof JPanel))
-                    .map(c -> (JPanel) c)
-                    .collect(Collectors.toList()));
-        }
         
         @Override public void mouseClicked(MouseEvent e) {
             mouse.setLocation(e.getPoint());
@@ -138,7 +149,7 @@ public class ChaptersPanel extends JScrollPane {
             if (isSelected) {
                 snappedPannel = null;
                 
-                for (JPanel p : this.chapterPanels) {
+                for (JPanel p : parent.chapterPanels) {
                     if (p.getBounds().contains(mouse.getLocation())) {
                         snappedPannel = p;
                         break;

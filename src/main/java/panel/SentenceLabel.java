@@ -19,6 +19,9 @@ public class SentenceLabel extends JLabel {
         super();
         this.sentence = sentence;
         this.parent = parent;
+    
+        this.setOpaque(true);
+        this.setPreferredSize(Utils.SENTENCE_SIZE);
         
 //        this.setBackground(new Color(150, 0, 0, 0));
         
@@ -28,7 +31,7 @@ public class SentenceLabel extends JLabel {
     public void init() {
         double totalWords = sentence.getWords().size();
         double totalHeight = Utils.SENTENCE_SIZE.getHeight();
-    
+        
         double posPerc = sentence.numOfPositiveWords / totalWords;
         double neuPerc = sentence.numOfNeutralWords  / totalWords;
     
