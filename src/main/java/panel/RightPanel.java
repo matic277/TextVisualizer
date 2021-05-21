@@ -9,10 +9,7 @@ import word.AbsWord;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
-import javax.swing.text.TableView;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -31,10 +28,11 @@ public class RightPanel extends JScrollPane {
     JPanel mainPanel;
         // NORTH
         JPanel mainSentencePanel;
-                                  // NORTH is titlePanel
-            JPanel sentencePanel; // CENTER
-            JPanel buttonsPanel;  // SOUTH
-                JButton clearBtn;
+                                   // NORTH is titlePanel
+            JPanel sentencesPanel; // CENTER - contains sentencePanel for every sentence
+            JPanel buttonsPanel;   // SOUTH
+                JButton clearSentencesBtn;
+                JButton clearTableBtn;
                 JButton addAllBtn;
         
         // CENTER
@@ -74,38 +72,19 @@ public class RightPanel extends JScrollPane {
         mainSentencePanel.setLayout(new BorderLayout());
         mainSentencePanel.add(titlePanel, BorderLayout.NORTH);
         
-        sentencePanel = new JPanel();
-        sentencePanel.add(new JLabel("content"));
-        sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
-        sentencePanel.setBackground(Utils.GRAY3);
-        sentencePanel.addMouseListener(new MouseListener() {
-            @Override public void mouseClicked(MouseEvent e) {
-                // all words are clicked
-                onWordsClick(selectedSentence.getWords());
-            }
-            @Override public void mouseEntered(MouseEvent e) {
-                sentencePanel.setBackground(Color.white);
-                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                sentencePanel.repaint();
-            }
-            @Override public void mouseExited(MouseEvent e) {
-                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                sentencePanel.setBackground(Utils.GRAY3);
-                sentencePanel.repaint();
-            }
-            @Override public void mousePressed(MouseEvent e) { }
-            @Override public void mouseReleased(MouseEvent e) { }
-        });
-        mainSentencePanel.add(sentencePanel, BorderLayout.CENTER);
+        sentencesPanel = new JPanel();
+        sentencesPanel.setLayout(new BoxLayout(sentencesPanel, BoxLayout.Y_AXIS));
+        sentencesPanel.setBackground(Utils.GRAY3);
+        mainSentencePanel.add(sentencesPanel, BorderLayout.CENTER);
         
         buttonsPanel = new JPanel();
         buttonsPanel.setBackground(Utils.GRAY3);
         buttonsPanel.setLayout(new WrapLayout(WrapLayout.RIGHT, 10, 4));
 //        buttonsPanel.setBorder(new StrokeBorder(new BasicStroke(1)));
         
-        clearBtn = new JButton("Clear");
+        clearSentencesBtn = new JButton("Clear");
         addAllBtn = new JButton("Add all");
-        buttonsPanel.add(clearBtn);
+        buttonsPanel.add(clearSentencesBtn);
         buttonsPanel.add(addAllBtn);
         
         mainSentencePanel.add(buttonsPanel, BorderLayout.SOUTH);
@@ -154,17 +133,17 @@ public class RightPanel extends JScrollPane {
                 
                 System.out.println(self.getSize());
                 
-                if (sentencePanel == null) return;
+                if (sentencesPanel == null) return;
                 
-                System.out.println("Pref.height=> " + sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height);
+                System.out.println("Pref.height=> " + sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height);
                 
-                sentencePanel.setPreferredSize(new Dimension(self.getSize().width-20, sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height));
+                sentencesPanel.setPreferredSize(new Dimension(self.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height));
 //                sentencePanel.setPreferredSize(new Dimension(self.getSize().width, sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height));
-                System.out.println("Pref.size=> " + sentencePanel.getSize());
-                sentencePanel.setMaximumSize(sentencePanel.getPreferredSize());
-                sentencePanel.setMinimumSize(sentencePanel.getPreferredSize());
-                sentencePanel.revalidate();
-                sentencePanel.doLayout();
+                System.out.println("Pref.size=> " + sentencesPanel.getSize());
+                sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
+                sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
+                sentencesPanel.revalidate();
+                sentencesPanel.doLayout();
                 mainSentencePanel.revalidate();
                 mainSentencePanel.doLayout();
             }
@@ -180,12 +159,35 @@ public class RightPanel extends JScrollPane {
     }
 
     public void onSentenceClick(Sentence clickedSentence) {
-        sentencePanel.removeAll();
-        this.selectedSentence = clickedSentence;
+//        sentencesPanel.removeAll();
+//        this.selectedSentence = clickedSentence;
+        
+        JPanel sentencePanel = new JPanel();
+        sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
+        sentencePanel.setBackground(Utils.GRAY3);
+        sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+        sentencePanel.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {
+                // all words are clicked
+                onWordsClick(clickedSentence.getWords());
+            }
+            @Override public void mouseEntered(MouseEvent e) {
+                sentencePanel.setBackground(Color.white);
+                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                sentencePanel.repaint();
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                sentencePanel.setBackground(Utils.GRAY3);
+                sentencePanel.repaint();
+            }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+        });
         
         // SELECTED SENTENCE
         for (AbsWord word : clickedSentence.getWords()) {
-            WordLabel lbl = new WordLabel(this, sentencePanel, word);
+            WordLabel lbl = new WordLabel(this, sentencesPanel, word);
             lbl.setRightPanel(this);
             lbl.setParentSentence(clickedSentence);
             lbl.setWordListener(new MouseListener() {
@@ -196,29 +198,31 @@ public class RightPanel extends JScrollPane {
                 }
                 @Override public void mouseEntered(MouseEvent e) {
                     lbl.setBackground(lbl.HOVERED_COLOR);
-                    sentencePanel.setBackground(Color.white);
-                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                    sentencePanel.repaint();
+                    sentencesPanel.setBackground(Color.white);
+                    sentencesPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                    sentencesPanel.repaint();
                 }
                 @Override public void mouseExited(MouseEvent e) {
                     lbl.setBackground(lbl.NORMAL_COLOR);
-                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                    sentencePanel.setBackground(Utils.GRAY3);
-                    sentencePanel.repaint();
+                    sentencesPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                    sentencesPanel.setBackground(Utils.GRAY3);
+                    sentencesPanel.repaint();
                 }
                 @Override public void mousePressed(MouseEvent e) { }
                 @Override public void mouseReleased(MouseEvent e) { }
             });
             sentencePanel.add(lbl);
         }
+        sentencesPanel.add(sentencePanel);
         
         // some resizing
-        sentencePanel.setPreferredSize(new Dimension(this.getSize().width-20, sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height));
+        // -20 for scrollbar, +1 so border is visible (or else it just barely gets cut-off on last sentence for some reason)
+        sentencesPanel.setPreferredSize(new Dimension(this.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height+1));
 //        System.out.println("Pref.size=> " + sentencePanel.getSize());
-        sentencePanel.setMaximumSize(sentencePanel.getPreferredSize());
-        sentencePanel.setMinimumSize(sentencePanel.getPreferredSize());
-        sentencePanel.revalidate();
-        sentencePanel.doLayout();
+        sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
+        sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
+        sentencesPanel.revalidate();
+        sentencesPanel.doLayout();
         
         // need to call this otherwise this components doesn't get updated
         // immediately, but only after resize happens
@@ -246,7 +250,6 @@ public class RightPanel extends JScrollPane {
 //        words.get(0).getStatsMap().forEach((k, v) -> {
 //            System.out.println("  "+k+" -> "+v);
 //        });
-//
 //        System.out.println("table header: " + Arrays.deepToString(tableHeader));
         
         
@@ -259,7 +262,6 @@ public class RightPanel extends JScrollPane {
 //                System.out.println(entry.getValue() + " -> "+NumberUtils.isNumber(entry.getValue()));
                 tableValues[i][columnIndex] =  NumberUtils.isNumber(entry.getValue()) ?
                         AbsMeasurableWord.format.format(Double.parseDouble(entry.getValue())) : entry.getValue();
-               
             }
             i++;
         }
