@@ -161,15 +161,14 @@ public class RightPanel extends JScrollPane {
             RightPanel self = RightPanel.this;
             @Override public void componentResized(ComponentEvent e) {
                 
-                System.out.println(self.getSize());
+//                System.out.println(self.getSize());
                 
                 if (sentencesPanel == null) return;
                 
-                System.out.println("Pref.height=> " + sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height);
-                
+//                System.out.println("Pref.height=> " + sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height);
                 sentencesPanel.setPreferredSize(new Dimension(self.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height));
 //                sentencePanel.setPreferredSize(new Dimension(self.getSize().width, sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height));
-                System.out.println("Pref.size=> " + sentencesPanel.getSize());
+//                System.out.println("Pref.size=> " + sentencesPanel.getSize());
                 sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
                 sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
                 sentencesPanel.revalidate();
@@ -204,11 +203,6 @@ public class RightPanel extends JScrollPane {
         sentencesPanel.repaint();
     }
     
-    
-    public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
-    
-    }
-
     public void onSentenceClick(Sentence clickedSentence) {
 //        sentencesPanel.removeAll();
 //        this.selectedSentence = clickedSentence;
@@ -250,15 +244,15 @@ public class RightPanel extends JScrollPane {
                 }
                 @Override public void mouseEntered(MouseEvent e) {
                     lbl.setBackground(lbl.HOVERED_COLOR);
-                    sentencesPanel.setBackground(Color.white);
-                    sentencesPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                    sentencesPanel.repaint();
+                    sentencePanel.setBackground(Color.white);
+                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                    sentencePanel.repaint();
                 }
                 @Override public void mouseExited(MouseEvent e) {
                     lbl.setBackground(lbl.NORMAL_COLOR);
-                    sentencesPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                    sentencesPanel.setBackground(Utils.GRAY3);
-                    sentencesPanel.repaint();
+                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                    sentencePanel.setBackground(Utils.GRAY3);
+                    sentencePanel.repaint();
                 }
                 @Override public void mousePressed(MouseEvent e) { }
                 @Override public void mouseReleased(MouseEvent e) { }
@@ -282,31 +276,8 @@ public class RightPanel extends JScrollPane {
     }
     
     // 1 can be clicked or an entire sentence
+    
     public void onWordsClick(List<AbsWord> words) {
-//        System.out.println();
-//        System.out.println("selected words=> " + words.size() + " : "+ Arrays.toString(words.stream().map(AbsWord::getSourceText).toArray()));
-//
-//
-//        System.out.println("StatsMap for " + words.get(0).getSourceText() + " ("+words.get(0).getClass().getSimpleName()+"):");
-//        words.get(0).getStatsMap().forEach((k, v) -> {
-//            System.out.println("  "+k+" -> "+v);
-//        });
-//        System.out.println("table header: " + Arrays.deepToString(tableHeader));
-        
-        
-        // Append to table
-//        int i = 0;
-//        String[][] tableValues = new String[words.size()][tableHeader.length];
-//        for (AbsWord word : words) {
-//            for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
-//                int columnIndex = columnIndexMap.get(entry.getKey());
-////                System.out.println(entry.getValue() + " -> "+NumberUtils.isNumber(entry.getValue()));
-//                tableValues[i][columnIndex] =  NumberUtils.isNumber(entry.getValue()) ?
-//                        AbsMeasurableWord.format.format(Double.parseDouble(entry.getValue())) : entry.getValue();
-//            }
-//            tableModel.addRow(tableValues[i]);
-//            i++;
-//        }
         appendWordsToTable(words);
         
         statsPanel.revalidate();
@@ -327,6 +298,8 @@ public class RightPanel extends JScrollPane {
             i++;
         }
     }
+    
+    public void onSentenceHover(List<SentenceLabel> hoveredSentences) { }
     
     class CustomRenderer extends DefaultTableCellRenderer
     {
