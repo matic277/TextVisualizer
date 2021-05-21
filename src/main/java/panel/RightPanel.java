@@ -53,15 +53,6 @@ public class RightPanel extends JScrollPane {
 //        mainPanel.setLayout(new WrapLayout(0, 0, WrapLayout.LEFT));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         
-//        mainPanel.setPreferredSize(new Dimension(500, 500));
-//        mainPanel.setLayout();
-//
-//        sentencetoStr = new JPanel();
-//        sentencetoStr.setBackground(Utils.GRAY3);
-//
-//        mainPanel.add(titlePanel, BorderLayout.NORTH);
-//        mainPanel.add(sentencetoStr, BorderLayout.CENTER);
-//        mainPanel.setMinimumSize(new Dimension(50,50));
         this.setViewportView(mainPanel);
         
         
@@ -94,12 +85,6 @@ public class RightPanel extends JScrollPane {
                     
 //                    x.x++;
                 });
-//                self.mainPanel.revalidate();
-//                self.mainPanel.updateUI();
-//                self.mainPanel.repaint();
-//                self.revalidate();
-//                self.mainPanel.updateUI();
-//                self.mainPanel.repaint();
             }
             @Override public void componentMoved(ComponentEvent e) { }
             @Override public void componentShown(ComponentEvent e) { }
@@ -169,15 +154,20 @@ public class RightPanel extends JScrollPane {
                 sentencePanel.add(lbl);
             });
             
-//            rowPanel.add(sentNumLbl, BorderLayout.WEST);
-//            rowPanel.add(sentencePanel, BorderLayout.CENTER);
-            
-//            sentencePanel.setMaximumSize(sentencePanel.getPreferredSize());
-            
             // adding row with label on left, screws up in combination with WrapLayout
             // elements start vibrating as they reach their locations (probably a screw-up by WrapLayout)
             mainPanel.add(sentencePanel);
         }
+    
+        Arrays.stream(this.mainPanel.getComponents()).forEach(c -> {
+            // Crucial!
+            //                     parentWidth - scrollBarWidth(arrox)  ,    preferredHeight of layout
+            c.setPreferredSize(new Dimension(this.getSize().width-20, ((JPanel)c).getLayout().preferredLayoutSize((JPanel)c).height));
+            c.setMaximumSize(c.getPreferredSize());
+            c.setMinimumSize(c.getPreferredSize());
+            c.revalidate();
+            c.doLayout();
+        });
     
         this.parent.updateUI();
     }
