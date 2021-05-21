@@ -25,11 +25,6 @@ public class URL extends AbsWord {
     }
     
     @Override
-    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
-        return Collections.emptyMap();
-    }
-    
-    @Override
     public boolean checkIntegrity() {
         return true;
     }

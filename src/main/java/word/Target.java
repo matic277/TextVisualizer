@@ -16,11 +16,6 @@ public class Target extends AbsWord {
     }
     
     @Override
-    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
-        return Collections.emptyMap();
-    }
-    
-    @Override
     public double getSentimentValue() {
         throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
     }

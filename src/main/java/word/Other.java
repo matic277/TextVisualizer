@@ -13,11 +13,6 @@ public class Other extends AbsWord {
     public double getSentimentValue() {
         throw new RuntimeException("Unsupported getSentiment for class " + this.getClass().getSimpleName());
     }
-    
-    @Override
-    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
-        return Collections.emptyMap();
-    }
 
     @Override
     public boolean checkIntegrity() {

@@ -22,11 +22,6 @@ public class NegationWord extends AbsWord {
     }
     
     @Override
-    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
-        return Collections.emptyMap();
-    }
-    
-    @Override
     public boolean checkIntegrity() {
         if (sourceText.length() < 2 || sourceText.length() > 10) return false;
         return true;

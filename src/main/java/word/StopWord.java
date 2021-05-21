@@ -9,15 +9,12 @@ public class StopWord extends AbsWord {
     
     public StopWord(String source, String processed) {
         super(source, processed, "STP");
+        
+        updateKeyMap();
     }
     
     public static boolean isType(String s) {
         return DictionaryCollection.getDictionaryCollection().getStopwordDictionary().contains(s);
-    }
-    
-    @Override
-    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
-        return Collections.emptyMap();
     }
     
     @Override

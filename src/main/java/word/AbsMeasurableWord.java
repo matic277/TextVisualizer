@@ -101,13 +101,14 @@ public abstract class AbsMeasurableWord extends AbsWord {
         return this.statsMap;
     }
     
-    static final DecimalFormat format = new DecimalFormat("#.###");
-    static final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+    public static final DecimalFormat format = new DecimalFormat("#.###"); {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        format.setDecimalFormatSymbols(symbols);
+    }
     
     @Override
     public String toString() {
-        symbols.setDecimalSeparator('.');
-        format.setDecimalFormatSymbols(symbols);
         return "[" + getTag() + ", " + getSentimentTag() +
                 ", src:'" + sourceText +
                 "', prc:'" + processedText +

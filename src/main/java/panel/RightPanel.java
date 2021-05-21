@@ -3,11 +3,16 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import org.apache.commons.lang3.math.NumberUtils;
 import word.AbsMeasurableWord;
 import word.AbsWord;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.text.TableView;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -127,6 +132,7 @@ public class RightPanel extends JScrollPane {
         
         statsPanel = new JPanel();
         statsPanel.setBackground(Utils.GRAY3);
+        statsPanel.setLayout(new BorderLayout());
         statsPanel.add(new JLabel("CONTENT"));
         wordStatsPanel.add(statsPanel, BorderLayout.CENTER);
         
@@ -241,24 +247,44 @@ public class RightPanel extends JScrollPane {
         words.get(0).getStatsMap().forEach((k, v) -> {
             System.out.println("  "+k+" -> "+v);
         });
-    
+        
 //        System.out.println("table header: " + Arrays.deepToString(tableHeader));
         
         int i = 0;
         for (AbsWord word : words) {
             for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
                 int columnIndex = columnIndexMap.get(entry.getKey());
-                tableValues[i][columnIndex] = entry.getValue();
+//                System.out.println(entry.getValue() + " -> "+NumberUtils.isNumber(entry.getValue()));
+                tableValues[i][columnIndex] =  NumberUtils.isNumber(entry.getValue()) ?
+                        AbsMeasurableWord.format.format(Double.parseDouble(entry.getValue())) : entry.getValue();
+               
             }
             i++;
         }
         JTable stats = new JTable(tableValues, tableHeader);
+        stats.setFont(Utils.getFont(12));
+        stats.getTableHeader().setFont(Utils.getBoldFont(13));
+        TableColumn col = stats.getColumnModel().getColumn(1);
+        col.setCellRenderer(new CustomRenderer());
+        
         statsPanel.removeAll();
-        statsPanel.add(new JScrollPane(stats));
+        statsPanel.add(new JScrollPane(stats), BorderLayout.CENTER);
         
         statsPanel.revalidate();
         statsPanel.updateUI();
         statsPanel.repaint();
     }
     
+    class CustomRenderer extends DefaultTableCellRenderer
+    {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+        {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            setForeground(Color.blue);
+            System.out.println(c.getClass().getSimpleName());
+            System.out.println(value + ", " + value.getClass().getSimpleName());
+            
+            return c;
+        }
+    }
 }

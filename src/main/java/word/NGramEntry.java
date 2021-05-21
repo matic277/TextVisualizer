@@ -30,11 +30,6 @@ public class NGramEntry extends AbsWord {
     }
     
     @Override
-    public Map<AbsMeasurableWord.MapKey, String> getStatsMap() {
-        return Collections.emptyMap();
-    }
-    
-    @Override
     public String toString() {
         return "["+getTag()+" '"+sourceText+"' seqNum:'" + seqNumber + "']";
     }
