@@ -31,15 +31,16 @@ public class SlidingWindow extends Rectangle {
         
         // vertical lines, draw before antialiasing hints!
         gr.setStroke(stroke);
-        gr.drawRect(x+1, y+2, width-2, height-4);
+        gr.drawRect(x+1, y+2, width-2, height-6);
         
+        gr.setColor(Color.black);
         gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
         // top
-        gr.fillRoundRect(x, y,  width+1, 11, 5, 5);
+        gr.fillRoundRect(x, y, width+1, 11, 5, 5);
         // bottom
-        gr.fillRoundRect(x, y+height-5,  width, 5, 2, 2);
+        gr.fillRoundRect(x, y+height-5,  width+1, 5, 5, 5);
     }
     
     public List<SentenceLabel> getHoveredSentences(JPanel mainSentencePanel) {

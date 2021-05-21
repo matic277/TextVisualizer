@@ -303,6 +303,7 @@ public class RightPanel extends JScrollPane {
     
     class CustomRenderer extends DefaultTableCellRenderer
     {
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
         {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -325,6 +326,9 @@ public class RightPanel extends JScrollPane {
                 setForeground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
                         Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
                             Color.DARK_GRAY : Utils.RED);
+//                setBackground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
+//                        Utils.BACKGROUND_GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
+//                        Utils.LIGHT_GRAY : Utils.BACKGROUND_RED);
             }
             
             return c;
