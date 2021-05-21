@@ -7,10 +7,10 @@ import java.awt.event.MouseListener;
 
 public class LabelListener implements MouseListener {
     
-    TextBox textBox;
+    TextBoxBroken textBoxBroken;
     
-    public LabelListener(TextBox parent) {
-        this.textBox = parent;
+    public LabelListener(TextBoxBroken parent) {
+        this.textBoxBroken = parent;
     }
     
     @Override

@@ -18,6 +18,9 @@ public class WordLabel extends JLabel {
     JComponent parent;
     JPanel containerParent;
     
+    public MouseListener containerParentlistener;
+    MouseListener wordListener;
+    
     private final Color NORMAL_COLOR;
     private Color HOVERED_COLOR;
     
@@ -55,28 +58,41 @@ public class WordLabel extends JLabel {
         
         this.setBackground(NORMAL_COLOR);
         
-        this.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // TODO
-            }
-            
+        this.containerParentlistener = new MouseListener() {
             @Override public void mouseEntered(MouseEvent e) {
-                WordLabel.this.setBackground(WordLabel.this.HOVERED_COLOR);
                 WordLabel.this.containerParent.setBackground(Color.white);
                 WordLabel.this.containerParent.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
                 WordLabel.this.parent.repaint();
             }
-            
+    
             @Override public void mouseExited(MouseEvent e) {
-                WordLabel.this.setBackground(WordLabel.this.NORMAL_COLOR);
                 WordLabel.this.containerParent.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
                 WordLabel.this.containerParent.setBackground(Utils.GRAY3);
                 WordLabel.this.parent.repaint();
             }
-            
+            @Override public void mouseClicked(MouseEvent e) { }
             @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }
-        });
+        };
+        
+        this.wordListener = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // TODO
+            }
+    
+            @Override public void mouseEntered(MouseEvent e) {
+                WordLabel.this.setBackground(WordLabel.this.HOVERED_COLOR);
+            }
+    
+            @Override public void mouseExited(MouseEvent e) {
+                WordLabel.this.setBackground(WordLabel.this.NORMAL_COLOR);
+            }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+        };
+        
+        this.addMouseListener(wordListener);
+        this.containerParent.addMouseListener(containerParentlistener);
     }
 }

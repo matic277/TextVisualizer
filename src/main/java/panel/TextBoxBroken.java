@@ -2,28 +2,22 @@ package panel;
 
 import main.Sentence;
 import main.Utils;
-import word.AbsMeasurableWord;
 import word.AbsWord;
 
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
-public class TextBox extends JPanel {
+public class TextBoxBroken extends JPanel {
     
     List<WordLabel> words = new LinkedList<>();
-    LeftPanel parent;
+    LeftPanelBroken parent;
     
     JPanel sentencesPanel;
     
-    public TextBox() {
+    public TextBoxBroken() {
         this.setLayout(new WrapLayout());
         this.setBackground(Utils.GRAY3);
         
@@ -166,8 +160,8 @@ public class TextBox extends JPanel {
     }
     
     
-    public void setParent(LeftPanel leftPanel) {
-        this.parent = leftPanel;
+    public void setParent(LeftPanelBroken leftPanelBroken) {
+        this.parent = leftPanelBroken;
         System.out.println(this.getParent().getName());
     }
     

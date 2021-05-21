@@ -2,33 +2,24 @@ package panel;
 
 import main.Sentence;
 import main.Utils;
-import window.MainWindow;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.util.Arrays;
 import java.util.List;
 
 public class BottomPanel extends JSplitPane {
     
     MainPanel parent;
     
-    LeftPanel leftPanel;
     RightPanel rightPanel;
-    
-    TextBox box;
+    LeftPanel leftPanel;
     
     
     public BottomPanel(MainPanel parent) {
         super(HORIZONTAL_SPLIT, null, null);
         this.parent = parent;
-        
-        box = new TextBox();
-        
-        leftPanel = new LeftPanel(this, box);
+    
         rightPanel = new RightPanel(this);
+        leftPanel = new LeftPanel(this);
         
         this.setLeftComponent(leftPanel);
         this.setRightComponent(rightPanel);
@@ -63,13 +54,13 @@ public class BottomPanel extends JSplitPane {
     }
     
     public void onSentenceClick(Sentence clickedSentence) {
-        rightPanel.onSentenceClick(clickedSentence);
         leftPanel.onSentenceClick(clickedSentence);
+        rightPanel.onSentenceClick(clickedSentence);
     }
     
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
-        rightPanel.onSentenceHover(hoveredSentences);
         leftPanel.onSentenceHover(hoveredSentences);
+        rightPanel.onSentenceHover(hoveredSentences);
     }
 
 //    @Override
