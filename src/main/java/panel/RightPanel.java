@@ -9,6 +9,7 @@ import word.AbsWord;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -23,7 +24,7 @@ public class RightPanel extends JScrollPane {
     
     BottomPanel parent;
     
-    Sentence selectedSentence; // contents of sentencePanel
+    List<Sentence> allSelectedSentences = new ArrayList<>(10);
     
     JPanel mainPanel;
         // NORTH
@@ -39,7 +40,21 @@ public class RightPanel extends JScrollPane {
         JPanel wordStatsPanel;
                                   // NORTH is titlePanel
             JPanel statsPanel;    // CENTER
+                JTable table;
                                   // SOUTH is empty
+    
+    // TABLE vars
+    // map: MapKey -> columnIndex (based off MapKey.order ordering)
+    private final Map<AbsMeasurableWord.MapKey, Integer> columnIndexMap = new HashMap<>(10);
+    private final String[] tableHeader = new String[AbsMeasurableWord.MapKey.values().length]; {
+        int i = 0;
+        for (AbsMeasurableWord.MapKey key : Arrays.stream(AbsMeasurableWord.MapKey.values())
+                .sorted(Comparator.comparingInt(e -> e.order)).collect(Collectors.toList())) {
+            tableHeader[i++] = key.printValue;
+            columnIndexMap.put(key, key.order);
+        }
+    }
+    private final DefaultTableModel tableModel = new DefaultTableModel(tableHeader, 0);
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
@@ -82,10 +97,15 @@ public class RightPanel extends JScrollPane {
         buttonsPanel.setLayout(new WrapLayout(WrapLayout.RIGHT, 10, 4));
 //        buttonsPanel.setBorder(new StrokeBorder(new BasicStroke(1)));
         
-        clearSentencesBtn = new JButton("Clear");
-        addAllBtn = new JButton("Add all");
+        clearSentencesBtn = new JButton("Clear sentences");
+        clearSentencesBtn.addActionListener(a -> onClearSentencesBtnPress());
+        addAllBtn = new JButton("Add all to table");
+        addAllBtn.addActionListener(a -> onAddAllBtnPress());
+        clearTableBtn = new JButton("Clear table");
+        clearTableBtn.addActionListener(a -> onClearTableBtnPress());
         buttonsPanel.add(clearSentencesBtn);
         buttonsPanel.add(addAllBtn);
+        buttonsPanel.add(clearTableBtn);
         
         mainSentencePanel.add(buttonsPanel, BorderLayout.SOUTH);
         
@@ -118,6 +138,16 @@ public class RightPanel extends JScrollPane {
         mainPanel.add(wordStatsPanel, BorderLayout.CENTER);
         
         
+        // create JTable
+        table = new JTable(tableModel);
+        table.setFont(Utils.getFont(12));
+        table.getTableHeader().setFont(Utils.getBoldFont(13));
+    
+        // custom column renderers
+        TableColumn col = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
+        col.setCellRenderer(new CustomRenderer());
+        
+        statsPanel.add(new JScrollPane(table), BorderLayout.CENTER);
         
         
         this.setViewportView(mainPanel);
@@ -153,6 +183,27 @@ public class RightPanel extends JScrollPane {
         });
     }
     
+    private void onClearTableBtnPress() {
+        System.out.println("Clear table pressed");
+        tableModel.setRowCount(0);
+        table.revalidate();
+    }
+    
+    private void onAddAllBtnPress() {
+        System.out.println("Add all pressed");
+        allSelectedSentences.forEach(s -> appendWordsToTable(s.getWords()));
+    }
+    
+    private void onClearSentencesBtnPress() {
+        System.out.println("Clear sentences pressed");
+        allSelectedSentences.clear();
+        sentencesPanel.setPreferredSize(new Dimension(sentencesPanel.getSize().width, 0));
+        sentencesPanel.removeAll();
+        sentencesPanel.revalidate();
+        sentencesPanel.doLayout();
+        sentencesPanel.repaint();
+    }
+    
     
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
     
@@ -161,6 +212,7 @@ public class RightPanel extends JScrollPane {
     public void onSentenceClick(Sentence clickedSentence) {
 //        sentencesPanel.removeAll();
 //        this.selectedSentence = clickedSentence;
+        allSelectedSentences.add(clickedSentence);
         
         JPanel sentencePanel = new JPanel();
         sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
@@ -229,17 +281,6 @@ public class RightPanel extends JScrollPane {
         this.parent.updateUI();
     }
     
-    // map: MapKey -> columnIndex (based off MapKey.order ordering)
-    private final Map<AbsMeasurableWord.MapKey, Integer> columnIndexMap = new HashMap<>(10);
-    private final String[] tableHeader = new String[AbsMeasurableWord.MapKey.values().length]; {
-        int i = 0;
-        for (AbsMeasurableWord.MapKey key : Arrays.stream(AbsMeasurableWord.MapKey.values())
-                                             .sorted(Comparator.comparingInt(e -> e.order)).collect(Collectors.toList())) {
-            tableHeader[i++] = key.printValue;
-            columnIndexMap.put(key, key.order);
-        }
-    }
-    
     // 1 can be clicked or an entire sentence
     public void onWordsClick(List<AbsWord> words) {
 //        System.out.println();
@@ -253,33 +294,38 @@ public class RightPanel extends JScrollPane {
 //        System.out.println("table header: " + Arrays.deepToString(tableHeader));
         
         
-        // init table content
+        // Append to table
+//        int i = 0;
+//        String[][] tableValues = new String[words.size()][tableHeader.length];
+//        for (AbsWord word : words) {
+//            for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
+//                int columnIndex = columnIndexMap.get(entry.getKey());
+////                System.out.println(entry.getValue() + " -> "+NumberUtils.isNumber(entry.getValue()));
+//                tableValues[i][columnIndex] =  NumberUtils.isNumber(entry.getValue()) ?
+//                        AbsMeasurableWord.format.format(Double.parseDouble(entry.getValue())) : entry.getValue();
+//            }
+//            tableModel.addRow(tableValues[i]);
+//            i++;
+//        }
+        appendWordsToTable(words);
+        
+        statsPanel.revalidate();
+        statsPanel.updateUI();
+        statsPanel.repaint();
+    }
+    
+    private void appendWordsToTable(List<AbsWord> words) {
         int i = 0;
         String[][] tableValues = new String[words.size()][tableHeader.length];
         for (AbsWord word : words) {
             for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
                 int columnIndex = columnIndexMap.get(entry.getKey());
-//                System.out.println(entry.getValue() + " -> "+NumberUtils.isNumber(entry.getValue()));
                 tableValues[i][columnIndex] =  NumberUtils.isNumber(entry.getValue()) ?
                         AbsMeasurableWord.format.format(Double.parseDouble(entry.getValue())) : entry.getValue();
             }
+            tableModel.addRow(tableValues[i]);
             i++;
         }
-        // create JTable
-        JTable stats = new JTable(tableValues, tableHeader);
-        stats.setFont(Utils.getFont(12));
-        stats.getTableHeader().setFont(Utils.getBoldFont(13));
-        
-        // custom column renderers
-        TableColumn col = stats.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
-        col.setCellRenderer(new CustomRenderer());
-        
-        statsPanel.removeAll();
-        statsPanel.add(new JScrollPane(stats), BorderLayout.CENTER);
-        
-        statsPanel.revalidate();
-        statsPanel.updateUI();
-        statsPanel.repaint();
     }
     
     class CustomRenderer extends DefaultTableCellRenderer

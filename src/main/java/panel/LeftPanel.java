@@ -124,7 +124,7 @@ public class LeftPanel extends JScrollPane {
             sentencePanel.addMouseListener(new MouseListener() {
                 @Override public void mouseClicked(MouseEvent e) {
                     // all words are clicked
-                    LeftPanel.this.parent.rightPanel.onWordsClick(hoveredSentence.sentence.getWords());
+//                    LeftPanel.this.parent.rightPanel.onWordsClick(hoveredSentence.sentence.getWords());
                     parent.rightPanel.onSentenceClick(hoveredSentence.sentence);
                 }
                 @Override public void mouseEntered(MouseEvent e) {
@@ -150,7 +150,7 @@ public class LeftPanel extends JScrollPane {
                     public void mouseClicked(MouseEvent e) {
                         // only one word is clicked
                         parent.rightPanel.onSentenceClick(hoveredSentence.sentence);
-                        parent.rightPanel.onWordsClick(Collections.singletonList(w));
+//                        parent.rightPanel.onWordsClick(Collections.singletonList(w));
                     }
                     @Override public void mouseEntered(MouseEvent e) {
                         lbl.setBackground(lbl.HOVERED_COLOR);
