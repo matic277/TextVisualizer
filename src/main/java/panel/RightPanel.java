@@ -72,9 +72,7 @@ public class RightPanel extends JScrollPane {
     
         mainPanel = new JPanel();
         mainPanel.setBackground(Utils.GRAY3);
-//        mainPanel.setLayout(new WrapLayout(0, 0, WrapLayout.LEFT));
         mainPanel.setLayout(new BorderLayout());
-//        mainPanel.setLayout(new GridLayout(15, 2, 0, 0));
     
         
         // NORTH
@@ -101,7 +99,6 @@ public class RightPanel extends JScrollPane {
         buttonsPanel = new JPanel();
         buttonsPanel.setBackground(Utils.GRAY3);
         buttonsPanel.setLayout(new WrapLayout(WrapLayout.RIGHT, 10, 4));
-//        buttonsPanel.setBorder(new StrokeBorder(new BasicStroke(1)));
         
         clearSentencesBtn = new JButton("Clear sentences");
         clearSentencesBtn.addActionListener(a -> onClearSentencesBtnPress());
@@ -174,15 +171,9 @@ public class RightPanel extends JScrollPane {
         this.addComponentListener(new ComponentListener() {
             RightPanel self = RightPanel.this;
             @Override public void componentResized(ComponentEvent e) {
-                
-//                System.out.println(self.getSize());
-                
                 if (sentencesPanel == null) return;
                 
-//                System.out.println("Pref.height=> " + sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height);
                 sentencesPanel.setPreferredSize(new Dimension(self.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height));
-//                sentencePanel.setPreferredSize(new Dimension(self.getSize().width, sentencePanel.getLayout().preferredLayoutSize(sentencePanel).height));
-//                System.out.println("Pref.size=> " + sentencesPanel.getSize());
                 sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
                 sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
                 sentencesPanel.revalidate();
@@ -218,8 +209,6 @@ public class RightPanel extends JScrollPane {
     }
     
     public void onSentenceClick(Sentence clickedSentence) {
-//        sentencesPanel.removeAll();
-//        this.selectedSentence = clickedSentence;
         allSelectedSentences.add(clickedSentence);
         
         JPanel sentencePanel = new JPanel();
@@ -250,7 +239,7 @@ public class RightPanel extends JScrollPane {
             WordLabel lbl = new WordLabel(this, sentencesPanel, word);
             lbl.setRightPanel(this);
             lbl.setParentSentence(clickedSentence);
-            lbl.setWordListener(new MouseListener() {
+            lbl.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     // only one word is clicked
@@ -278,7 +267,6 @@ public class RightPanel extends JScrollPane {
         // some resizing
         // -20 for scrollbar, +1 so border is visible (or else it just barely gets cut-off on last sentence for some reason)
         sentencesPanel.setPreferredSize(new Dimension(this.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height+1));
-//        System.out.println("Pref.size=> " + sentencePanel.getSize());
         sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
         sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
         sentencesPanel.revalidate();
@@ -288,8 +276,6 @@ public class RightPanel extends JScrollPane {
         // immediately, but only after resize happens
         this.parent.updateUI();
     }
-    
-    // 1 can be clicked or an entire sentence
     
     public void onWordsClick(List<AbsWord> words) {
         appendWordsToTable(words);
@@ -313,41 +299,34 @@ public class RightPanel extends JScrollPane {
         }
     }
     
-    public void onSentenceHover(List<SentenceLabel> hoveredSentences) { }
-    
     class CustomRenderer extends DefaultTableCellRenderer
     {
+    
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
         {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-//            setForeground(Color.blue);
             
-//            System.out.println(c.getClass().getSimpleName());
-//            System.out.println(value + ", " + value.getClass().getSimpleName());
-            
-            if (value != null && value instanceof String s) {
+            if (value instanceof String s) {
                 double pleasantness = parseStringToDouble(s);
-                
                 setForeground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
                         Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
                             Color.DARK_GRAY : Utils.RED);
-//                setBackground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
-//                        Utils.BACKGROUND_GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
-//                        Utils.LIGHT_GRAY : Utils.BACKGROUND_RED);
             }
             
             return c;
         }
     }
-    
     // What a fucking mess
     // MeasAbsWord.DecimalFormat formats negative words with strange "-"
     // sign, that can't be reverse parsed from string (encoding problem) ???
+    
     public static double parseStringToDouble(String s) {
         if (!NumberUtils.isNumber(s.charAt(0)+"")) {
             s = "-" + s.substring(1);
         }
         return Double.parseDouble(s);
     }
+    
+    public void onSentenceHover(List<SentenceLabel> hoveredSentences) { }
 }

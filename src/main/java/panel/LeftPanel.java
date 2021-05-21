@@ -143,7 +143,7 @@ public class LeftPanel extends JScrollPane {
                 WordLabel lbl = new WordLabel(this, sentencePanel, w);
                 lbl.setRightPanel(this.parent.rightPanel);
                 lbl.setParentSentence(hoveredSentence.sentence);
-                lbl.setWordListener(new MouseListener() {
+                lbl.addMouseListener(new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         // only one word is clicked

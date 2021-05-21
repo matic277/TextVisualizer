@@ -38,8 +38,6 @@ public class SentenceLabel extends JLabel {
         this.setOpaque(true);
         this.setPreferredSize(Utils.SENTENCE_SIZE);
         
-//        this.setBackground(new Color(150, 0, 0, 0));
-        
         addListener();
     }
     
@@ -53,14 +51,10 @@ public class SentenceLabel extends JLabel {
         posHeight = (int)Math.ceil(totalHeight * posPerc);
         neuHeight = (int)Math.floor(totalHeight * neuPerc);
         negHeight = (int) totalHeight - posHeight - neuHeight; // whatever is left
-    
-//        System.out.println("pos="+posHeight+", neu="+neuHeight+", neg="+negHeight);
     }
     
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
         g.setColor(COLOR_NEGATIVE);
         g.fillRect(0, 0, this.getWidth(), negHeight);
         
@@ -91,7 +85,6 @@ public class SentenceLabel extends JLabel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Sentence clickedSentence = SentenceLabel.this.sentence;
-                System.out.println(clickedSentence.getSentenceString());
                 SentenceLabel.this.parent.parent.parent.getBottomPanel().onSentenceClick(clickedSentence);
             }
             @Override public void mouseEntered(MouseEvent e) {

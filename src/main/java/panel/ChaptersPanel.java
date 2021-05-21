@@ -31,7 +31,7 @@ public class ChaptersPanel extends JScrollPane {
     public ChaptersPanel(TopPanel parent) {
         this.parent = parent;
         this.chapters = parent.chapters;
-    
+        
         slider = new SlidingWindow(this);
         
         mainPanel = new JPanel() {
@@ -41,7 +41,6 @@ public class ChaptersPanel extends JScrollPane {
             }
         };
         mainPanel.setBackground(Utils.GRAY3);
-//        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setLayout(new WrapLayout(WrapLayout.CENTER));
         
         init(); // should be called before instantiating slider listener!
@@ -59,14 +58,7 @@ public class ChaptersPanel extends JScrollPane {
         
         // create panel for each chapter
         chapters.forEach((k, v) -> {
-            JPanel chapterPanel = new JPanel() {
-//                @Override
-//                public void paint(Graphics g) {
-//                    super.paint(g);
-//                    g.setColor(Color.black);
-//                    g.drawString("[" + getLocation().x + ", " + getLocation().y + "]", 5, 15);
-//                }
-            };
+            JPanel chapterPanel = new JPanel();
             chapterPanel.setOpaque(true);
             chapterPanel.setBorder(new StrokeBorder(new BasicStroke(2)));
             chapterPanel.setLayout(new BorderLayout());
@@ -127,8 +119,6 @@ public class ChaptersPanel extends JScrollPane {
         
         @Override public void mouseClicked(MouseEvent e) {
             mouse.setLocation(e.getPoint());
-            System.out.println("click");
-            System.out.println(chapterPanels.size());
         }
         @Override public void mousePressed(MouseEvent e) {
             mouse.setLocation(e.getPoint());

@@ -36,6 +36,8 @@ public class MainWindow {
         frame.pack();
     }
     
+    public MainPanel getMainPanel() { return this.mainPanel; }
+    
     public Map<Pair<Integer, String>, List<Sentence>> getChapters() {
         return this.chapters;
     }

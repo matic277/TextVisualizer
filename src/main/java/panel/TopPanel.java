@@ -30,12 +30,6 @@ public class TopPanel extends JPanel {
         
         controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-    
-//        sliderInfo = new JLabel("Change node radius");
-//        sliderInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        sliderInfo.setSize(new Dimension(30, 100));
-//        sliderInfo.setFont(Tools.getFont(12));
-//        drawingOptionsPnl.add(sliderInfo);
         
         initSentenceWindthSlider();
         initSliderWidthSlider();
@@ -85,7 +79,6 @@ public class TopPanel extends JPanel {
         
         int sliderMin = 1, sliderMax = 16;
         sentenceWidthSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.width);
-//        sentenceWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
         Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
         Font lblFont = new Font("Calibri", Font.BOLD, 12);
         JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);

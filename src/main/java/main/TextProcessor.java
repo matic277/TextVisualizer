@@ -24,7 +24,6 @@ public class TextProcessor {
     }
     
     public void processText() {
-    
         //Loading sentence detector model
         InputStream inputStream = null;
         SentenceModel model = null;

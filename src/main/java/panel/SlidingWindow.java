@@ -5,9 +5,7 @@ import main.Sentence;
 import main.Utils;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

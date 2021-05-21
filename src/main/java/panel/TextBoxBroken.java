@@ -36,7 +36,6 @@ public class TextBoxBroken extends JPanel {
         sentencesPanel = new JPanel();
         sentencesPanel.setBackground(Utils.GRAY3);
         sentencesPanel.setLayout(new BoxLayout(sentencesPanel, BoxLayout.Y_AXIS));
-//        sentencesPanel.setLayout(new VerticalFlowLayout(0, 0));
         this.add(sentencesPanel, BorderLayout.CENTER);
         
         this.setMinimumSize(new Dimension(0, 0));

@@ -44,8 +44,6 @@ public class Sentence {
         words = t.classifyAndGetWords(tokens);
         
         doSomeStatistics();
-    
-//        System.out.println("processed, words="+words.size());
     }
     
     private void doSomeStatistics() {
@@ -168,7 +166,7 @@ public class Sentence {
         format.setDecimalFormatSymbols(symbols);
         
         StringBuilder sb = new StringBuilder("\t|\t|-> Sentence: ");
-//        sb.append("\"").append(sentence).append("\"");
+        sb.append("\"").append(sentence).append("\"");
         sb.append("\n");
         
         for (AbsWord w : words) {
