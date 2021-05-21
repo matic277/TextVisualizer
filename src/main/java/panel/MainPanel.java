@@ -27,8 +27,7 @@ public class MainPanel extends JSplitPane {
 //        this.setPreferredSize(size);
         this.setVisible(true);
         
-        TopBox topBox = new TopBox(null);
-        topPanel = new TopPanel(this, topBox);
+        topPanel = new TopPanel(this);
         bottomPanel = new BottomPanel(this);
     
         this.setTopComponent(topPanel);
@@ -50,6 +49,8 @@ public class MainPanel extends JSplitPane {
 ////        gr.setColor(Color.black);
 ////        gr.drawRect(5, 5,  this.getWidth()-10, this.getHeight() - 10);
 //    }
+    
+    public BottomPanel getBottomPanel() { return this.bottomPanel; }
     
     
     public Map<Pair<Integer, String>, List<Sentence>> getChapters() {

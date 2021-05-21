@@ -13,13 +13,13 @@ import java.util.Map;
 
 public class SlidingWindow extends Rectangle {
     
-    TopPanel parent;
+    ChaptersPanel parent;
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
     Color color = Color.black;
     Stroke stroke = new BasicStroke(3f);
     
-    public SlidingWindow(TopPanel parent) {
+    public SlidingWindow(ChaptersPanel parent) {
         this.parent = parent;
         
         this.setBounds(30, 100, 120, 90);
@@ -57,11 +57,6 @@ public class SlidingWindow extends Rectangle {
         }
         
         return hovered;
-    }
-    
-    public void setParent(TopPanel parent) {
-        this.parent = parent;
-        this.chapters = parent.chapters;
     }
     
     public void setColor(Color color) {

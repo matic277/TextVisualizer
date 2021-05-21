@@ -11,11 +11,11 @@ import java.awt.event.MouseListener;
 public class SentenceLabel extends JLabel {
     
     Sentence sentence;
-    TopPanel parent;
+    ChaptersPanel parent;
     
     int posHeight, neuHeight, negHeight;
     
-    public SentenceLabel(TopPanel parent, Sentence sentence) {
+    public SentenceLabel(ChaptersPanel parent, Sentence sentence) {
         super();
         this.sentence = sentence;
         this.parent = parent;
@@ -59,7 +59,7 @@ public class SentenceLabel extends JLabel {
             public void mouseClicked(MouseEvent e) {
                 Sentence clickedSentence = SentenceLabel.this.sentence;
                 System.out.println(clickedSentence.getSentenceString());
-                SentenceLabel.this.parent.parent.bottomPanel.onSentenceClick(clickedSentence);
+                SentenceLabel.this.parent.parent.parent.getBottomPanel().onSentenceClick(clickedSentence);
             }
             @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }

@@ -5,14 +5,12 @@ import main.Sentence;
 import main.Utils;
 
 import javax.swing.*;
-import javax.swing.border.StrokeBorder;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 

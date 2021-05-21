@@ -162,18 +162,18 @@ public class Tokenizer {
     }
     
     private String cleanToken2(String token) {
-        String x = token;
-        boolean b = false;
-        if (x.contains("married")) {
-            b = true;
-            System.out.println("Before='" + x + "'.");
-        }
+//        String x = token;
+//        boolean b = false;
+//        if (x.contains("married")) {
+//            b = true;
+//            System.out.println("Before='" + x + "'.");
+//        }
         for (int i=0; i<suspects2.length; i++) {
             token = token.replaceAll(suspects2[i], "");
 //            if (token.isEmpty())
 //                System.out.println("empty");
         }
-        if (b) System.out.println("After='"+token+"'.");
+//        if (b) System.out.println("After='"+token+"'.");
 //        System.out.println("I don't like these \"double\" quotes".replace("\"", " "));
         return token;
     }
@@ -189,9 +189,9 @@ public class Tokenizer {
             
             String rawToken = token;
     
-            if (rawToken.toLowerCase().contains("nothing")) {
-                System.out.println("");
-            }
+//            if (rawToken.toLowerCase().contains("nothing")) {
+//                System.out.println("");
+//            }
             
             /*
             TYPE CHECKING:

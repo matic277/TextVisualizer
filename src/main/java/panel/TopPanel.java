@@ -9,28 +9,27 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
-public class TopPanel extends JScrollPane {
+public class TopPanel extends JPanel {
     
     MainPanel parent;
     
+    JPanel controlPanel;
+    ChaptersPanel chaptersPanel;
+    
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
-    public TopPanel(MainPanel parent, TopBox topBox) {
-        super(topBox);
+    public TopPanel(MainPanel parent) {
         this.parent = parent;
         this.chapters = parent.getChapters();
         
-        topBox.setParent(this);
-        topBox.init();
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        controlPanel.add(new JLabel("CONTENT"));
         
-//        this.setBackground(Color.red);
-//        this.add(slider);
+        chaptersPanel = new ChaptersPanel(this);
+        
+        this.setLayout(new BorderLayout());
+        this.add(controlPanel, BorderLayout.NORTH);
+        this.add(chaptersPanel, BorderLayout.CENTER);
     }
-    
-//    @Override
-//    public void paint(Graphics g) {
-//        super.paint(g);
-//
-//        slider.paint(g);
-//    }
 }
