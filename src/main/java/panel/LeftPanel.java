@@ -39,7 +39,7 @@ public class LeftPanel extends JScrollPane {
         JLabel title = new JLabel(" Chapter sentences preview ");
         title.setPreferredSize(new Dimension(300, 27));
         title.setOpaque(true);
-        title.setBackground(Utils.GRAY);
+        title.setBackground(Utils.TITLE_BACKGROUND);
         title.setFont(Utils.getFont(14));
         title.setPreferredSize(new Dimension(title.getPreferredSize().width, title.getPreferredSize().height+5));
         titlePanel.add(title, BorderLayout.CENTER);
@@ -91,7 +91,7 @@ public class LeftPanel extends JScrollPane {
         });
     }
     
-    public void onSentenceClick(Sentence clickedSentence) {
+    public void onSentenceClick(SentenceLabel clickedSentence) {
         // Do nothing ?
     }
     
@@ -123,7 +123,11 @@ public class LeftPanel extends JScrollPane {
                 @Override public void mouseClicked(MouseEvent e) {
                     // all words are clicked
 //                    LeftPanel.this.parent.rightPanel.onWordsClick(hoveredSentence.sentence.getWords());
-                    parent.rightPanel.onSentenceClick(hoveredSentence.sentence);
+                    
+                    if (!hoveredSentence.isSelected()) {
+                        parent.parent.getBottomPanel().onSentenceClick(hoveredSentence);
+                        hoveredSentence.onSelect();
+                    }
                 }
                 @Override public void mouseEntered(MouseEvent e) {
                     sentencePanel.setBackground(Color.white);
@@ -147,8 +151,10 @@ public class LeftPanel extends JScrollPane {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         // only one word is clicked
-                        parent.rightPanel.onSentenceClick(hoveredSentence.sentence);
-//                        parent.rightPanel.onWordsClick(Collections.singletonList(w));
+                        if (!hoveredSentence.isSelected()) {
+                            parent.parent.getBottomPanel().onSentenceClick(hoveredSentence);
+                            hoveredSentence.onSelect();
+                        }
                     }
                     @Override public void mouseEntered(MouseEvent e) {
                         lbl.setBackground(lbl.HOVERED_COLOR);

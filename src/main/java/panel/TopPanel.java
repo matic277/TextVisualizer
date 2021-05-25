@@ -45,7 +45,7 @@ public class TopPanel extends JPanel {
         sliderSliderPanel = new JPanel();
         sliderSliderPanel.setLayout(new BorderLayout());
         
-        JLabel title = new JLabel("Width of sentences");
+        JLabel title = new JLabel("Width of slider");
         title.setFont(Utils.getFont(12));
         
         int sliderMin = 80, sliderMax = 200;

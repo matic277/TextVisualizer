@@ -4,6 +4,7 @@ import window.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class Main {
     
@@ -12,7 +13,28 @@ public class Main {
 //        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 //        for ( int i = 0; i < fonts.length; i++ ) System.out.println(fonts[i]);
     
-//        System.out.println(Double.parseDouble("−0.143"));
+        try {
+            // Roboto Mono SemiBold
+            // Roboto Mono Medium
+            // Roboto Mono Regular
+            // Roboto Mono Thin
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/RobotoMono-SemiBold.ttf")));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/RobotoMono-Medium.ttf")));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/RobotoMono-Regular.ttf")));
+        
+            // Source Sans Pro
+            // Source Sans Pro Bold
+            // Source Sans Pro Light
+            // Source Sans Pro Semibold
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/SourceSansPro-Light.ttf")));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/SourceSansPro-Regular.ttf")));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/SourceSansPro-SemiBold.ttf")));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("./fonts/SourceSansPro-Bold.ttf")));
+        
+        } catch (Exception e) {
+            System.out.println("Error loading fonts.");
+            e.printStackTrace();
+        }
         
         FileReader reader = new FileReader("./texts/SherlockHolmes-AStudyInScarlet.txt");
         reader.readFile();

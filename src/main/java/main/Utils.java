@@ -6,6 +6,7 @@ import java.util.Random;
 public class Utils {
     
     public static final Color bgColor = new Color(245, 245, 250);
+    public static final Color TITLE_BACKGROUND = new Color(213, 216, 222);
     public static final Color borderColor = new Color(227, 227, 227);
     public static final Color RED = Color.decode("#ea4335");
     public static final Color BACKGROUND_RED = new Color(255, 242, 242);

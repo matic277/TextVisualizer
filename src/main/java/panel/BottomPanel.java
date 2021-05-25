@@ -26,7 +26,7 @@ public class BottomPanel extends JSplitPane {
         this.setDividerLocation(Utils.INITIAL_LEFT_MENU_WIDTH);
     }
     
-    public void onSentenceClick(Sentence clickedSentence) {
+    public void onSentenceClick(SentenceLabel clickedSentence) {
         leftPanel.onSentenceClick(clickedSentence);
         rightPanel.onSentenceClick(clickedSentence);
     }

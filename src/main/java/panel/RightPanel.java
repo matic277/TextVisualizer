@@ -1,6 +1,5 @@
 package panel;
 
-import com.ibm.icu.text.UTF16;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
@@ -26,7 +25,7 @@ public class RightPanel extends JScrollPane {
     
     BottomPanel parent;
     
-    List<Sentence> allSelectedSentences = new ArrayList<>(10);
+    List<SentenceLabel> allSelectedSentences = new ArrayList<>(10);
     
     JPanel mainPanel;
         // NORTH
@@ -79,7 +78,7 @@ public class RightPanel extends JScrollPane {
         JLabel title = new JLabel(" Selected sentence");
         title.setPreferredSize(new Dimension(300, 27));
         title.setOpaque(true);
-        title.setBackground(Utils.GRAY);
+        title.setBackground(Utils.TITLE_BACKGROUND);
         title.setFont(Utils.getFont(14));
         title.setPreferredSize(new Dimension(title.getPreferredSize().width, title.getPreferredSize().height+5));
         
@@ -123,7 +122,7 @@ public class RightPanel extends JScrollPane {
         JLabel title2 = new JLabel(" Word statistics");
         title2.setPreferredSize(new Dimension(300, 27));
         title2.setOpaque(true);
-        title2.setBackground(Utils.GRAY);
+        title2.setBackground(Utils.TITLE_BACKGROUND);
         title2.setFont(Utils.getFont(14));
         title2.setPreferredSize(new Dimension(title2.getPreferredSize().width, title2.getPreferredSize().height+5));
         titlePanel2.add(title2, BorderLayout.NORTH);
@@ -195,11 +194,12 @@ public class RightPanel extends JScrollPane {
     
     private void onAddAllBtnPress() {
         System.out.println("Add all pressed");
-        allSelectedSentences.forEach(s -> appendWordsToTable(s.getWords()));
+        allSelectedSentences.forEach(s -> appendWordsToTable(s.getSentence().getWords()));
     }
     
     private void onClearSentencesBtnPress() {
         System.out.println("Clear sentences pressed");
+        allSelectedSentences.forEach(SentenceLabel::onUnselect);
         allSelectedSentences.clear();
         sentencesPanel.setPreferredSize(new Dimension(sentencesPanel.getSize().width, 0));
         sentencesPanel.removeAll();
@@ -208,17 +208,36 @@ public class RightPanel extends JScrollPane {
         sentencesPanel.repaint();
     }
     
-    public void onSentenceClick(Sentence clickedSentence) {
-        allSelectedSentences.add(clickedSentence);
+    public boolean removeSentence(SentenceLabel sentence) {
+        Component sentenceRowToRemove = Arrays.stream(sentencesPanel.getComponents())
+                .map(jpnl -> (SentenceRowPanel) jpnl)
+                .filter(srpnl -> srpnl.representsSentenceLabel(sentence))
+                .findFirst()
+                .orElseThrow(() -> { throw new RuntimeException("Cannot find sentence label in sentencesPanel, " + sentence); });
         
-        JPanel sentencePanel = new JPanel();
+        boolean removedFromList = allSelectedSentences.remove(sentence);
+        sentencesPanel.remove(sentenceRowToRemove); // does not return boolean to indicate if anything was removed...
+    
+        sentencesPanel.revalidate();
+        sentencesPanel.doLayout();
+        sentencesPanel.repaint();
+        
+        return removedFromList;
+    }
+    
+    public void onSentenceClick(SentenceLabel clickedSentence) {
+        allSelectedSentences.add(clickedSentence);
+    
+        System.out.println("sentence added");
+        
+        JPanel sentencePanel = new SentenceRowPanel(sentencesPanel, clickedSentence);
         sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
         sentencePanel.setBackground(Utils.GRAY3);
         sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
         sentencePanel.addMouseListener(new MouseListener() {
             @Override public void mouseClicked(MouseEvent e) {
                 // all words are clicked
-                onWordsClick(clickedSentence.getWords());
+                onWordsClick(clickedSentence.getSentence().getWords());
             }
             @Override public void mouseEntered(MouseEvent e) {
                 sentencePanel.setBackground(Color.white);
@@ -235,10 +254,10 @@ public class RightPanel extends JScrollPane {
         });
         
         // SELECTED SENTENCE
-        for (AbsWord word : clickedSentence.getWords()) {
+        for (AbsWord word : clickedSentence.getSentence().getWords()) {
             WordLabel lbl = new WordLabel(this, sentencesPanel, word);
             lbl.setRightPanel(this);
-            lbl.setParentSentence(clickedSentence);
+            lbl.setParentSentence(clickedSentence.getSentence());
             lbl.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {

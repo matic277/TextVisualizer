@@ -74,6 +74,7 @@ public class ChaptersPanel extends JScrollPane {
             JPanel sentencesPanel = new JPanel();
             sentencesPanel.setName("Sentence panel for chapter " + k.getB());
             sentencesPanel.setOpaque(true);
+            sentencesPanel.setBackground(Utils.GRAY);
             sentencesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
             
@@ -159,9 +160,11 @@ public class ChaptersPanel extends JScrollPane {
                     }
                 }
                 
-                // is snapped to some chapter panel
+                // snap it to snapped panel
+                // and resize to fit height
                 if (snappedPannel != null) {
                     slider.setLocation(mouse.x - dx, snappedPannel.getLocation().y-10);
+                    slider.setSize(slider.width, snappedPannel.getHeight()+15);
                     List<SentenceLabel> sentences = slider.getHoveredSentences(snappedPannel);
                     parent.parent.parent.getBottomPanel().onSentenceHover(sentences);
                 } else {

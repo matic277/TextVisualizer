@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.function.Consumer;
 
 public class SentenceLabel extends JLabel {
     
@@ -30,6 +31,14 @@ public class SentenceLabel extends JLabel {
     
     int posHeight, neuHeight, negHeight;
     
+    private static int wordSize = 3;
+    
+    private boolean isSelected = false;
+    private static final Color BORDER_COLOR = new Color(0, 0, 0, 100);
+    private Consumer<Graphics2D> actualBorderDrawer;
+    private Consumer<Graphics2D> nullBorderDrawer = (g) -> {};
+    private Consumer<Graphics2D> borderDrawer = nullBorderDrawer;
+    
     public SentenceLabel(ChaptersPanel parent, Sentence sentence) {
         super();
         this.sentence = sentence;
@@ -39,30 +48,56 @@ public class SentenceLabel extends JLabel {
         this.setPreferredSize(Utils.SENTENCE_SIZE);
         
         addListener();
+    
+        actualBorderDrawer = (g) -> {
+            g.setStroke(new BasicStroke(2));
+            
+            // draw it as highlighted
+            g.setColor(HOVERED_COLOR_NEGATIVE);
+            g.fillRect(0, 0, this.getWidth(), negHeight);
+            g.setColor(HOVERED_COLOR_NEUTRAL);
+            g.fillRect(0, negHeight,this.getWidth(), neuHeight);
+            g.setColor(HOVERED_COLOR_POSITIVE);
+            g.fillRect(0, negHeight + neuHeight,this.getWidth(), posHeight);
+            
+            // add border
+            g.setColor(BORDER_COLOR);
+            g.drawRect(1, 1, getWidth()-2, getHeight()-2);
+        };
     }
     
     public void init() {
         double totalWords = sentence.getWords().size();
-        double totalHeight = Utils.SENTENCE_SIZE.getHeight();
+//        double totalHeight = Utils.SENTENCE_SIZE.getHeight();
+        double totalHeight = (int)(totalWords * wordSize);
         
+        this.setPreferredSize(new Dimension(this.getPreferredSize().width, (int)(totalWords * wordSize)));
+    
         double posPerc = sentence.numOfPositiveWords / totalWords;
         double neuPerc = sentence.numOfNeutralWords  / totalWords;
     
         posHeight = (int)Math.ceil(totalHeight * posPerc);
         neuHeight = (int)Math.floor(totalHeight * neuPerc);
         negHeight = (int) totalHeight - posHeight - neuHeight; // whatever is left
+        
     }
     
     @Override
     public void paintComponent(Graphics g) {
-        g.setColor(COLOR_NEGATIVE);
-        g.fillRect(0, 0, this.getWidth(), negHeight);
+        Graphics2D gr = (Graphics2D) g;
+//        gr.setColor(Color.black);
+//        gr.fill(this);
+
+        gr.setColor(COLOR_NEGATIVE);
+        gr.fillRect(0, 0, this.getWidth(), negHeight);
         
-        g.setColor(COLOR_NEUTRAL);
-        g.fillRect(0, negHeight,this.getWidth(), neuHeight);
+        gr.setColor(COLOR_NEUTRAL);
+        gr.fillRect(0, negHeight,this.getWidth(), neuHeight);
         
-        g.setColor(COLOR_POSITVE);
-        g.fillRect(0, negHeight + neuHeight,this.getWidth(), posHeight);
+        gr.setColor(COLOR_POSITVE);
+        gr.fillRect(0, negHeight + neuHeight,this.getWidth(), posHeight);
+        
+        borderDrawer.accept(gr);
     }
     
     public void highlight() {
@@ -80,12 +115,33 @@ public class SentenceLabel extends JLabel {
         this.parent.repaint();
     }
     
+    public void onUnselect() {
+        this.isSelected = false;
+        this.borderDrawer = nullBorderDrawer;
+        this.parent.repaint();
+    }
+    
+    public void onSelect() {
+        this.isSelected = true;
+        this.borderDrawer = actualBorderDrawer;
+        this.parent.repaint();
+    }
+    
     private void addListener() {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Sentence clickedSentence = SentenceLabel.this.sentence;
-                SentenceLabel.this.parent.parent.parent.getBottomPanel().onSentenceClick(clickedSentence);
+                SentenceLabel clickedSentence = SentenceLabel.this;
+                if (isSelected()) {
+                    clickedSentence.onUnselect();
+                    boolean removed = parent.parent.parent.getBottomPanel().rightPanel.removeSentence(clickedSentence);
+//                    System.out.println("size, removed => " + parent.parent.parent.getBottomPanel().rightPanel.allSelectedSentences.size() + ", " + removed);
+                    assert removed;
+                }
+                else {
+                    clickedSentence.onSelect();
+                    SentenceLabel.this.parent.parent.parent.getBottomPanel().onSentenceClick(clickedSentence);
+                }
             }
             @Override public void mouseEntered(MouseEvent e) {
                 highlight();
@@ -101,4 +157,6 @@ public class SentenceLabel extends JLabel {
     public Sentence getSentence() {
         return this.sentence;
     }
+    
+    public boolean isSelected() { return this.isSelected; }
 }
