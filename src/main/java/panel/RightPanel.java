@@ -3,6 +3,7 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import main.VisualType;
 import org.apache.commons.lang3.math.NumberUtils;
 import word.AbsMeasurableWord;
 import word.AbsWord;
@@ -242,7 +243,6 @@ public class RightPanel extends JScrollPane {
         sentencePanel.setBackground(Utils.GRAY3);
         sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
         sentencePanel.addMouseListener(new MouseListener() {
-            private boolean detectedPress = false;
             @Override public void mouseClicked(MouseEvent e) {
                 // all words are clicked
                 onWordsClick(clickedSentence.getSentence().getWords());
@@ -324,6 +324,10 @@ public class RightPanel extends JScrollPane {
             tableModel.addRow(tableValues[i]);
             i++;
         }
+    }
+    
+    public void onVisualTypeChange(VisualType selectedItem) {
+        // TODO
     }
     
     static class CustomRenderer extends DefaultTableCellRenderer {

@@ -3,6 +3,7 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import main.VisualType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -195,5 +196,9 @@ public class LeftPanel extends JScrollPane {
         });
         
         this.parent.updateUI();
+    }
+    
+    public void onVisualTypeChange(VisualType selectedItem) {
+        // TODO
     }
 }

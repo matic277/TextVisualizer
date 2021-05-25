@@ -3,6 +3,7 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import main.VisualType;
 
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
@@ -89,6 +90,10 @@ public class ChaptersPanel extends JScrollPane {
             mainPanel.add(chapterPanel);
             mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         });
+    }
+    
+    public void onVisualTypeChange(VisualType selectedItem) {
+        // TODO
     }
     
     public void onSentenceWidthChange(int newWidth) {

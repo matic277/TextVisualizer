@@ -3,6 +3,7 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import main.VisualType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,8 @@ public class TopPanel extends JPanel {
             JSlider sentenceWidthSlider;
         JPanel sliderSliderPanel;
             JSlider sliderWidthSlider;
+        JPanel dropdownPanel;
+            JComboBox<VisualType> dropdownType;
     
     ChaptersPanel chaptersPanel;
     
@@ -33,12 +36,29 @@ public class TopPanel extends JPanel {
         
         initSentenceWindthSlider();
         initSliderWidthSlider();
+        initDropdownPanel();
         
         chaptersPanel = new ChaptersPanel(this);
         
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.NORTH);
         this.add(chaptersPanel, BorderLayout.CENTER);
+    }
+    
+    private void initDropdownPanel() {
+        JLabel title = new JLabel("Select visual mapping: ");
+        title.setFont(Utils.getFont(12));
+        
+        dropdownType = new JComboBox<>(VisualType.values());
+        dropdownType.addActionListener(a -> parent.onVisualTypeChange((VisualType) dropdownType.getSelectedItem()));
+        
+        dropdownPanel = new JPanel();
+        dropdownPanel.setLayout(new BorderLayout());
+    
+        dropdownPanel.add(title, BorderLayout.NORTH);
+        dropdownPanel.add(dropdownType, BorderLayout.CENTER);
+        
+        controlPanel.add(dropdownPanel);
     }
     
     private void initSliderWidthSlider() {
@@ -106,5 +126,9 @@ public class TopPanel extends JPanel {
     private void onSentenceWidthChange() {
         int newWidth = sentenceWidthSlider.getValue();
         chaptersPanel.onSentenceWidthChange(newWidth);
+    }
+    
+    public void onVisualTypeChange(VisualType selectedItem) {
+        chaptersPanel.onVisualTypeChange(selectedItem);
     }
 }

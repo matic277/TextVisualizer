@@ -3,6 +3,7 @@ package panel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
+import main.VisualType;
 import window.MainWindow;
 
 import javax.swing.*;
@@ -38,5 +39,10 @@ public class MainPanel extends JSplitPane {
     
     public Map<Pair<Integer, String>, List<Sentence>> getChapters() {
         return this.parent.getChapters();
+    }
+    
+    public void onVisualTypeChange(VisualType selectedItem) {
+        topPanel.onVisualTypeChange(selectedItem);
+        bottomPanel.onVisualTypeChange(selectedItem);
     }
 }

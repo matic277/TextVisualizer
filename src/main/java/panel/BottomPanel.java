@@ -2,6 +2,7 @@ package panel;
 
 import main.Sentence;
 import main.Utils;
+import main.VisualType;
 
 import javax.swing.*;
 import java.util.List;
@@ -34,5 +35,10 @@ public class BottomPanel extends JSplitPane {
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
         leftPanel.onSentenceHover(hoveredSentences);
         rightPanel.onSentenceHover(hoveredSentences);
+    }
+    
+    public void onVisualTypeChange(VisualType selectedItem) {
+        leftPanel.onVisualTypeChange(selectedItem);
+        rightPanel.onVisualTypeChange(selectedItem);
     }
 }
