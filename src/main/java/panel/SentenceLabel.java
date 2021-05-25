@@ -50,7 +50,7 @@ public class SentenceLabel extends JLabel {
         addListener();
     
         actualBorderDrawer = (g) -> {
-            g.setStroke(new BasicStroke(2));
+            g.setStroke(new BasicStroke(1));
             
             // draw it as highlighted
             g.setColor(HOVERED_COLOR_NEGATIVE);
@@ -62,16 +62,21 @@ public class SentenceLabel extends JLabel {
             
             // add border
             g.setColor(BORDER_COLOR);
-            g.drawRect(1, 1, getWidth()-2, getHeight()-2);
+            g.drawRect(0, 0, getWidth()-1, getHeight()-1);
         };
+    }
+    
+    private static double customLog(double base, double logNumber) {
+        return Math.log(logNumber) / Math.log(base);
     }
     
     public void init() {
         double totalWords = sentence.getWords().size();
 //        double totalHeight = Utils.SENTENCE_SIZE.getHeight();
-        double totalHeight = (int)(totalWords * wordSize);
+        double totalHeight = (int)customLog(1.05, totalWords * wordSize);
+//        double totalHeight = (int)Math.log1p(totalWords * wordSize);
         
-        this.setPreferredSize(new Dimension(this.getPreferredSize().width, (int)(totalWords * wordSize)));
+        this.setPreferredSize(new Dimension(this.getPreferredSize().width, (int)(totalHeight)));
     
         double posPerc = sentence.numOfPositiveWords / totalWords;
         double neuPerc = sentence.numOfNeutralWords  / totalWords;

@@ -48,6 +48,8 @@ public class Utils {
     
     public static Font getFont(int size) { return new Font("Roboto Mono Medium", Font.PLAIN, size); }
     
+    public static Font getButtonFont(int size) { return new Font("Source sans pro", Font.PLAIN, size); }
+    
     public static String randomString(int len) {
         StringBuilder str = new StringBuilder();
         while (len-- > 0) {

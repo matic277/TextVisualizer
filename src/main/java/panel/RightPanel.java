@@ -100,11 +100,14 @@ public class RightPanel extends JScrollPane {
         buttonsPanel.setLayout(new WrapLayout(WrapLayout.RIGHT, 10, 4));
         
         clearSentencesBtn = new JButton("Clear sentences");
+        clearSentencesBtn.setFont(Utils.getButtonFont(14));
         clearSentencesBtn.addActionListener(a -> onClearSentencesBtnPress());
         addAllBtn = new JButton("Add all to table");
+        addAllBtn.setFont(Utils.getButtonFont(14));
         addAllBtn.addActionListener(a -> onAddAllBtnPress());
         clearTableBtn = new JButton("Clear table");
         clearTableBtn.addActionListener(a -> onClearTableBtnPress());
+        clearTableBtn.setFont(Utils.getButtonFont(14));
         buttonsPanel.add(clearSentencesBtn);
         buttonsPanel.add(addAllBtn);
         buttonsPanel.add(clearTableBtn);
@@ -217,7 +220,11 @@ public class RightPanel extends JScrollPane {
         
         boolean removedFromList = allSelectedSentences.remove(sentence);
         sentencesPanel.remove(sentenceRowToRemove); // does not return boolean to indicate if anything was removed...
-    
+        
+        // re-calc layouts and repaint
+        sentencesPanel.setPreferredSize(new Dimension(this.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height));
+        sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
+        sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
         sentencesPanel.revalidate();
         sentencesPanel.doLayout();
         sentencesPanel.repaint();
@@ -318,28 +325,23 @@ public class RightPanel extends JScrollPane {
         }
     }
     
-    class CustomRenderer extends DefaultTableCellRenderer
-    {
-    
+    static class CustomRenderer extends DefaultTableCellRenderer {
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-        {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
             if (value instanceof String s) {
                 double pleasantness = parseStringToDouble(s);
                 setForeground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
                         Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
                             Color.DARK_GRAY : Utils.RED);
             }
-            
             return c;
         }
     }
+    
     // What a fucking mess
     // MeasAbsWord.DecimalFormat formats negative words with strange "-"
     // sign, that can't be reverse parsed from string (encoding problem) ???
-    
     public static double parseStringToDouble(String s) {
         if (!NumberUtils.isNumber(s.charAt(0)+"")) {
             s = "-" + s.substring(1);
