@@ -1,5 +1,6 @@
 package main;
 
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Random;
 
@@ -39,16 +40,22 @@ public class Utils {
     public static final int INITIAL_BOTTOM_MENU_HEIGHT = 300;
     
     
-    
     public static final Random RAND = new Random();
     
-    public static Font getBoldFont(int size) {
-        return new Font("Roboto Mono SemiBold", Font.BOLD, size);
-    }
+    public static Font getBoldFont(int size) { return new Font("Roboto Mono bold", Font.BOLD, size); }
     
-    public static Font getFont(int size) { return new Font("Roboto Mono Medium", Font.PLAIN, size); }
+    public static Font getFont(int size) { return new Font("Roboto Mono medium", Font.PLAIN, size); }
+    
+    public static Font getTableHeaderFont(int size) { return new Font("Roboto Mono medium", Font.PLAIN, size); }
+    
+    public static Font getWordFont(int size) { return new Font("Roboto Mono medium", Font.PLAIN, size); }
     
     public static Font getButtonFont(int size) { return new Font("Source sans pro", Font.PLAIN, size); }
+    
+    // SF UI  Text
+    // SF UI  Text 2
+    // SF UI  Text Med
+    // SF UI  Text SemBd
     
     public static String randomString(int len) {
         StringBuilder str = new StringBuilder();
@@ -56,6 +63,31 @@ public class Utils {
             str.append((char)(97 + RAND.nextInt(25)));
         }
         return str.toString();
+    }
+    
+    public static class RoundBorder implements Border {
+        private final Color clr;
+        public Color bgClr;
+        private final int rad;
+        private final Stroke stroke;
+        public RoundBorder(Color clr, Color bgClr, Stroke stroke, int rad) { this.rad = rad; this.clr = clr; this.stroke = stroke; this.bgClr = bgClr;}
+        
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            // anti-aliasing
+            Graphics2D gr = (Graphics2D) g;
+            gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            
+            if (bgClr != null) {
+                gr.setColor(bgClr);
+                gr.fillRoundRect(x + 1, y + 3, width - 3, height - 6, rad, rad);
+            }
+            gr.setColor(clr);
+            gr.setStroke(stroke);
+            gr.drawRoundRect(x+1, y+3, width-3, height-6, rad, rad);
+        }
+        public boolean isBorderOpaque() { return true; }
+        public Insets getBorderInsets(Component c) { return new Insets(this.rad+1, this.rad+1, this.rad+2, this.rad); }
     }
     
     public static Color getRandomColor() {

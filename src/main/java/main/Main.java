@@ -10,8 +10,8 @@ public class Main {
     
     public static void main(String[] args) {
         // available fonts
-//        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-//        for ( int i = 0; i < fonts.length; i++ ) System.out.println(fonts[i]);
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        for ( int i = 0; i < fonts.length; i++ ) System.out.println(fonts[i]);
     
         try {
             // Roboto Mono SemiBold

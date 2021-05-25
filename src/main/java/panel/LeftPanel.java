@@ -139,7 +139,7 @@ public class LeftPanel extends JScrollPane {
                     sentencePanel.setBackground(Utils.GRAY3);
                     sentencePanel.repaint();
                 }
-                @Override public void mousePressed(MouseEvent e) { }
+                @Override public void mousePressed(MouseEvent e) { this.mouseClicked(e); }
                 @Override public void mouseReleased(MouseEvent e) { }
             });
             
@@ -168,7 +168,7 @@ public class LeftPanel extends JScrollPane {
                         sentencePanel.setBackground(Utils.GRAY3);
                         sentencePanel.repaint();
                     }
-                    @Override public void mousePressed(MouseEvent e) { }
+                    @Override public void mousePressed(MouseEvent e) { this.mouseClicked(e); }
                     @Override public void mouseReleased(MouseEvent e) { }
                 });
                 sentencePanel.add(lbl);

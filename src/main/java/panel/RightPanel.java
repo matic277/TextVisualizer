@@ -146,7 +146,7 @@ public class RightPanel extends JScrollPane {
         // create JTable
         table = new JTable(tableModel);
         table.setFont(Utils.getFont(13));
-        table.getTableHeader().setFont(Utils.getBoldFont(14));
+        table.getTableHeader().setFont(Utils.getTableHeaderFont(14));
         table.setAutoCreateRowSorter(true);
         
         // custom column renderers
@@ -256,7 +256,7 @@ public class RightPanel extends JScrollPane {
                 sentencePanel.setBackground(Utils.GRAY3);
                 sentencePanel.repaint();
             }
-            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mousePressed(MouseEvent e) { this.mouseClicked(e); }
             @Override public void mouseReleased(MouseEvent e) { }
         });
         
@@ -283,7 +283,7 @@ public class RightPanel extends JScrollPane {
                     sentencePanel.setBackground(Utils.GRAY3);
                     sentencePanel.repaint();
                 }
-                @Override public void mousePressed(MouseEvent e) { }
+                @Override public void mousePressed(MouseEvent e) { this.mouseClicked(e); }
                 @Override public void mouseReleased(MouseEvent e) { }
             });
             sentencePanel.add(lbl);

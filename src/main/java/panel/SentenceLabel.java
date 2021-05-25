@@ -90,8 +90,6 @@ public class SentenceLabel extends JLabel {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D gr = (Graphics2D) g;
-//        gr.setColor(Color.black);
-//        gr.fill(this);
 
         gr.setColor(COLOR_NEGATIVE);
         gr.fillRect(0, 0, this.getWidth(), negHeight);
