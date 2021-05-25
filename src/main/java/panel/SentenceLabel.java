@@ -73,7 +73,7 @@ public class SentenceLabel extends JLabel {
     public void init() {
         double totalWords = sentence.getWords().size();
 //        double totalHeight = Utils.SENTENCE_SIZE.getHeight();
-        double totalHeight = (int)customLog(1.05, totalWords * wordSize);
+        double totalHeight = (int)customLog(1.035, totalWords * wordSize);
 //        double totalHeight = (int)Math.log1p(totalWords * wordSize);
         
         this.setPreferredSize(new Dimension(this.getPreferredSize().width, (int)(totalHeight)));

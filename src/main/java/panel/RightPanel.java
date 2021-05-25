@@ -242,6 +242,7 @@ public class RightPanel extends JScrollPane {
         sentencePanel.setBackground(Utils.GRAY3);
         sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
         sentencePanel.addMouseListener(new MouseListener() {
+            private boolean detectedPress = false;
             @Override public void mouseClicked(MouseEvent e) {
                 // all words are clicked
                 onWordsClick(clickedSentence.getSentence().getWords());
@@ -256,7 +257,7 @@ public class RightPanel extends JScrollPane {
                 sentencePanel.setBackground(Utils.GRAY3);
                 sentencePanel.repaint();
             }
-            @Override public void mousePressed(MouseEvent e) { this.mouseClicked(e); }
+            @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }
         });
         
@@ -283,7 +284,7 @@ public class RightPanel extends JScrollPane {
                     sentencePanel.setBackground(Utils.GRAY3);
                     sentencePanel.repaint();
                 }
-                @Override public void mousePressed(MouseEvent e) { this.mouseClicked(e); }
+                @Override public void mousePressed(MouseEvent e) { }
                 @Override public void mouseReleased(MouseEvent e) { }
             });
             sentencePanel.add(lbl);
