@@ -30,6 +30,16 @@ public class NGramEntry extends AbsWord {
     }
     
     @Override
+    public double getImagery() {
+        throw new RuntimeException("Unsupported getImageryfor class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
+    public double getActivation() {
+        throw new RuntimeException("Unsupported getActivation class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
     public String toString() {
         return "["+getTag()+" '"+sourceText+"' seqNum:'" + seqNumber + "']";
     }

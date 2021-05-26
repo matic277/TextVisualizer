@@ -54,7 +54,7 @@ public class TopPanel extends JPanel {
         
         dropdownPanel = new JPanel();
         dropdownPanel.setLayout(new BorderLayout());
-    
+        
         dropdownPanel.add(title, BorderLayout.NORTH);
         dropdownPanel.add(dropdownType, BorderLayout.CENTER);
         

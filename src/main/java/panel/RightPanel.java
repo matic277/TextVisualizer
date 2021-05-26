@@ -26,6 +26,8 @@ public class RightPanel extends JScrollPane {
     
     BottomPanel parent;
     
+    VisualType currentVisualType;
+    
     List<SentenceLabel> allSelectedSentences = new ArrayList<>(10);
     
     JPanel mainPanel;
@@ -69,6 +71,7 @@ public class RightPanel extends JScrollPane {
         this.chapters = parent.parent.getChapters();
         
 //        content.setParent(this);
+        currentVisualType = VisualType.PLEASANTNESS;
     
         mainPanel = new JPanel();
         mainPanel.setBackground(Utils.GRAY3);
@@ -263,7 +266,7 @@ public class RightPanel extends JScrollPane {
         
         // SELECTED SENTENCE
         for (AbsWord word : clickedSentence.getSentence().getWords()) {
-            WordLabel lbl = new WordLabel(this, sentencesPanel, word);
+            WordLabel lbl = new WordLabel(this, sentencesPanel, word, currentVisualType);
             lbl.setRightPanel(this);
             lbl.setParentSentence(clickedSentence.getSentence());
             lbl.addMouseListener(new MouseListener() {
@@ -279,7 +282,7 @@ public class RightPanel extends JScrollPane {
                     sentencePanel.repaint();
                 }
                 @Override public void mouseExited(MouseEvent e) {
-                    lbl.setBackground(lbl.NORMAL_COLOR);
+                    lbl.setBackground(lbl.CURRENT_COLOR);
                     sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
                     sentencePanel.setBackground(Utils.GRAY3);
                     sentencePanel.repaint();
@@ -328,6 +331,7 @@ public class RightPanel extends JScrollPane {
     
     public void onVisualTypeChange(VisualType selectedItem) {
         // TODO
+        currentVisualType = selectedItem;
     }
     
     static class CustomRenderer extends DefaultTableCellRenderer {

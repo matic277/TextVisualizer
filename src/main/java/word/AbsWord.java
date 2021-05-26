@@ -46,7 +46,19 @@ public abstract class AbsWord {
         return false;
     }
     
+    public boolean hasImageryValue() {
+        return false;
+    }
+    
+    public boolean hasActivationValue() {
+        return false;
+    }
+    
     public abstract double getSentimentValue();
+    
+    public abstract double getActivation();
+    
+    public abstract double getImagery();
     
     public Map<AbsMeasurableWord.MapKey, String> getStatsMap() { return this.statsMap; }
     

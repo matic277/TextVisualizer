@@ -25,6 +25,16 @@ public class URL extends AbsWord {
     }
     
     @Override
+    public double getImagery() {
+        throw new RuntimeException("Unsupported getImageryfor class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
+    public double getActivation() {
+        throw new RuntimeException("Unsupported getActivation class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
     public boolean checkIntegrity() {
         return true;
     }

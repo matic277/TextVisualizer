@@ -19,16 +19,21 @@ public class LeftPanel extends JScrollPane {
     
     BottomPanel parent;
     
+    VisualType currentVisualType;
+    
     JPanel mainPanel;
     JPanel titlePanel;
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
+    
     
     public LeftPanel(BottomPanel parent) {
         this.parent = parent;
         this.chapters = parent.parent.getChapters();
         this.setOpaque(true);
         this.setBackground(Utils.GRAY3);
+        
+        currentVisualType = VisualType.PLEASANTNESS;
         
         this.getVerticalScrollBar().setUnitIncrement(16);
 //        this.getHorizontalScrollBar().setUnitIncrement(16);
@@ -96,6 +101,7 @@ public class LeftPanel extends JScrollPane {
         // Do nothing ?
     }
     
+    // Hover = sliding window! (not on mouse hover)
     public void onSentenceHover(List<SentenceLabel> hoveredSentences) {
         mainPanel.removeAll();
         mainPanel.add(titlePanel); // TODO: readding everytime, fix later
@@ -145,7 +151,8 @@ public class LeftPanel extends JScrollPane {
             });
             
             hoveredSentence.getSentence().getWords().forEach(w -> {
-                WordLabel lbl = new WordLabel(this, sentencePanel, w);
+                WordLabel lbl = new WordLabel(this, sentencePanel, w, currentVisualType);
+                lbl.setName("WORDLBL=> " + w.toString());
                 lbl.setRightPanel(this.parent.rightPanel);
                 lbl.setParentSentence(hoveredSentence.sentence);
                 lbl.addMouseListener(new MouseListener() {
@@ -164,7 +171,7 @@ public class LeftPanel extends JScrollPane {
                         sentencePanel.repaint();
                     }
                     @Override public void mouseExited(MouseEvent e) {
-                        lbl.setBackground(lbl.NORMAL_COLOR);
+                        lbl.setBackground(lbl.CURRENT_COLOR);
                         sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
                         sentencePanel.setBackground(Utils.GRAY3);
                         sentencePanel.repaint();
@@ -198,7 +205,18 @@ public class LeftPanel extends JScrollPane {
         this.parent.updateUI();
     }
     
-    public void onVisualTypeChange(VisualType selectedItem) {
+    public void onVisualTypeChange(VisualType selectedType) {
+        currentVisualType = selectedType;
+        
         // TODO
+        Arrays.stream(mainPanel.getComponents()).forEach(c -> {
+            JPanel sentencePanel = ((JPanel) c);
+            Arrays.stream(sentencePanel.getComponents()).forEach(lbl -> {
+                if (lbl instanceof WordLabel wrdlbl) {
+//                    System.out.println("IS => " + wrdlbl);
+                    wrdlbl.onVisualTypeChange(currentVisualType);
+                }
+            });
+        });
     }
 }

@@ -22,6 +22,16 @@ public class NegationWord extends AbsWord {
     }
     
     @Override
+    public double getImagery() {
+        throw new RuntimeException("Unsupported getImageryfor class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
+    public double getActivation() {
+        throw new RuntimeException("Unsupported getActivation class " + this.getClass().getSimpleName());
+    }
+    
+    @Override
     public boolean checkIntegrity() {
         if (sourceText.length() < 2 || sourceText.length() > 10) return false;
         return true;

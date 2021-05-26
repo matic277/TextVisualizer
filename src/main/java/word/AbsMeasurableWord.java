@@ -34,9 +34,11 @@ public abstract class AbsMeasurableWord extends AbsWord {
         statsMap.put(MapKey.TAG, this.getTag());
     }
     
-    @Override
-    public boolean hasSentimentValue() { return true; }
+    @Override public boolean hasSentimentValue() { return true; }
+    @Override public boolean hasImageryValue() { return true; }
+    @Override public boolean hasActivationValue() { return true; }
     
+    // PLEASANTNESS
     public boolean isPositivePleasantness() { return pleasantness > POSITIVE_THRESHOLD; }
     public static boolean isPositivePleasantness(double pleasantness) { return pleasantness > POSITIVE_THRESHOLD; }
     
@@ -45,6 +47,26 @@ public abstract class AbsMeasurableWord extends AbsWord {
     
     public boolean isNegativePleasantness() { return pleasantness < NEUTRAL_THRESHOLD; }
     public static boolean isNegativePleasantness(double pleasantness) { return pleasantness < NEUTRAL_THRESHOLD; }
+    
+    // IMAGERY
+    public boolean isHighImagery() { return imagery > POSITIVE_THRESHOLD; }
+    public static boolean isHighImagery(double imagery) { return imagery > POSITIVE_THRESHOLD; }
+    
+    public boolean isNeutralImagery() { return imagery >= NEUTRAL_THRESHOLD && imagery <= POSITIVE_THRESHOLD; }
+    public static boolean isNeutralImagery(double imagery) { return imagery >= NEUTRAL_THRESHOLD && imagery <= POSITIVE_THRESHOLD; }
+    
+    public boolean isLowImagery() { return imagery < NEUTRAL_THRESHOLD; }
+    public static boolean isLowImagery(double imagery) { return imagery < NEUTRAL_THRESHOLD; }
+    
+    // ACTIVATION
+    public boolean isHighActivation() { return activation > POSITIVE_THRESHOLD; }
+    public static boolean isHighActivation(double activation) { return activation > POSITIVE_THRESHOLD; }
+    
+    public boolean isNeutralActivation() { return activation >= NEUTRAL_THRESHOLD && imagery <= POSITIVE_THRESHOLD; }
+    public static boolean isNeutralActivation(double activation) { return activation >= NEUTRAL_THRESHOLD && activation <= POSITIVE_THRESHOLD; }
+    
+    public boolean isLowActivation() { return activation < NEUTRAL_THRESHOLD; }
+    public static boolean isLowActivation(double activation) { return activation < NEUTRAL_THRESHOLD; }
     
     public void magnifyPleasantness() {
         pleasantness *= magnitude;
@@ -60,6 +82,18 @@ public abstract class AbsMeasurableWord extends AbsWord {
         if (isNeutralPleasantness()) return "(NEU)";
         if (isPositivePleasantness()) return "(POS)";
         return "(NEG)";
+    }
+    
+    protected String getActivationTag() {
+        if (isNeutralActivation()) return "(NEU)";
+        if (isHighActivation()) return "(HIG)";
+        return "(LOW)";
+    }
+    
+    protected String getImageryTag() {
+        if (isNeutralImagery()) return "(NEU)";
+        if (isHighImagery()) return "(HIG)";
+        return "(LOW)";
     }
     
     protected boolean checkValidValue(double value) {

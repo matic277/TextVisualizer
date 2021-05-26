@@ -29,9 +29,13 @@ public class ChaptersPanel extends JScrollPane {
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
+    VisualType currentVisualType;
+    
     public ChaptersPanel(TopPanel parent) {
         this.parent = parent;
         this.chapters = parent.chapters;
+        
+        currentVisualType = VisualType.PLEASANTNESS;
         
         slider = new SlidingWindow(this);
         
@@ -80,7 +84,7 @@ public class ChaptersPanel extends JScrollPane {
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
             
             v.forEach(s -> {
-                SentenceLabel lbl = new SentenceLabel(this, s);
+                SentenceLabel lbl = new SentenceLabel(this, s, currentVisualType);
                 lbl.init();
                 sentencesPanel.add(lbl);
             });
@@ -92,17 +96,27 @@ public class ChaptersPanel extends JScrollPane {
         });
     }
     
-    public void onVisualTypeChange(VisualType selectedItem) {
-        // TODO
+    public void onVisualTypeChange(VisualType visualType) {
+        currentVisualType = visualType;
+        chapterPanels.forEach(chapterPanel -> {
+            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
+            for (Component sentenceCmp : sentencesPanel.getComponents()) {
+                if (sentenceCmp instanceof SentenceLabel sentLbl) {
+                    sentLbl.onVisualTypeChange(visualType);
+                }
+            }
+            sentencesPanel.revalidate();
+        });
     }
     
     public void onSentenceWidthChange(int newWidth) {
         chapterPanels.forEach(chapterPanel -> {
             JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
             for (Component sentenceCmp : sentencesPanel.getComponents()) {
-                JLabel sentence = (JLabel) sentenceCmp;
-                sentence.setPreferredSize(new Dimension(newWidth, sentence.getHeight()));
-                sentence.setMinimumSize(new Dimension(newWidth, sentence.getHeight()));
+                if (sentenceCmp instanceof SentenceLabel sentLbl) {
+                    sentLbl.setPreferredSize(new Dimension(newWidth, sentLbl.getHeight()));
+                    sentLbl.setMinimumSize(new Dimension(newWidth, sentLbl.getHeight()));
+                }
             }
             sentencesPanel.revalidate();
         });
