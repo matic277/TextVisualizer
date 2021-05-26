@@ -10,13 +10,21 @@ public abstract class AbsMeasurableWord extends AbsWord {
     // pleasantness get amplified by
     protected double magnitude = 1.3;
     
+    
+    // [-1, 1]
+    protected double pleasantness = 0;  // (unpleasant) - (pleasant)
     public static final double POSITIVE_THRESHOLD = 0.3;
     public static final double NEUTRAL_THRESHOLD = -0.3;
     
-    // for all: [-1, 1]
-    protected double pleasantness = 0;  // (unpleasant) - (pleasant)
+    // [0, 2]
     protected double activation = 0;    // (passive) - (active)
+    public static final double ACTIVATION_HIGH_THRESHOLD = 1.3;
+    public static final double ACTIVATION_MED_THRESHOLD = 0.7;
+    
+    // [0, 2]
     protected double imagery = 0;       // (difficult to form a mental picture of this word) - (easy to form a mental picture)
+    public static final double IMAGERY_HIGH_THRESHOLD = 1.3;
+    public static final double IMAGERY_MED_THRESHOLD = 0.7;
     
     public AbsMeasurableWord(String source, String processed, String tag) {
         super(source, processed, tag);
@@ -49,24 +57,24 @@ public abstract class AbsMeasurableWord extends AbsWord {
     public static boolean isNegativePleasantness(double pleasantness) { return pleasantness < NEUTRAL_THRESHOLD; }
     
     // IMAGERY
-    public boolean isHighImagery() { return imagery > POSITIVE_THRESHOLD; }
-    public static boolean isHighImagery(double imagery) { return imagery > POSITIVE_THRESHOLD; }
+    public boolean isHighImagery() { return imagery > IMAGERY_HIGH_THRESHOLD; }
+    public static boolean isHighImagery(double imagery) { return imagery > IMAGERY_HIGH_THRESHOLD; }
     
-    public boolean isNeutralImagery() { return imagery >= NEUTRAL_THRESHOLD && imagery <= POSITIVE_THRESHOLD; }
-    public static boolean isNeutralImagery(double imagery) { return imagery >= NEUTRAL_THRESHOLD && imagery <= POSITIVE_THRESHOLD; }
+    public boolean isMediumImagery() { return imagery >= IMAGERY_MED_THRESHOLD && imagery <= IMAGERY_HIGH_THRESHOLD; }
+    public static boolean isMediumImagery(double imagery) { return imagery >= IMAGERY_MED_THRESHOLD && imagery <= IMAGERY_HIGH_THRESHOLD; }
     
-    public boolean isLowImagery() { return imagery < NEUTRAL_THRESHOLD; }
-    public static boolean isLowImagery(double imagery) { return imagery < NEUTRAL_THRESHOLD; }
+    public boolean isLowImagery() { return imagery < IMAGERY_MED_THRESHOLD; }
+    public static boolean isLowImagery(double imagery) { return imagery < IMAGERY_MED_THRESHOLD; }
     
     // ACTIVATION
-    public boolean isHighActivation() { return activation > POSITIVE_THRESHOLD; }
-    public static boolean isHighActivation(double activation) { return activation > POSITIVE_THRESHOLD; }
+    public boolean isHighActivation() { return activation > ACTIVATION_HIGH_THRESHOLD; }
+    public static boolean isHighActivation(double activation) { return activation > ACTIVATION_HIGH_THRESHOLD; }
     
-    public boolean isNeutralActivation() { return activation >= NEUTRAL_THRESHOLD && imagery <= POSITIVE_THRESHOLD; }
-    public static boolean isNeutralActivation(double activation) { return activation >= NEUTRAL_THRESHOLD && activation <= POSITIVE_THRESHOLD; }
+    public boolean isMediumActivation() { return activation >= ACTIVATION_MED_THRESHOLD && imagery <= ACTIVATION_HIGH_THRESHOLD; }
+    public static boolean isMediumActivation(double activation) { return activation >= ACTIVATION_MED_THRESHOLD && activation <= ACTIVATION_HIGH_THRESHOLD; }
     
-    public boolean isLowActivation() { return activation < NEUTRAL_THRESHOLD; }
-    public static boolean isLowActivation(double activation) { return activation < NEUTRAL_THRESHOLD; }
+    public boolean isLowActivation() { return activation < ACTIVATION_MED_THRESHOLD; }
+    public static boolean isLowActivation(double activation) { return activation < ACTIVATION_MED_THRESHOLD; }
     
     public void magnifyPleasantness() {
         pleasantness *= magnitude;
@@ -85,13 +93,13 @@ public abstract class AbsMeasurableWord extends AbsWord {
     }
     
     protected String getActivationTag() {
-        if (isNeutralActivation()) return "(NEU)";
+        if (isMediumActivation()) return "(NEU)";
         if (isHighActivation()) return "(HIG)";
         return "(LOW)";
     }
     
     protected String getImageryTag() {
-        if (isNeutralImagery()) return "(NEU)";
+        if (isMediumImagery()) return "(NEU)";
         if (isHighImagery()) return "(HIG)";
         return "(LOW)";
     }

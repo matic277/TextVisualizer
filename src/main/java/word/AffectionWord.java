@@ -13,8 +13,10 @@ public class AffectionWord extends AbsMeasurableWord {
         
         // -2 for normalizing from [1, 3] to [-1, 1]
         this.pleasantness = Double.parseDouble(pleasantness) - 2;
-        this.activation = Double.parseDouble(activation) - 2;
-        this.imagery = Double.parseDouble(imagery) - 2;
+    
+        // -1 for normalizing from [1, 3] to [0, 2]
+        this.activation = Double.parseDouble(activation) - 1;
+        this.imagery = Double.parseDouble(imagery) - 1;
     
         statsMap.put(MapKey.PLEASANTNESS, this.pleasantness+"");
         statsMap.put(MapKey.ACTIVATION, this.activation+"");

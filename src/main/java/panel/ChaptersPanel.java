@@ -85,7 +85,7 @@ public class ChaptersPanel extends JScrollPane {
             
             v.forEach(s -> {
                 SentenceLabel lbl = new SentenceLabel(this, s, currentVisualType);
-                lbl.init();
+                lbl.init(currentVisualType);
                 sentencesPanel.add(lbl);
             });
             

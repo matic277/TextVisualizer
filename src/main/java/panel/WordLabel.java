@@ -1,6 +1,5 @@
 package panel;
 
-import main.Pair;
 import main.Sentence;
 import main.Utils;
 import main.VisualType;
@@ -11,7 +10,6 @@ import word.StopWord;
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
 import java.awt.*;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -23,8 +21,6 @@ public class WordLabel extends JLabel {
     JComponent parent;
     JPanel containerParent;
     
-    RightPanel rightPanel;
-    
     public Color CURRENT_COLOR = new Color(0, 0, 0);
     public Color HOVERED_COLOR = new Color(0, 0, 0);
     
@@ -34,11 +30,11 @@ public class WordLabel extends JLabel {
     public static final Color SENTIMENT_NEGATIVE_COLOR = Utils.RED;
     // imagery
     public static final Color IMAGERY_HIGH_COLOR = new Color(66,133,244);
-    public static final Color IMAGERY_NEUTRAL_COLOR = new Color(120, 170, 238);
-    public static final Color IMAGERY_LOW_COLOR = new Color(196, 219, 246);
+    public static final Color IMAGERY_NEUTRAL_COLOR = new Color(137, 177, 238);
+    public static final Color IMAGERY_LOW_COLOR = new Color(204, 227, 246);
     // activation
     public static final Color ACTIVATION_HIGH_COLOR = new Color(128, 66,244);
-    public static final Color ACTIVATION_NEUTRAL_COLOR = new Color(166, 124,245);
+    public static final Color ACTIVATION_NEUTRAL_COLOR = new Color(172, 134, 243);
     public static final Color ACTIVATION_LOW_COLOR = new Color(212, 193, 246);
     
     // map: visualType  -> coloringFunction
@@ -93,7 +89,7 @@ public class WordLabel extends JLabel {
             System.out.println("IMAGERY COLORER: " + wrdLbl.word);
             if (wrdLbl.word instanceof AbsMeasurableWord absWord) {
                 wrdLbl.CURRENT_COLOR = absWord.isHighImagery() ?
-                        IMAGERY_HIGH_COLOR : absWord.isNeutralImagery() ?
+                        IMAGERY_HIGH_COLOR : absWord.isMediumImagery() ?
                         IMAGERY_NEUTRAL_COLOR : IMAGERY_LOW_COLOR;
                 wrdLbl.HOVERED_COLOR = wrdLbl.CURRENT_COLOR.brighter();
                 wrdLbl.setBackground(wrdLbl.CURRENT_COLOR);
@@ -119,7 +115,7 @@ public class WordLabel extends JLabel {
         return (wrdLbl) -> {
             if (wrdLbl.word instanceof AbsMeasurableWord absWord) {
                 wrdLbl.CURRENT_COLOR = absWord.isHighActivation() ?
-                        ACTIVATION_HIGH_COLOR : absWord.isNeutralActivation() ?
+                        ACTIVATION_HIGH_COLOR : absWord.isMediumActivation() ?
                         ACTIVATION_NEUTRAL_COLOR : ACTIVATION_LOW_COLOR;
                 wrdLbl.HOVERED_COLOR = wrdLbl.CURRENT_COLOR.brighter();
                 wrdLbl.setBackground(wrdLbl.CURRENT_COLOR);
@@ -145,8 +141,6 @@ public class WordLabel extends JLabel {
         colorMap.get(type).accept(this);
         this.setBackground(CURRENT_COLOR);
     }
-    
-    public void setRightPanel(RightPanel rightPanel) { this.rightPanel = rightPanel; }
     
     public void setParentSentence(Sentence parent) {
         this.parentSentence = parent;

@@ -204,6 +204,29 @@ public class RightPanel extends JScrollPane {
         allSelectedSentences.forEach(s -> appendWordsToTable(s.getSentence().getWords()));
     }
     
+    public void onRemoveSentencePress(SentenceRowPanel sentencePanel) {
+        boolean removed = allSelectedSentences.removeIf(s -> {
+            if (s == sentencePanel.sentenceLabel) {
+                s.onUnselect();
+                return true;
+            }
+            return false;
+        });
+        if (!removed) throw new RuntimeException("Not removed! Couldn't find sentence:\n" + sentencePanel.sentenceLabel.sentence);
+        
+        // returns void, don't know how else to check
+        int beforeRemoving = sentencesPanel.getComponents().length;
+        sentencesPanel.remove(sentencePanel);
+        int afterRemoving = sentencesPanel.getComponents().length;
+        // should be one less exactly
+        if ((beforeRemoving  - afterRemoving) != 1) throw new RuntimeException("Not removed! Couldn't find " + SentenceRowPanel.class.getSimpleName() + ".");
+        
+        sentencesPanel.setPreferredSize(new Dimension(sentencesPanel.getSize().width, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height));
+        sentencesPanel.revalidate();
+        sentencesPanel.doLayout();
+        sentencesPanel.repaint();
+    }
+    
     private void onClearSentencesBtnPress() {
         System.out.println("Clear sentences pressed");
         allSelectedSentences.forEach(SentenceLabel::onUnselect);
@@ -241,58 +264,33 @@ public class RightPanel extends JScrollPane {
     
         System.out.println("sentence added");
         
-        JPanel sentencePanel = new SentenceRowPanel(sentencesPanel, clickedSentence);
-        sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
-        sentencePanel.setBackground(Utils.GRAY3);
-        sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-        sentencePanel.addMouseListener(new MouseListener() {
+        // TODO
+        // move this stuff to sentenceRowPnl class
+        SentenceRowPanel mainSentencePanel = new SentenceRowPanel(sentencesPanel, clickedSentence, currentVisualType);
+        mainSentencePanel.setRightPanel(this);
+//        mainSentencePanel.setLayout(new BorderLayout());
+        mainSentencePanel.setBackground(Utils.GRAY3);
+        mainSentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+        mainSentencePanel.addMouseListener(new MouseListener() {
             @Override public void mouseClicked(MouseEvent e) {
                 // all words are clicked
                 onWordsClick(clickedSentence.getSentence().getWords());
             }
             @Override public void mouseEntered(MouseEvent e) {
-                sentencePanel.setBackground(Color.white);
-                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                sentencePanel.repaint();
+                mainSentencePanel.setBackground(Color.white);
+                mainSentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+                mainSentencePanel.repaint();
             }
             @Override public void mouseExited(MouseEvent e) {
-                sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                sentencePanel.setBackground(Utils.GRAY3);
-                sentencePanel.repaint();
+                mainSentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                mainSentencePanel.setBackground(Utils.GRAY3);
+                mainSentencePanel.repaint();
             }
             @Override public void mousePressed(MouseEvent e) { }
             @Override public void mouseReleased(MouseEvent e) { }
         });
         
-        // SELECTED SENTENCE
-        for (AbsWord word : clickedSentence.getSentence().getWords()) {
-            WordLabel lbl = new WordLabel(this, sentencesPanel, word, currentVisualType);
-            lbl.setRightPanel(this);
-            lbl.setParentSentence(clickedSentence.getSentence());
-            lbl.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    // only one word is clicked
-                    parent.rightPanel.onWordsClick(Collections.singletonList(word));
-                }
-                @Override public void mouseEntered(MouseEvent e) {
-                    lbl.setBackground(lbl.HOVERED_COLOR);
-                    sentencePanel.setBackground(Color.white);
-                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                    sentencePanel.repaint();
-                }
-                @Override public void mouseExited(MouseEvent e) {
-                    lbl.setBackground(lbl.CURRENT_COLOR);
-                    sentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                    sentencePanel.setBackground(Utils.GRAY3);
-                    sentencePanel.repaint();
-                }
-                @Override public void mousePressed(MouseEvent e) { }
-                @Override public void mouseReleased(MouseEvent e) { }
-            });
-            sentencePanel.add(lbl);
-        }
-        sentencesPanel.add(sentencePanel);
+        sentencesPanel.add(mainSentencePanel);
         
         // some resizing
         // -20 for scrollbar, +1 so border is visible (or else it just barely gets cut-off on last sentence for some reason)
@@ -329,9 +327,28 @@ public class RightPanel extends JScrollPane {
         }
     }
     
-    public void onVisualTypeChange(VisualType selectedItem) {
+    public void onVisualTypeChange(VisualType visualType) {
+        currentVisualType = visualType;
+        
         // TODO
-        currentVisualType = selectedItem;
+        // This is kind of disgusting (casting)
+        // Could do: custom classes that extend JPanels
+        // and keep track of its components, which could be
+        // retrieved by a simple class method.
+        // That way, there is no need for JPanel.getComponents()
+        // and casting.
+        // Same applies to other Panels.onVisualTypeChange, where i
+        // do the same shit as here.
+        Arrays.stream(sentencesPanel.getComponents()).forEach(sc -> {
+            if (sc instanceof SentenceRowPanel srp) {
+                srp.onVisualTypeChange(visualType);
+//                Arrays.stream(srp.getComponents()).forEach(wc -> {
+//                    if (wc instanceof WordLabel wrdlbl) {
+//                        wrdlbl.onVisualTypeChange(visualType);
+//                    }
+//                });
+            }
+        });
     }
     
     static class CustomRenderer extends DefaultTableCellRenderer {

@@ -16,6 +16,8 @@ public class Sentence {
     ArrayList<AbsWord> words;
     
     private double sentiment;
+    private double imagery;
+    private double activation;
     
     public int sentenceNumber;
     
@@ -26,6 +28,14 @@ public class Sentence {
             sumOfNeutralWords,
             numOfPositiveWords,
             sumOfPositiveWords;
+    
+    public int numOfHighImageryWords,
+            numOfMediumImageryWords,
+            numOfLowImageryWords;
+    
+    public int numOfHighActivationWords,
+            numOfMediumActivationWords,
+            numOfLowActivationWords;
     
     public Sentence(String sentence, int sentenceNumber) {
         this.sentence = sentence;
@@ -47,11 +57,15 @@ public class Sentence {
     }
     
     private void doSomeStatistics() {
+        this.imagery = 0;
+        this.activation = 0;
         for (AbsWord word : words) {
             // AffectionWord, Hastag, Smiley, Acronym, Phrase, (Emoji)
-            if (word instanceof AbsMeasurableWord) {
-                AbsMeasurableWord mw = (AbsMeasurableWord) word;
+            if (word instanceof AbsMeasurableWord mw) {
                 double pleasantness = mw.getPleasantness();
+                
+                imagery += mw.getImagery();
+                activation += mw.getActivation();
     
                 if (mw.isNegativePleasantness()) {
                     numOfNegativeWords++;
@@ -59,13 +73,27 @@ public class Sentence {
                 } else if (mw.isNeutralPleasantness()) {
                     numOfNeutralWords++;
                     sumOfNeutralWords += pleasantness;
-        
                 } else {
                     numOfPositiveWords++;
                     sumOfPositiveWords += pleasantness;
                 }
+    
+                if (mw.isHighImagery()) {
+                    numOfHighImageryWords++;
+                } else if (mw.isMediumImagery()) {
+                    numOfMediumImageryWords++;
+                } else {
+                    numOfLowImageryWords++;
+                }
+    
+                if (mw.isHighActivation()) {
+                    numOfHighActivationWords++;
+                } else if (mw.isMediumActivation()) {
+                    numOfMediumActivationWords++;
+                } else {
+                    numOfLowActivationWords++;
+                }
             }
-
             // URL, Target, StopWord, Other, NegationWord
             else {
                 numOfNeutralWords++;
@@ -83,8 +111,7 @@ public class Sentence {
         double sentiment = 0;
         for (int i=0; i<words.size(); i++) {
             AbsWord w = words.get(i);
-            if (w instanceof AbsMeasurableWord) {
-                AbsMeasurableWord mw = (AbsMeasurableWord) w;
+            if (w instanceof AbsMeasurableWord mw) {
                 sentiment += mw.getPleasantness();
             }
         }
@@ -126,17 +153,13 @@ public class Sentence {
 //                .sum();
     }
     
-    public void magnifySentiment() {
-        this.sentiment *= magnifyValue;
-    }
+    public void magnifySentiment() { this.sentiment *= magnifyValue; }
     
-    public double getSentiment() {
-        return sentiment;
-    }
+    public double getSentiment() { return sentiment; }
+    public double getImagery() { return imagery; }
+    public double getActivation() { return activation; }
     
-    public String getSentenceString() {
-        return sentence;
-    }
+    public String getSentenceString() { return sentence; }
     
     public String toStringLast() {
         DecimalFormat format = new DecimalFormat("#.###");

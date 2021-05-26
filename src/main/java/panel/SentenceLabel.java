@@ -48,14 +48,14 @@ public class SentenceLabel extends JLabel {
     public static Color SENTIMENT_NEGATIVE_COLOR_HOVERED = SENTIMENT_NEGATIVE_COLOR.brighter();
     // imagery
     public static final Color IMAGERY_HIGH_COLOR = new Color(66,133,244);
-    public static final Color IMAGERY_NEUTRAL_COLOR = new Color(120, 170, 238);
-    public static final Color IMAGERY_LOW_COLOR = new Color(196, 219, 246);
+    public static final Color IMAGERY_NEUTRAL_COLOR = new Color(137, 177, 238);
+    public static final Color IMAGERY_LOW_COLOR = new Color(204, 227, 246);
     public static Color IMAGERY_HIGH_COLOR_HOVERED = IMAGERY_HIGH_COLOR.brighter();
     public static Color IMAGERY_MED_COLOR_HOVERED = IMAGERY_NEUTRAL_COLOR.brighter();
     public static Color IMAGERY_LOW_COLOR_HOVERED = IMAGERY_LOW_COLOR.brighter();
     // activation
     public static final Color ACTIVATION_HIGH_COLOR = new Color(128, 66,244);
-    public static final Color ACTIVATION_NEUTRAL_COLOR = new Color(166, 124,245);
+    public static final Color ACTIVATION_NEUTRAL_COLOR = new Color(172, 134, 243);
     public static final Color ACTIVATION_LOW_COLOR = new Color(212, 193, 246);
     public static Color ACTIVATION_HIGH_COLOR_HOVERED = ACTIVATION_HIGH_COLOR.brighter();
     public static Color ACTIVATION_MED_COLOR_HOVERED = ACTIVATION_NEUTRAL_COLOR.brighter();
@@ -73,13 +73,13 @@ public class SentenceLabel extends JLabel {
         super();
         this.sentence = sentence;
         this.parent = parent;
-    
+        
         this.setOpaque(true);
         this.setPreferredSize(Utils.SENTENCE_SIZE);
         
         colorMap.get(visualType).accept(this);
         addListener();
-    
+        
         actualBorderDrawer = (g) -> {
             g.setStroke(new BasicStroke(1));
             
@@ -101,26 +101,36 @@ public class SentenceLabel extends JLabel {
         return Math.log(logNumber) / Math.log(base);
     }
     
-    public void init() {
-        double totalWords = sentence.getWords().size();
-//        double totalHeight = Utils.SENTENCE_SIZE.getHeight();
+    public void init(VisualType visualType) {
         int wordSize = 3;
+        double totalWords = sentence.getWords().size();
         double totalHeight = (int)customLog(1.035, totalWords * wordSize);
-//        double totalHeight = (int)Math.log1p(totalWords * wordSize);
         
         this.setPreferredSize(new Dimension(this.getPreferredSize().width, (int)(totalHeight)));
         
-        double posPerc = sentence.numOfPositiveWords / totalWords;
-        double neuPerc = sentence.numOfNeutralWords  / totalWords;
+        double highPerc;
+        double medPerc;
         
-        posHeight = (int)Math.ceil(totalHeight * posPerc);
-        neuHeight = (int)Math.floor(totalHeight * neuPerc);
+        if (visualType == VisualType.PLEASANTNESS) {
+            highPerc = sentence.numOfPositiveWords / totalWords;
+            medPerc = sentence.numOfNeutralWords / totalWords;
+        } else if (visualType == VisualType.ACTIVATION) {
+            highPerc = sentence.numOfHighActivationWords / totalWords;
+            medPerc = sentence.numOfMediumActivationWords / totalWords;
+        } else {
+            highPerc = sentence.numOfHighImageryWords / totalWords;
+            medPerc = sentence.numOfMediumImageryWords / totalWords;
+        }
+        
+        posHeight = (int)Math.ceil(totalHeight * highPerc);
+        neuHeight = (int)Math.floor(totalHeight * medPerc);
         negHeight = (int) totalHeight - posHeight - neuHeight; // whatever is left
         
     }
     
     public void onVisualTypeChange(VisualType visualType) {
         colorMap.get(visualType).accept(this);
+        this.init(visualType);
         this.repaint();
     }
     
