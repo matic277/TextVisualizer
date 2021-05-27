@@ -12,10 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ChaptersPanel extends JScrollPane {
     
@@ -35,7 +33,7 @@ public class ChaptersPanel extends JScrollPane {
         this.parent = parent;
         this.chapters = parent.chapters;
         
-        currentVisualType = VisualType.PLEASANTNESS;
+        currentVisualType = VisualType.SENTIMENT;
         
         slider = new SlidingWindow(this);
         

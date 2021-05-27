@@ -40,7 +40,7 @@ public class WordLabel extends JLabel {
     // map: visualType  -> coloringFunction
     private static final Map<VisualType, Consumer<WordLabel>> colorMap = new HashMap<>();
     static {
-        colorMap.put(VisualType.PLEASANTNESS, getSentimentColorer());
+        colorMap.put(VisualType.SENTIMENT, getSentimentColorer());
         colorMap.put(VisualType.IMAGERY, getImageryColorer());
         colorMap.put(VisualType.ACTIVATION, getActivationColorer());
     }

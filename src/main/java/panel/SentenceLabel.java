@@ -64,7 +64,7 @@ public class SentenceLabel extends JLabel {
     // map: visualType  -> coloringFunction
     private static final Map<VisualType, Consumer<SentenceLabel>> colorMap = new HashMap<>();
     static {
-        colorMap.put(VisualType.PLEASANTNESS, getSentimentColorer());
+        colorMap.put(VisualType.SENTIMENT, getSentimentColorer());
         colorMap.put(VisualType.IMAGERY, getImageryColorer());
         colorMap.put(VisualType.ACTIVATION, getActivationColorer());
     }
@@ -111,7 +111,7 @@ public class SentenceLabel extends JLabel {
         double highPerc;
         double medPerc;
         
-        if (visualType == VisualType.PLEASANTNESS) {
+        if (visualType == VisualType.SENTIMENT) {
             highPerc = sentence.numOfPositiveWords / totalWords;
             medPerc = sentence.numOfNeutralWords / totalWords;
         } else if (visualType == VisualType.ACTIVATION) {

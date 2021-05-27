@@ -2,7 +2,7 @@ package main;
 
 public enum VisualType {
     
-    PLEASANTNESS(0, "Pleasantness"),
+    SENTIMENT(0, "Sentiment"),
     IMAGERY(1, "Imagery"),
     ACTIVATION(2, "Activation")
     ;

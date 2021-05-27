@@ -33,7 +33,7 @@ public class LeftPanel extends JScrollPane {
         this.setOpaque(true);
         this.setBackground(Utils.GRAY3);
         
-        currentVisualType = VisualType.PLEASANTNESS;
+        currentVisualType = VisualType.SENTIMENT;
         
         this.getVerticalScrollBar().setUnitIncrement(16);
 //        this.getHorizontalScrollBar().setUnitIncrement(16);

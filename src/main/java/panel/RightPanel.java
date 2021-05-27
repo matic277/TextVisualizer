@@ -71,7 +71,7 @@ public class RightPanel extends JScrollPane {
         this.chapters = parent.parent.getChapters();
         
 //        content.setParent(this);
-        currentVisualType = VisualType.PLEASANTNESS;
+        currentVisualType = VisualType.SENTIMENT;
     
         mainPanel = new JPanel();
         mainPanel.setBackground(Utils.GRAY3);

@@ -3,7 +3,6 @@ package panel;
 import main.Sentence;
 import main.Utils;
 import main.VisualType;
-import word.AbsMeasurableWord;
 import word.AbsWord;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SentenceRowPanel extends JPanel {
@@ -30,7 +28,7 @@ public class SentenceRowPanel extends JPanel {
     
     // map: visualType -> keyExtractor(extracting Sentence.getSentiment or getActivation or getImagery)
     private static Map<VisualType, Function<Sentence, Double>> typeMap = new HashMap<>(); static {
-        typeMap.put(VisualType.PLEASANTNESS, Sentence::getSentiment);
+        typeMap.put(VisualType.SENTIMENT, Sentence::getSentiment);
         typeMap.put(VisualType.IMAGERY, Sentence::getImagery);
         typeMap.put(VisualType.ACTIVATION, Sentence::getActivation);
     }
