@@ -12,7 +12,6 @@ public enum VisualType {
     
     VisualType(int id_, String dispVal) { id=id_; displayValue=dispVal; }
     
-    
     @Override
     public String toString() { return displayValue; }
 }

@@ -1,5 +1,7 @@
 package window;
 
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
@@ -26,9 +28,12 @@ public class MainWindow {
         frame.setPreferredSize(new Dimension(Utils.INITIAL_WINDOW_WIDTH, Utils.INITIAL_WINDOW_HEIGHT));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        
-        try { UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); }
-        catch (Exception e) {e.printStackTrace();}
+    
+        FlatLightLaf.install();
+        UIManager.put("Button.arc", 15 );
+        UIManager.put("Component.arc", 30 );
+        UIManager.put("Component.focusWidth", 1);
+        UIManager.put("TextComponent.arc", 50 );
         
         mainPanel = new MainPanel(this);
         
