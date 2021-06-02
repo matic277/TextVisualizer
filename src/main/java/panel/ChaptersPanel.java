@@ -54,6 +54,9 @@ public class ChaptersPanel extends JScrollPane {
         mainPanel.addMouseMotionListener(listener);
         
         this.setViewportView(mainPanel);
+        
+        this.getVerticalScrollBar().setUnitIncrement(16);
+        this.getHorizontalScrollBar().setUnitIncrement(16);
     }
     
     public void init() {
@@ -92,6 +95,11 @@ public class ChaptersPanel extends JScrollPane {
             mainPanel.add(chapterPanel);
             mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         });
+        
+        mainPanel.revalidate();
+        mainPanel.doLayout();
+        mainPanel.repaint();
+        this.updateUI();
     }
     
     public void onVisualTypeChange(VisualType visualType) {
@@ -123,6 +131,18 @@ public class ChaptersPanel extends JScrollPane {
     public void onSliderWidthChange(int newWidth) {
         slider.setSize(newWidth, slider.height);
         this.repaint();
+    }
+    
+    public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
+        chapters = processedChapters;
+        slider.setLocation(10, 10);
+        
+        mainPanel.removeAll();
+        chapterPanels.clear();
+        
+        init();
+    
+        System.out.println(" -> Chapters inited.");
     }
     
     class SlidingWindowListener implements MouseMotionListener, MouseListener {

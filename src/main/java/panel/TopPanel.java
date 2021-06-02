@@ -16,6 +16,9 @@ public class TopPanel extends JPanel {
     MainPanel parent;
     
     JPanel controlPanel;
+        JPanel importFilePanel;
+            JTextField importField;
+            JButton importBtn;
         JPanel sentenceSliderPanel;
             JSlider sentenceWidthSlider;
         JPanel sliderSliderPanel;
@@ -34,6 +37,7 @@ public class TopPanel extends JPanel {
         controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         
+        initImportField();
         initSentenceWindthSlider();
         initSliderWidthSlider();
         initDropdownPanel();
@@ -43,6 +47,28 @@ public class TopPanel extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.NORTH);
         this.add(chaptersPanel, BorderLayout.CENTER);
+    }
+    
+    private void initImportField() {
+        JLabel title = new JLabel("Import text from file: ");
+        title.setFont(Utils.getFont(12));
+        
+        importField = new JTextField("./texts/SherlockHolmes-AStudyInScarlet.txt");
+        importField.addActionListener(a -> parent.onVisualTypeChange((VisualType) dropdownType.getSelectedItem()));
+    
+        importFilePanel = new JPanel();
+        importFilePanel.setLayout(new BorderLayout());
+        
+        importBtn = new JButton("Import");
+        importBtn.addActionListener(a -> {
+            parent.getMainWindow().onNewTextImport(importField);
+        });
+        
+        importFilePanel.add(title, BorderLayout.NORTH);
+        importFilePanel.add(importField, BorderLayout.CENTER);
+        importFilePanel.add(importBtn, BorderLayout.SOUTH);
+        
+        controlPanel.add(importFilePanel);
     }
     
     private void initDropdownPanel() {
@@ -130,5 +156,10 @@ public class TopPanel extends JPanel {
     
     public void onVisualTypeChange(VisualType selectedItem) {
         chaptersPanel.onVisualTypeChange(selectedItem);
+    }
+    
+    public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
+        this.chapters = processedChapters;
+        chaptersPanel.onNewTextImport(processedChapters);
     }
 }

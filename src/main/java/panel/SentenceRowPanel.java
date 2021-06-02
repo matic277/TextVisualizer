@@ -17,6 +17,8 @@ import java.util.function.Function;
 
 public class SentenceRowPanel extends JPanel {
     
+    VisualType currentVisualType = VisualType.SENTIMENT; // default
+    
     JPanel mainSentencePanel;
     RightPanel rightPanel;
     SentenceLabel sentenceLabel;
@@ -42,16 +44,20 @@ public class SentenceRowPanel extends JPanel {
     public SentenceRowPanel(JPanel parent, SentenceLabel sentenceLabel, VisualType visualType) {
         this.mainSentencePanel = parent;
         this.sentenceLabel = sentenceLabel;
+        this.currentVisualType = visualType;
         
         this.setLayout(new BorderLayout());
         
         initStatsPanel();
-        initSentencePanel(visualType);
+        initSentencePanel(currentVisualType);
     }
     
     public void onVisualTypeChange(VisualType visualType) {
+        currentVisualType = visualType;
         Double val = typeMap.get(visualType).apply(sentenceLabel.sentence);
         visualTypeLbl.setText(" " + visualType.toString() + ": " + format.format(val));
+        visualTypeLbl.revalidate();
+        visualTypeLbl.doLayout();
         
         words.forEach(w -> w.onVisualTypeChange(visualType));
         
@@ -105,8 +111,8 @@ public class SentenceRowPanel extends JPanel {
         wordsNumLbl.setPreferredSize(new Dimension(wordsNumLbl.getPreferredSize().width, 11));
         infoContainer.add(wordsNumLbl);
         
-        visualTypeLbl = getStatLabel(" Sentiment: " + format.format(sentenceLabel.getSentence().getSentiment()));
-        visualTypeLbl.setPreferredSize(new Dimension(visualTypeLbl.getPreferredSize().width, 11));
+        visualTypeLbl = getStatLabel(currentVisualType.toString() + ": " + format.format(sentenceLabel.getSentence().getSentiment()));
+        visualTypeLbl.setSize(new Dimension(visualTypeLbl.getPreferredSize().width, 11));
         infoContainer.add(visualTypeLbl);
         
         statsContainer.add(removeSentenceLbl, BorderLayout.EAST);

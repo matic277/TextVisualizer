@@ -21,9 +21,8 @@ public class FileReader {
         this.chapters = new HashMap<>();
     }
     
-    public void readFile() {
-        try { Files.readAllLines(Paths.get(file)).forEach(this::processLine); }
-        catch (IOException e) { e.printStackTrace(); }
+    public void readFile() throws IOException {
+       Files.readAllLines(Paths.get(file)).forEach(this::processLine);
         
 //        chapters.forEach((k, v) -> {
 //            System.out.println("Key:{"+k+"} -> {"+v+"}");

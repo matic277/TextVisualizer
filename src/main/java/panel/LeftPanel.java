@@ -218,4 +218,19 @@ public class LeftPanel extends JScrollPane {
             });
         });
     }
+    
+//    JPanel mainPanel;
+//    JPanel titlePanel;
+//
+//    Map<Pair<Integer, String>, List<Sentence>> chapters;
+    public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
+        this.chapters = processedChapters;
+        
+        mainPanel.removeAll();
+        mainPanel.revalidate();
+        mainPanel.doLayout();
+        mainPanel.repaint();
+        
+        this.updateUI();
+    }
 }

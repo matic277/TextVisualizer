@@ -5,10 +5,11 @@ import window.MainWindow;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public class Main {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // available fonts
         String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         for ( int i = 0; i < fonts.length; i++ ) System.out.println(fonts[i]);

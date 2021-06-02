@@ -202,4 +202,8 @@ public class Sentence {
         sb.append("\n\t|");
         return sb.toString();
     }
+    
+    public String getSentence() {
+        return this.sentence;
+    }
 }

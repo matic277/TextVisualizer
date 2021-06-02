@@ -1,11 +1,13 @@
 package panel;
 
+import main.Pair;
 import main.Sentence;
 import main.Utils;
 import main.VisualType;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.Map;
 
 public class BottomPanel extends JSplitPane {
     
@@ -40,5 +42,10 @@ public class BottomPanel extends JSplitPane {
     public void onVisualTypeChange(VisualType selectedItem) {
         leftPanel.onVisualTypeChange(selectedItem);
         rightPanel.onVisualTypeChange(selectedItem);
+    }
+    
+    public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
+        rightPanel.onNewTextImport(processedChapters);
+        leftPanel.onNewTextImport(processedChapters);
     }
 }

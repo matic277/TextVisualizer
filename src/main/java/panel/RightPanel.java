@@ -64,7 +64,7 @@ public class RightPanel extends JScrollPane {
         }
     };
     
-    Map<Pair<Integer, String>, List<Sentence>> chapters;
+    Map<Pair<Integer, String>, List<Sentence>> chapters; // TODO this field is redundant?
     
     public RightPanel(BottomPanel parent) {
         this.parent = parent;
@@ -342,13 +342,23 @@ public class RightPanel extends JScrollPane {
         Arrays.stream(sentencesPanel.getComponents()).forEach(sc -> {
             if (sc instanceof SentenceRowPanel srp) {
                 srp.onVisualTypeChange(visualType);
-//                Arrays.stream(srp.getComponents()).forEach(wc -> {
-//                    if (wc instanceof WordLabel wrdlbl) {
-//                        wrdlbl.onVisualTypeChange(visualType);
-//                    }
-//                });
             }
         });
+    }
+    
+    public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
+        this.chapters = processedChapters;
+        
+        allSelectedSentences.clear();
+        sentencesPanel.removeAll();
+        sentencesPanel.revalidate();
+        sentencesPanel.repaint();
+        
+        table.removeAll();
+    
+        // need to call this otherwise this components doesn't get updated
+        // immediately, but only after resize happens
+        this.parent.updateUI();
     }
     
     static class CustomRenderer extends DefaultTableCellRenderer {
