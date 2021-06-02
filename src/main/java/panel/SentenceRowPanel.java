@@ -78,9 +78,11 @@ public class SentenceRowPanel extends JPanel {
         statsPanel.setLayout(new BorderLayout());
 //        statsPanel.setLayout(new WrapLayout(WrapLayout.LEFT));
         statsPanel.setOpaque(false);
-        
+    
+        Font hoveredFont = Utils.getBoldFont(14);
+        Font normalFont = Utils.getFont(14);
         JLabel removeSentenceLbl = new JLabel(" x ");
-        removeSentenceLbl.setFont(Utils.getFont(14));
+        removeSentenceLbl.setFont(normalFont);
         removeSentenceLbl.setPreferredSize(new Dimension(removeSentenceLbl.getPreferredSize().width,10));
         removeSentenceLbl.setForeground(Color.gray);
         removeSentenceLbl.setOpaque(false);
@@ -92,6 +94,7 @@ public class SentenceRowPanel extends JPanel {
             }
             @Override public void mouseEntered(MouseEvent e) {
                 removeSentenceLbl.setForeground(HOVERED_COLOR);
+                removeSentenceLbl.setFont(hoveredFont);
                 setBackground(Color.white);
                 setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
                 repaint();
@@ -99,6 +102,7 @@ public class SentenceRowPanel extends JPanel {
             }
             @Override public void mouseExited(MouseEvent e) {
                 removeSentenceLbl.setForeground(NORMAL_COLOR);
+                removeSentenceLbl.setFont(normalFont);
                 setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
                 setBackground(Utils.GRAY3);
                 repaint();

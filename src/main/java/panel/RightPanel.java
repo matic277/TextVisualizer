@@ -26,7 +26,7 @@ public class RightPanel extends JScrollPane {
     
     BottomPanel parent;
     
-    VisualType currentVisualType;
+    private static VisualType currentVisualType; // so that tabel renderer can see it... lame
     
     List<SentenceLabel> allSelectedSentences = new ArrayList<>(10);
     
@@ -154,8 +154,12 @@ public class RightPanel extends JScrollPane {
         table.setAutoCreateRowSorter(true);
         
         // custom column renderers
-        TableColumn col = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
-        col.setCellRenderer(new CustomRenderer());
+        TableColumn colSent = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
+        TableColumn colImag = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.IMAGERY));
+        TableColumn colActi = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.ACTIVATION));
+        colSent.setCellRenderer(new SentimentCustomRenderer());
+        colImag.setCellRenderer(new ImageryCustomRenderer());
+        colActi.setCellRenderer(new ActivationCustomRenderer());
         
         // sorter
         TableRowSorter<DefaultTableModel> tabSorter = new TableRowSorter<>(tableModel);
@@ -361,19 +365,39 @@ public class RightPanel extends JScrollPane {
         this.parent.updateUI();
     }
     
-    static class CustomRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    static class SentimentCustomRenderer extends DefaultTableCellRenderer {
+        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (value instanceof String s) {
-                double pleasantness = parseStringToDouble(s);
-                setForeground(AbsMeasurableWord.isPositivePleasantness(pleasantness) ?
-                        Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(pleasantness) ?
-                            Color.DARK_GRAY : Utils.RED);
+                double wordValue = parseStringToDouble(s);
+                setForeground(AbsMeasurableWord.isPositivePleasantness(wordValue) ?
+                        Utils.GREEN : AbsMeasurableWord.isNeutralPleasantness(wordValue) ?
+                        Color.DARK_GRAY : Utils.RED);
             }
             return c;
-        }
-    }
+        }}
+    static class ActivationCustomRenderer extends DefaultTableCellRenderer {
+        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof String s) {
+                double wordValue = parseStringToDouble(s);
+                setForeground(AbsMeasurableWord.isHighActivation(wordValue) ?
+                        SentenceLabel.ACTIVATION_HIGH_COLOR.darker() : AbsMeasurableWord.isMediumActivation(wordValue) ?
+                        SentenceLabel.ACTIVATION_MED_COLOR.darker() : SentenceLabel.ACTIVATION_LOW_COLOR.darker());
+            }
+            return c;
+        }}
+    static class ImageryCustomRenderer extends DefaultTableCellRenderer {
+        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (value instanceof String s) {
+                double wordValue = parseStringToDouble(s);
+                setForeground(AbsMeasurableWord.isHighImagery(wordValue) ?
+                        SentenceLabel.IMAGERY_HIGH_COLOR.darker() : AbsMeasurableWord.isMediumActivation(wordValue) ?
+                        SentenceLabel.IMAGERY_MED_COLOR.darker() : SentenceLabel.IMAGERY_LOW_COLOR.darker());
+            }
+            return c;
+        }}
     
     // What a fucking mess
     // MeasAbsWord.DecimalFormat formats negative words with strange "-"
