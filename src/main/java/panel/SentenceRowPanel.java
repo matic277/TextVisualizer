@@ -111,7 +111,7 @@ public class SentenceRowPanel extends JPanel {
         wordsNumLbl.setPreferredSize(new Dimension(wordsNumLbl.getPreferredSize().width, 11));
         infoContainer.add(wordsNumLbl);
         
-        visualTypeLbl = getStatLabel(currentVisualType.toString() + ": " + format.format(sentenceLabel.getSentence().getSentiment()));
+        visualTypeLbl = getStatLabel(" " + currentVisualType.toString() + ": " + format.format(sentenceLabel.getSentence().getSentiment()));
         visualTypeLbl.setSize(new Dimension(visualTypeLbl.getPreferredSize().width, 11));
         infoContainer.add(visualTypeLbl);
         

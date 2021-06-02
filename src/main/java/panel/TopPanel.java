@@ -69,6 +69,11 @@ public class TopPanel extends JPanel {
         importFilePanel.add(importBtn, BorderLayout.SOUTH);
         
         controlPanel.add(importFilePanel);
+        
+        JPanel spacer = new JPanel();
+        spacer.setPreferredSize(new Dimension(30, 30));
+        spacer.setOpaque(false);
+        controlPanel.add(spacer);
     }
     
     private void initDropdownPanel() {
@@ -114,6 +119,11 @@ public class TopPanel extends JPanel {
         sliderSliderPanel.add(title, BorderLayout.NORTH);
         sliderSliderPanel.add(sliderWidthSlider, BorderLayout.CENTER);
         controlPanel.add(sliderSliderPanel);
+    
+        JPanel spacer = new JPanel();
+        spacer.setPreferredSize(new Dimension(30, 30));
+        spacer.setOpaque(false);
+        controlPanel.add(spacer);
     }
     
     private void initSentenceWindthSlider() {
@@ -143,6 +153,11 @@ public class TopPanel extends JPanel {
         sentenceSliderPanel.add(title, BorderLayout.NORTH);
         sentenceSliderPanel.add(sentenceWidthSlider, BorderLayout.CENTER);
         controlPanel.add(sentenceSliderPanel);
+    
+        JPanel spacer = new JPanel();
+        spacer.setPreferredSize(new Dimension(30, 30));
+        spacer.setOpaque(false);
+        controlPanel.add(spacer);
     }
     
     private void onSliderWidthChange() {

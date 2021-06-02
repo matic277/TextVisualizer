@@ -14,24 +14,29 @@ import java.util.function.Consumer;
 
 public class SentenceLabel extends JLabel {
     
+    
     Sentence sentence;
     ChaptersPanel parent;
     
     public boolean isHighlightedBySlider = false;
     
+    
     private Color CURRENT_COLOR_HIGH = Utils.GREEN;
     private Color CURRENT_COLOR_MED = Utils.GRAY2;
     private Color CURRENT_COLOR_LOW = Utils.RED;
+    private Color CURRENT_UNRECOGNIZED_COLOR = new Color(150, 150, 150);
     
     private Color NORMAL_COLOR_HIGH = Utils.GREEN;
     private Color NORMAL_COLOR_MED = Utils.GRAY2;
     private Color NORMAL_COLOR_LOW = Utils.RED;
+    private static Color NORMAL_UNRECOGNIZED_COLOR = new Color(150, 150, 150);
     
     private Color HOVERED_COLOR_HIGH = NORMAL_COLOR_HIGH.brighter();
     private Color HOVERED_COLOR_MED = NORMAL_COLOR_MED.brighter();
     private Color HOVERED_COLOR_LOW = NORMAL_COLOR_LOW.brighter();
+    private static Color HOVERED_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR.brighter();
     
-    int posHeight, neuHeight, negHeight;
+    int highHeight, medHeight, lowHeight, unknHeight;
     
     private boolean isSelected = false;
     private static final Color BORDER_COLOR = new Color(0, 0, 0, 100);
@@ -40,26 +45,26 @@ public class SentenceLabel extends JLabel {
     private Consumer<Graphics2D> borderDrawer = nullBorderDrawer;
     
     // sentiment
-    public static final Color SENTIMENT_POSITIVE_COLOR = Utils.GREEN;
-    public static final Color SENTIMENT_NEUTRAL_COLOR = Utils.GRAY2;
-    public static final Color SENTIMENT_NEGATIVE_COLOR = Utils.RED;
-    public static Color SENTIMENT_POSITIVE_COLOR_HOVERED = SENTIMENT_POSITIVE_COLOR.brighter();
-    public static Color SENTIMENT_NEUTRAL_COLOR_HOVERED = SENTIMENT_NEUTRAL_COLOR.brighter();
-    public static Color SENTIMENT_NEGATIVE_COLOR_HOVERED = SENTIMENT_NEGATIVE_COLOR.brighter();
+    public static final Color SENTIMENT_HIGH_COLOR = Utils.GREEN;
+    public static final Color SENTIMENT_MED_COLOR = Utils.GRAY2;
+    public static final Color SENTIMENT_LOW_COLOR = Utils.RED;
+    public static final Color SENTIMENT_POSITIVE_COLOR_HOVERED = SENTIMENT_HIGH_COLOR.brighter();
+    public static final Color SENTIMENT_NEUTRAL_COLOR_HOVERED = SENTIMENT_MED_COLOR.brighter();
+    public static final Color SENTIMENT_NEGATIVE_COLOR_HOVERED = SENTIMENT_LOW_COLOR.brighter();
     // imagery
     public static final Color IMAGERY_HIGH_COLOR = new Color(66,133,244);
-    public static final Color IMAGERY_NEUTRAL_COLOR = new Color(137, 177, 238);
+    public static final Color IMAGERY_MED_COLOR = new Color(137, 177, 238);
     public static final Color IMAGERY_LOW_COLOR = new Color(204, 227, 246);
-    public static Color IMAGERY_HIGH_COLOR_HOVERED = IMAGERY_HIGH_COLOR.brighter();
-    public static Color IMAGERY_MED_COLOR_HOVERED = IMAGERY_NEUTRAL_COLOR.brighter();
-    public static Color IMAGERY_LOW_COLOR_HOVERED = IMAGERY_LOW_COLOR.brighter();
+    public static final Color IMAGERY_HIGH_COLOR_HOVERED = IMAGERY_HIGH_COLOR.brighter();
+    public static final Color IMAGERY_MED_COLOR_HOVERED = IMAGERY_MED_COLOR.brighter();
+    public static final Color IMAGERY_LOW_COLOR_HOVERED = IMAGERY_LOW_COLOR.brighter();
     // activation
     public static final Color ACTIVATION_HIGH_COLOR = new Color(128, 66,244);
-    public static final Color ACTIVATION_NEUTRAL_COLOR = new Color(172, 134, 243);
+    public static final Color ACTIVATION_MED_COLOR = new Color(172, 134, 243);
     public static final Color ACTIVATION_LOW_COLOR = new Color(212, 193, 246);
-    public static Color ACTIVATION_HIGH_COLOR_HOVERED = ACTIVATION_HIGH_COLOR.brighter();
-    public static Color ACTIVATION_MED_COLOR_HOVERED = ACTIVATION_NEUTRAL_COLOR.brighter();
-    public static Color ACTIVATION_LOW_COLOR_HOVERED = ACTIVATION_LOW_COLOR.brighter();
+    public static final Color ACTIVATION_HIGH_COLOR_HOVERED = ACTIVATION_HIGH_COLOR.brighter();
+    public static final Color ACTIVATION_MED_COLOR_HOVERED = ACTIVATION_MED_COLOR.brighter();
+    public static final Color ACTIVATION_LOW_COLOR_HOVERED = ACTIVATION_LOW_COLOR.brighter();
     
     // map: visualType  -> coloringFunction
     private static final Map<VisualType, Consumer<SentenceLabel>> colorMap = new HashMap<>();
@@ -84,12 +89,8 @@ public class SentenceLabel extends JLabel {
             g.setStroke(new BasicStroke(1));
             
             // draw it as highlighted
-            g.setColor(HOVERED_COLOR_HIGH);
-            g.fillRect(0, 0, this.getWidth(), negHeight);
-            g.setColor(HOVERED_COLOR_MED);
-            g.fillRect(0, negHeight,this.getWidth(), neuHeight);
-            g.setColor(HOVERED_COLOR_LOW);
-            g.fillRect(0, negHeight + neuHeight,this.getWidth(), posHeight);
+//            g.setColor(new Color(255, 255, 255, 100));
+//            g.fillRect(0, 0, getWidth(), getHeight());
             
             // add border
             g.setColor(BORDER_COLOR);
@@ -110,21 +111,29 @@ public class SentenceLabel extends JLabel {
         
         double highPerc;
         double medPerc;
+        double lowPerc;
+        double unknowPerc;
         
         if (visualType == VisualType.SENTIMENT) {
             highPerc = sentence.numOfPositiveWords / totalWords;
             medPerc = sentence.numOfNeutralWords / totalWords;
+            lowPerc = sentence.numOfNegativeWords / totalWords;
         } else if (visualType == VisualType.ACTIVATION) {
             highPerc = sentence.numOfHighActivationWords / totalWords;
             medPerc = sentence.numOfMediumActivationWords / totalWords;
+            lowPerc = sentence.numOfLowActivationWords / totalWords;
         } else {
             highPerc = sentence.numOfHighImageryWords / totalWords;
             medPerc = sentence.numOfMediumImageryWords / totalWords;
+            lowPerc = sentence.numOfLowImageryWords / totalWords;
         }
         
-        posHeight = (int)Math.ceil(totalHeight * highPerc);
-        neuHeight = (int)Math.floor(totalHeight * medPerc);
-        negHeight = (int) totalHeight - posHeight - neuHeight; // whatever is left
+//        unknowPerc = sentence.numOfUnrecognizedWords / totalWords;
+        
+        highHeight = (int)Math.ceil(totalHeight * highPerc);
+        medHeight = (int)Math.floor(totalHeight * medPerc);
+        lowHeight = (int)Math.floor(totalHeight * lowPerc);
+        unknHeight = (int)(totalHeight - highHeight - medHeight - lowHeight);// whatever is left
         
     }
     
@@ -136,43 +145,43 @@ public class SentenceLabel extends JLabel {
     
     private static Consumer<SentenceLabel> getSentimentColorer() {
         return (sentLbl) -> {
-            sentLbl.CURRENT_COLOR_HIGH =  SENTIMENT_POSITIVE_COLOR;
-            sentLbl.CURRENT_COLOR_MED =   SENTIMENT_NEUTRAL_COLOR;
-            sentLbl.CURRENT_COLOR_LOW =   SENTIMENT_NEGATIVE_COLOR;
-            sentLbl.NORMAL_COLOR_HIGH =   SENTIMENT_POSITIVE_COLOR;
-            sentLbl.NORMAL_COLOR_MED =    SENTIMENT_NEUTRAL_COLOR;
-            sentLbl.NORMAL_COLOR_LOW =    SENTIMENT_NEGATIVE_COLOR;
-            sentLbl.HOVERED_COLOR_HIGH =  SENTIMENT_POSITIVE_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_MED =   SENTIMENT_NEUTRAL_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_LOW =   SENTIMENT_NEGATIVE_COLOR_HOVERED;
+            sentLbl.CURRENT_COLOR_HIGH = SENTIMENT_HIGH_COLOR;
+            sentLbl.CURRENT_COLOR_MED =  SENTIMENT_MED_COLOR;
+            sentLbl.CURRENT_COLOR_LOW =  SENTIMENT_LOW_COLOR;
+            sentLbl.NORMAL_COLOR_HIGH =  SENTIMENT_HIGH_COLOR;
+            sentLbl.NORMAL_COLOR_MED =   SENTIMENT_MED_COLOR;
+            sentLbl.NORMAL_COLOR_LOW =   SENTIMENT_LOW_COLOR;
+            sentLbl.HOVERED_COLOR_HIGH = SENTIMENT_POSITIVE_COLOR_HOVERED;
+            sentLbl.HOVERED_COLOR_MED =  SENTIMENT_NEUTRAL_COLOR_HOVERED;
+            sentLbl.HOVERED_COLOR_LOW =  SENTIMENT_NEGATIVE_COLOR_HOVERED;
         };
     }
     
     private static Consumer<SentenceLabel> getActivationColorer() {
         return (sentLbl) -> {
-            sentLbl.CURRENT_COLOR_HIGH =  ACTIVATION_HIGH_COLOR;
-            sentLbl.CURRENT_COLOR_MED =   ACTIVATION_NEUTRAL_COLOR;
-            sentLbl.CURRENT_COLOR_LOW =   ACTIVATION_LOW_COLOR;
-            sentLbl.NORMAL_COLOR_HIGH =   ACTIVATION_HIGH_COLOR;
-            sentLbl.NORMAL_COLOR_MED =    ACTIVATION_NEUTRAL_COLOR;
-            sentLbl.NORMAL_COLOR_LOW =    ACTIVATION_LOW_COLOR;
-            sentLbl.HOVERED_COLOR_HIGH =  ACTIVATION_HIGH_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_MED =   ACTIVATION_MED_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_LOW =   ACTIVATION_LOW_COLOR_HOVERED;
+            sentLbl.CURRENT_COLOR_HIGH = ACTIVATION_HIGH_COLOR;
+            sentLbl.CURRENT_COLOR_MED =  ACTIVATION_MED_COLOR;
+            sentLbl.CURRENT_COLOR_LOW =  ACTIVATION_LOW_COLOR;
+            sentLbl.NORMAL_COLOR_HIGH =  ACTIVATION_HIGH_COLOR;
+            sentLbl.NORMAL_COLOR_MED =   ACTIVATION_MED_COLOR;
+            sentLbl.NORMAL_COLOR_LOW =   ACTIVATION_LOW_COLOR;
+            sentLbl.HOVERED_COLOR_HIGH = ACTIVATION_HIGH_COLOR_HOVERED;
+            sentLbl.HOVERED_COLOR_MED =  ACTIVATION_MED_COLOR_HOVERED;
+            sentLbl.HOVERED_COLOR_LOW =  ACTIVATION_LOW_COLOR_HOVERED;
         };
     }
     
     private static Consumer<SentenceLabel> getImageryColorer() {
         return (sentLbl) -> {
-            sentLbl.CURRENT_COLOR_HIGH =  IMAGERY_HIGH_COLOR;
-            sentLbl.CURRENT_COLOR_MED =   IMAGERY_NEUTRAL_COLOR;
-            sentLbl.CURRENT_COLOR_LOW =   IMAGERY_LOW_COLOR;
-            sentLbl.NORMAL_COLOR_HIGH =   IMAGERY_HIGH_COLOR;
-            sentLbl.NORMAL_COLOR_MED =    IMAGERY_NEUTRAL_COLOR;
-            sentLbl.NORMAL_COLOR_LOW =    IMAGERY_LOW_COLOR;
-            sentLbl.HOVERED_COLOR_HIGH =  IMAGERY_HIGH_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_MED =   IMAGERY_MED_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_LOW =   IMAGERY_LOW_COLOR_HOVERED;
+            sentLbl.CURRENT_COLOR_HIGH = IMAGERY_HIGH_COLOR;
+            sentLbl.CURRENT_COLOR_MED =  IMAGERY_MED_COLOR;
+            sentLbl.CURRENT_COLOR_LOW =  IMAGERY_LOW_COLOR;
+            sentLbl.NORMAL_COLOR_HIGH =  IMAGERY_HIGH_COLOR;
+            sentLbl.NORMAL_COLOR_MED =   IMAGERY_MED_COLOR;
+            sentLbl.NORMAL_COLOR_LOW =   IMAGERY_LOW_COLOR;
+            sentLbl.HOVERED_COLOR_HIGH = IMAGERY_HIGH_COLOR_HOVERED;
+            sentLbl.HOVERED_COLOR_MED =  IMAGERY_MED_COLOR_HOVERED;
+            sentLbl.HOVERED_COLOR_LOW =  IMAGERY_LOW_COLOR_HOVERED;
         };
     }
     
@@ -180,41 +189,58 @@ public class SentenceLabel extends JLabel {
     public void paintComponent(Graphics g) {
         Graphics2D gr = (Graphics2D) g;
         
-        gr.setColor(CURRENT_COLOR_LOW);
-        gr.fillRect(0, 0, this.getWidth(), negHeight);
+        gr.setColor(CURRENT_COLOR_HIGH);
+        gr.fillRect(0, 0, this.getWidth(), highHeight);
         
         gr.setColor(CURRENT_COLOR_MED);
-        gr.fillRect(0, negHeight,this.getWidth(), neuHeight);
+        gr.fillRect(0, highHeight,this.getWidth(), medHeight);
         
-        gr.setColor(CURRENT_COLOR_HIGH);
-        gr.fillRect(0, negHeight + neuHeight,this.getWidth(), posHeight);
+        gr.setColor(CURRENT_COLOR_LOW);
+        gr.fillRect(0, highHeight + medHeight,this.getWidth(), lowHeight);
+        
+        gr.setColor(CURRENT_UNRECOGNIZED_COLOR);
+        gr.fillRect(0, lowHeight + medHeight + highHeight,this.getWidth(), unknHeight);
         
         borderDrawer.accept(gr);
     }
     
     public void highlight() {
+//        isHighlightedBySlider = true;
+//        if (isSelected) return;
         CURRENT_COLOR_HIGH = HOVERED_COLOR_HIGH;
         CURRENT_COLOR_MED = HOVERED_COLOR_MED;
         CURRENT_COLOR_LOW = HOVERED_COLOR_LOW;
+        CURRENT_UNRECOGNIZED_COLOR = HOVERED_UNRECOGNIZED_COLOR;
         this.parent.repaint();
     }
     
     public void unhighlight() {
         isHighlightedBySlider = false;
+        if (isSelected) return;
         CURRENT_COLOR_HIGH = NORMAL_COLOR_HIGH;
         CURRENT_COLOR_MED = NORMAL_COLOR_MED;
         CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
+        CURRENT_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR;
         this.parent.repaint();
     }
     
     public void onUnselect() {
         this.isSelected = false;
+        CURRENT_COLOR_HIGH = NORMAL_COLOR_HIGH;
+        CURRENT_COLOR_MED = NORMAL_COLOR_MED;
+        CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
+        CURRENT_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR;
         this.borderDrawer = nullBorderDrawer;
         this.parent.repaint();
     }
     
     public void onSelect() {
         this.isSelected = true;
+        CURRENT_COLOR_HIGH = HOVERED_COLOR_HIGH;
+        CURRENT_COLOR_MED = HOVERED_COLOR_MED;
+        CURRENT_COLOR_LOW = HOVERED_COLOR_LOW;
+        
+        CURRENT_UNRECOGNIZED_COLOR = HOVERED_UNRECOGNIZED_COLOR;
         this.borderDrawer = actualBorderDrawer;
         this.parent.repaint();
     }

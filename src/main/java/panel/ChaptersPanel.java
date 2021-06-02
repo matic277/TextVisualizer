@@ -92,6 +92,7 @@ public class ChaptersPanel extends JScrollPane {
             
             chapterPanel.setMaximumSize(chapterPanel.getPreferredSize());
             chapterPanels.add(chapterPanel);
+            
             mainPanel.add(chapterPanel);
             mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         });

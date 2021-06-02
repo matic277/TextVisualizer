@@ -37,6 +37,8 @@ public class Sentence {
             numOfMediumActivationWords,
             numOfLowActivationWords;
     
+    public int numOfUnrecognizedWords;
+    
     public Sentence(String sentence, int sentenceNumber) {
         this.sentence = sentence;
         this.sentenceNumber = sentenceNumber;
@@ -96,7 +98,8 @@ public class Sentence {
             }
             // URL, Target, StopWord, Other, NegationWord
             else {
-                numOfNeutralWords++;
+//                numOfNeutralWords++;
+                numOfUnrecognizedWords++;
             }
         }
     }
