@@ -34,7 +34,7 @@ public class ChaptersPanel extends JScrollPane {
         this.chapters = parent.chapters;
         
         currentVisualType = VisualType.SENTIMENT;
-        currentChapterType = ChapterType.VERTICAL;
+        currentChapterType = ChapterType.HORIZONTAL;
         
         slider = new SlidingWindow(this);
         

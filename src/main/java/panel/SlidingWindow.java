@@ -20,8 +20,8 @@ public class SlidingWindow extends Rectangle {
     Stroke stroke = new BasicStroke(3f);
     
     ChapterType currentChapterType = ChapterType.VERTICAL;
-    Renderer renderer = new HorizontalRenderer();
-//    Renderer renderer = new VerticalRenderer();
+    
+    Renderer renderer = new VerticalRenderer();
     
     interface Renderer { void draw(Graphics2D g, SlidingWindow slider); }
     
