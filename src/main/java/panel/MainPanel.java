@@ -1,9 +1,6 @@
 package panel;
 
-import main.Pair;
-import main.Sentence;
-import main.Utils;
-import main.VisualType;
+import main.*;
 import window.MainWindow;
 
 import javax.swing.*;

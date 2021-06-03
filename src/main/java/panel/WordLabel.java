@@ -86,7 +86,6 @@ public class WordLabel extends JLabel {
     
     private static Consumer<WordLabel> getImageryColorer() {
         return (wrdLbl) -> {
-            System.out.println("IMAGERY COLORER: " + wrdLbl.word);
             if (wrdLbl.word instanceof AbsMeasurableWord absWord) {
                 wrdLbl.CURRENT_COLOR = absWord.isHighImagery() ?
                         IMAGERY_HIGH_COLOR : absWord.isMediumImagery() ?

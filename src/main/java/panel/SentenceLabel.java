@@ -1,8 +1,6 @@
 package panel;
 
-import main.Sentence;
-import main.Utils;
-import main.VisualType;
+import main.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,14 +15,15 @@ public class SentenceLabel extends JLabel {
     
     Sentence sentence;
     ChaptersPanel parent;
+    SentenceLabelBuilder labelBuilder;
     
     public boolean isHighlightedBySlider = false;
     
     
-    private Color CURRENT_COLOR_HIGH = Utils.GREEN;
-    private Color CURRENT_COLOR_MED = Utils.GRAY2;
-    private Color CURRENT_COLOR_LOW = Utils.RED;
-    private Color CURRENT_UNRECOGNIZED_COLOR = new Color(150, 150, 150);
+    public Color CURRENT_COLOR_HIGH = Utils.GREEN;
+    public Color CURRENT_COLOR_MED = Utils.GRAY2;
+    public Color CURRENT_COLOR_LOW = Utils.RED;
+    public Color CURRENT_UNRECOGNIZED_COLOR = new Color(150, 150, 150);
     
     private Color NORMAL_COLOR_HIGH = Utils.GREEN;
     private Color NORMAL_COLOR_MED = Utils.GRAY2;
@@ -36,13 +35,14 @@ public class SentenceLabel extends JLabel {
     private Color HOVERED_COLOR_LOW = NORMAL_COLOR_LOW.brighter();
     private static Color HOVERED_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR.brighter();
     
-    int highHeight, medHeight, lowHeight, unknHeight;
+    public int highWidth, medWidth, lowWidth, unknWidth;
+    public int highHeight, medHeight, lowHeight, unknHeight;
     
     private boolean isSelected = false;
     private static final Color BORDER_COLOR = new Color(0, 0, 0, 100);
     private Consumer<Graphics2D> actualBorderDrawer;
     private Consumer<Graphics2D> nullBorderDrawer = (g) -> {};
-    private Consumer<Graphics2D> borderDrawer = nullBorderDrawer;
+    public Consumer<Graphics2D> borderDrawer = nullBorderDrawer;
     
     // sentiment
     public static final Color SENTIMENT_HIGH_COLOR = Utils.GREEN;
@@ -74,13 +74,17 @@ public class SentenceLabel extends JLabel {
         colorMap.put(VisualType.ACTIVATION, getActivationColorer());
     }
     
-    public SentenceLabel(ChaptersPanel parent, Sentence sentence, VisualType visualType) {
+    public VisualType currentVisualType;
+    
+    public SentenceLabel(ChaptersPanel parent, Sentence sentence, VisualType visualType, SentenceLabelBuilder lblBuilder) {
         super();
         this.sentence = sentence;
         this.parent = parent;
+        this.labelBuilder = lblBuilder;
+        this.currentVisualType = visualType;
         
         this.setOpaque(true);
-        this.setPreferredSize(Utils.SENTENCE_SIZE);
+//        this.setPreferredSize(Utils.SENTENCE_SIZE);
         
         colorMap.get(visualType).accept(this);
         addListener();
@@ -88,58 +92,27 @@ public class SentenceLabel extends JLabel {
         actualBorderDrawer = (g) -> {
             g.setStroke(new BasicStroke(1));
             
-            // draw it as highlighted
-//            g.setColor(new Color(255, 255, 255, 100));
-//            g.fillRect(0, 0, getWidth(), getHeight());
-            
             // add border
             g.setColor(BORDER_COLOR);
             g.drawRect(0, 0, getWidth()-1, getHeight()-1);
         };
     }
     
-    private static double customLog(double base, double logNumber) {
-        return Math.log(logNumber) / Math.log(base);
-    }
     
-    public void init(VisualType visualType) {
-        int wordSize = 3;
-        double totalWords = sentence.getWords().size();
-        double totalHeight = (int)customLog(1.035, totalWords * wordSize);
-        
-        this.setPreferredSize(new Dimension(this.getPreferredSize().width, (int)(totalHeight)));
-        
-        double highPerc;
-        double medPerc;
-        double lowPerc;
-        double unknowPerc;
-        
-        if (visualType == VisualType.SENTIMENT) {
-            highPerc = sentence.numOfPositiveWords / totalWords;
-            medPerc = sentence.numOfNeutralWords / totalWords;
-            lowPerc = sentence.numOfNegativeWords / totalWords;
-        } else if (visualType == VisualType.ACTIVATION) {
-            highPerc = sentence.numOfHighActivationWords / totalWords;
-            medPerc = sentence.numOfMediumActivationWords / totalWords;
-            lowPerc = sentence.numOfLowActivationWords / totalWords;
-        } else {
-            highPerc = sentence.numOfHighImageryWords / totalWords;
-            medPerc = sentence.numOfMediumImageryWords / totalWords;
-            lowPerc = sentence.numOfLowImageryWords / totalWords;
-        }
-        
-//        unknowPerc = sentence.numOfUnrecognizedWords / totalWords;
-        
-        highHeight = (int)Math.ceil(totalHeight * highPerc);
-        medHeight = (int)Math.floor(totalHeight * medPerc);
-        lowHeight = (int)Math.floor(totalHeight * lowPerc);
-        unknHeight = (int)(totalHeight - highHeight - medHeight - lowHeight);// whatever is left
-        
+    public void init() {
+        labelBuilder.rebuild(this);
     }
     
     public void onVisualTypeChange(VisualType visualType) {
+        currentVisualType = visualType;
         colorMap.get(visualType).accept(this);
-        this.init(visualType);
+        this.init();
+        this.repaint();
+    }
+    
+    public void onChapterTypeChange(SentenceLabelBuilder newBuilder) {
+        this.labelBuilder = newBuilder;
+        this.init();
         this.repaint();
     }
     
@@ -189,19 +162,21 @@ public class SentenceLabel extends JLabel {
     public void paintComponent(Graphics g) {
         Graphics2D gr = (Graphics2D) g;
         
-        gr.setColor(CURRENT_COLOR_HIGH);
-        gr.fillRect(0, 0, this.getWidth(), highHeight);
+        labelBuilder.draw(gr, this);
         
-        gr.setColor(CURRENT_COLOR_MED);
-        gr.fillRect(0, highHeight,this.getWidth(), medHeight);
-        
-        gr.setColor(CURRENT_COLOR_LOW);
-        gr.fillRect(0, highHeight + medHeight,this.getWidth(), lowHeight);
-        
-        gr.setColor(CURRENT_UNRECOGNIZED_COLOR);
-        gr.fillRect(0, lowHeight + medHeight + highHeight,this.getWidth(), unknHeight);
-        
-        borderDrawer.accept(gr);
+//        gr.setColor(CURRENT_COLOR_HIGH);
+//        gr.fillRect(0, 0, highWidth, highHeight);
+//
+//        gr.setColor(CURRENT_COLOR_MED);
+//        gr.fillRect(0, highHeight,medWidth, medHeight);
+//
+//        gr.setColor(CURRENT_COLOR_LOW);
+//        gr.fillRect(0, highHeight + medHeight,lowWidth, lowHeight);
+//
+//        gr.setColor(CURRENT_UNRECOGNIZED_COLOR);
+//        gr.fillRect(0, lowHeight + medHeight + highHeight,unknWidth, unknHeight);
+//
+//        borderDrawer.accept(gr);
     }
     
     public void highlight() {

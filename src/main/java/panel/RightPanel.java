@@ -400,8 +400,8 @@ public class RightPanel extends JScrollPane {
         }}
     
     // What a fucking mess
-    // MeasAbsWord.DecimalFormat formats negative words with strange "-"
-    // sign, that can't be reverse parsed from string (encoding problem) ???
+    // MeasAbsWord.DecimalFormat formats negative words with strange "-" sign,
+    // that can't be reverse parsed from string (encoding problem) ???
     public static double parseStringToDouble(String s) {
         if (!NumberUtils.isNumber(s.charAt(0)+"")) {
             s = "-" + s.substring(1);

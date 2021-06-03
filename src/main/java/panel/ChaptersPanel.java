@@ -1,9 +1,6 @@
 package panel;
 
-import main.Pair;
-import main.Sentence;
-import main.Utils;
-import main.VisualType;
+import main.*;
 
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
@@ -19,21 +16,25 @@ public class ChaptersPanel extends JScrollPane {
     
     TopPanel parent;
     
-    JPanel mainPanel;
-    List<JPanel> chapterPanels = new ArrayList<>(20);
+    public JPanel mainPanel;
+    public List<JPanel> chapterPanels = new ArrayList<>(20);
     
     SlidingWindow slider;
     SlidingWindowListener listener;
     
-    Map<Pair<Integer, String>, List<Sentence>> chapters;
+    public Map<Pair<Integer, String>, List<Sentence>> chapters;
     
-    VisualType currentVisualType;
+    public VisualType currentVisualType;
+    public ChapterType currentChapterType;
+    
+    ChapterBuilder chapterBuilder = new HorizontalChapterBuilder();
     
     public ChaptersPanel(TopPanel parent) {
         this.parent = parent;
         this.chapters = parent.chapters;
         
         currentVisualType = VisualType.SENTIMENT;
+        currentChapterType = ChapterType.HORIZONTAL;
         
         slider = new SlidingWindow(this);
         
@@ -60,42 +61,12 @@ public class ChaptersPanel extends JScrollPane {
     }
     
     public void init() {
+        chapterPanels.clear();
+        this.mainPanel.removeAll();
+        
         this.mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         
-        // create panel for each chapter
-        chapters.forEach((k, v) -> {
-            JPanel chapterPanel = new JPanel();
-            chapterPanel.setOpaque(true);
-            chapterPanel.setBorder(new StrokeBorder(new BasicStroke(2)));
-            chapterPanel.setLayout(new BorderLayout());
-            chapterPanel.setBackground(Color.white);
-            chapterPanel.setName("Main panel for chapter " + k.getB());
-            
-            JLabel title = new JLabel(k.getB());
-            title.setBorder(new StrokeBorder(new BasicStroke(1)));
-            title.setFont(Utils.getFont(14));
-            title.setHorizontalAlignment(SwingConstants.CENTER);
-            chapterPanel.add(title, BorderLayout.NORTH);
-            
-            JPanel sentencesPanel = new JPanel();
-            sentencesPanel.setName("Sentence panel for chapter " + k.getB());
-            sentencesPanel.setOpaque(true);
-            sentencesPanel.setBackground(Utils.GRAY);
-            sentencesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-            chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
-            
-            v.forEach(s -> {
-                SentenceLabel lbl = new SentenceLabel(this, s, currentVisualType);
-                lbl.init(currentVisualType);
-                sentencesPanel.add(lbl);
-            });
-            
-            chapterPanel.setMaximumSize(chapterPanel.getPreferredSize());
-            chapterPanels.add(chapterPanel);
-            
-            mainPanel.add(chapterPanel);
-            mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
-        });
+        chapterBuilder.rebuild(this);
         
         mainPanel.revalidate();
         mainPanel.doLayout();
@@ -116,13 +87,20 @@ public class ChaptersPanel extends JScrollPane {
         });
     }
     
-    public void onSentenceWidthChange(int newWidth) {
+    public void onSentenceSizeChange(int newSize) {
         chapterPanels.forEach(chapterPanel -> {
             JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
             for (Component sentenceCmp : sentencesPanel.getComponents()) {
                 if (sentenceCmp instanceof SentenceLabel sentLbl) {
-                    sentLbl.setPreferredSize(new Dimension(newWidth, sentLbl.getHeight()));
-                    sentLbl.setMinimumSize(new Dimension(newWidth, sentLbl.getHeight()));
+                    if (currentChapterType == ChapterType.HORIZONTAL) {
+                        sentLbl.setPreferredSize(new Dimension(newSize, sentLbl.getHeight()));
+                        sentLbl.setMinimumSize(new Dimension(newSize, sentLbl.getHeight()));
+//                        sentLbl.init();
+                    } else if (currentChapterType == ChapterType.VERTICAL) {
+                        sentLbl.setPreferredSize(new Dimension(sentLbl.getWidth(), newSize));
+                        sentLbl.setMinimumSize(new Dimension(sentLbl.getWidth(), newSize));
+//                        sentLbl.init();
+                    }
                 }
             }
             sentencesPanel.revalidate();
@@ -142,12 +120,33 @@ public class ChaptersPanel extends JScrollPane {
         chapterPanels.clear();
         
         init();
-    
+        
         System.out.println(" -> Chapters inited.");
     }
     
-    class SlidingWindowListener implements MouseMotionListener, MouseListener {
+    public void onChapterTypeChange(ChapterType chapterType) {
+        currentChapterType = chapterType;
         
+        if (chapterType == ChapterType.HORIZONTAL) {
+            this.chapterBuilder = new HorizontalChapterBuilder();
+        } else if (chapterType == ChapterType.VERTICAL) {
+            this.chapterBuilder = new VerticalChapterBuilder();
+        }
+        
+        init();
+        
+//        chapterPanels.forEach(chapterPanel -> {
+//            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
+//            for (Component sentenceCmp : sentencesPanel.getComponents()) {
+//                if (sentenceCmp instanceof SentenceLabel sentLbl) {
+//                    sentLbl.onChapterTypeChange(new HorizontalSentenceLabelBuilder());
+//                }
+//            }
+//            sentencesPanel.revalidate();
+//        });
+    }
+    
+    class SlidingWindowListener implements MouseMotionListener, MouseListener {
         boolean isSelected = false;
         JPanel snappedPannel;
         JPanel lastSnappedPannel;
