@@ -164,19 +164,10 @@ public class SentenceLabel extends JLabel {
         
         labelBuilder.draw(gr, this);
         
-//        gr.setColor(CURRENT_COLOR_HIGH);
-//        gr.fillRect(0, 0, highWidth, highHeight);
-//
-//        gr.setColor(CURRENT_COLOR_MED);
-//        gr.fillRect(0, highHeight,medWidth, medHeight);
-//
-//        gr.setColor(CURRENT_COLOR_LOW);
-//        gr.fillRect(0, highHeight + medHeight,lowWidth, lowHeight);
-//
-//        gr.setColor(CURRENT_UNRECOGNIZED_COLOR);
-//        gr.fillRect(0, lowHeight + medHeight + highHeight,unknWidth, unknHeight);
-//
-//        borderDrawer.accept(gr);
+//        gr.setFont(Utils.getFont(8));
+//        gr.setColor(Color.black);
+//        String s = getBounds().toString().toLowerCase().replace("java.awt.rectangle", "");
+//        gr.drawString(s, 0, 10);
     }
     
     public void highlight() {

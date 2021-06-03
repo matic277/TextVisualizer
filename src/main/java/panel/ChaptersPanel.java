@@ -34,7 +34,7 @@ public class ChaptersPanel extends JScrollPane {
         this.chapters = parent.chapters;
         
         currentVisualType = VisualType.SENTIMENT;
-        currentChapterType = ChapterType.HORIZONTAL;
+        currentChapterType = ChapterType.VERTICAL;
         
         slider = new SlidingWindow(this);
         
@@ -107,8 +107,9 @@ public class ChaptersPanel extends JScrollPane {
         });
     }
     
-    public void onSliderWidthChange(int newWidth) {
-        slider.setSize(newWidth, slider.height);
+    public void onSliderSizeChange(int newSize) {
+        if (currentChapterType == ChapterType.HORIZONTAL) slider.setSize(newSize, slider.height);
+        if (currentChapterType == ChapterType.VERTICAL) slider.setSize(slider.width, newSize);
         this.repaint();
     }
     
@@ -134,16 +135,7 @@ public class ChaptersPanel extends JScrollPane {
         }
         
         init();
-        
-//        chapterPanels.forEach(chapterPanel -> {
-//            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
-//            for (Component sentenceCmp : sentencesPanel.getComponents()) {
-//                if (sentenceCmp instanceof SentenceLabel sentLbl) {
-//                    sentLbl.onChapterTypeChange(new HorizontalSentenceLabelBuilder());
-//                }
-//            }
-//            sentencesPanel.revalidate();
-//        });
+        slider.onNewChapterTypeChange(chapterType);
     }
     
     class SlidingWindowListener implements MouseMotionListener, MouseListener {
@@ -198,14 +190,26 @@ public class ChaptersPanel extends JScrollPane {
                 }
                 
                 // snap it to snapped panel
-                // and resize to fit height
-                if (snappedPannel != null) {
-                    slider.setLocation(mouse.x - dx, snappedPannel.getLocation().y-10);
-                    slider.setSize(slider.width, snappedPannel.getHeight()+15);
-                    List<SentenceLabel> sentences = slider.getHoveredSentences(snappedPannel);
-                    parent.parent.parent.getBottomPanel().onSentenceHover(sentences);
-                } else {
-                    slider.setLocation(mouse.x - dx, mouse.y - dy);
+                // and resize to fit size
+                if (currentChapterType == ChapterType.HORIZONTAL) {
+                    if (snappedPannel != null) {
+                        slider.setLocation(mouse.x - dx, snappedPannel.getLocation().y - 10);
+                        slider.setSize(slider.width, snappedPannel.getHeight() + 15);
+                        List<SentenceLabel> sentences = slider.getHoveredSentences(snappedPannel);
+                        parent.parent.parent.getBottomPanel().onSentenceHover(sentences);
+                    } else {
+                        slider.setLocation(mouse.x - dx, mouse.y - dy);
+                    }
+                }
+                else if (currentChapterType == ChapterType.VERTICAL) {
+                    if (snappedPannel != null) {
+                        slider.setLocation(snappedPannel.getLocation().x-8, mouse.y - dy);
+                        slider.setSize(snappedPannel.getWidth()+10, slider.height);
+                        List<SentenceLabel> sentences = slider.getHoveredSentences(snappedPannel);
+                        parent.parent.parent.getBottomPanel().onSentenceHover(sentences);
+                    } else {
+                        slider.setLocation(mouse.x - dx, mouse.y - dy);
+                    }
                 }
                 
                 // needs to be called, otherwise sliders

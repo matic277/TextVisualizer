@@ -19,7 +19,7 @@ public class TopPanel extends JPanel {
         JPanel sentenceSliderPanel;
             JSlider sentenceSizeSlider;
         JPanel sliderSliderPanel;
-            JSlider sliderWidthSlider;
+            JSlider sliderSizeSlider;
         JPanel dropdownPanel;
             JComboBox<VisualType> dropdownType;
         JPanel chapterTypePanel;
@@ -38,7 +38,7 @@ public class TopPanel extends JPanel {
         
         initImportField();
         initSentenceSizeSlider();
-        initSliderWidthSlider();
+        initSliderSizeSlider();
         initDropdownPanel();
         initChapterTypePanel();
         
@@ -112,32 +112,32 @@ public class TopPanel extends JPanel {
         controlPanel.add(spacer);
     }
     
-    private void initSliderWidthSlider() {
+    private void initSliderSizeSlider() {
         sliderSliderPanel = new JPanel();
         sliderSliderPanel.setLayout(new BorderLayout());
         
-        JLabel title = new JLabel("Width of slider");
+        JLabel title = new JLabel("Size of slider");
         title.setFont(Utils.getFont(12));
         
         int sliderMin = 80, sliderMax = 200;
-        sliderWidthSlider = new JSlider(sliderMin, sliderMax, Utils.INITIAL_SLIDER_WIDTH);
+        sliderSizeSlider = new JSlider(sliderMin, sliderMax, Utils.INITIAL_SLIDER_WIDTH);
         Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
         Font lblFont = new Font("Calibri", Font.BOLD, 12);
         JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);
         JLabel maxLbl = new JLabel(sliderMax+""); maxLbl.setFont(lblFont);
         sliderMap.put(sliderMin, minLbl);
         sliderMap.put(sliderMax, maxLbl);
-        sliderWidthSlider.setLabelTable(sliderMap);
-        sliderWidthSlider.setMajorTickSpacing(40);
-        sliderWidthSlider.setPaintTicks(true);
-        sliderWidthSlider.setPaintLabels(true);
-        sliderWidthSlider.setPreferredSize(new Dimension(100, 40));
-        sliderWidthSlider.setFont(Utils.getFont(12));
-        sliderWidthSlider.setEnabled(true);
-        sliderWidthSlider.addChangeListener(c -> onSliderWidthChange());
+        sliderSizeSlider.setLabelTable(sliderMap);
+        sliderSizeSlider.setMajorTickSpacing(40);
+        sliderSizeSlider.setPaintTicks(true);
+        sliderSizeSlider.setPaintLabels(true);
+        sliderSizeSlider.setPreferredSize(new Dimension(100, 40));
+        sliderSizeSlider.setFont(Utils.getFont(12));
+        sliderSizeSlider.setEnabled(true);
+        sliderSizeSlider.addChangeListener(c -> onSliderSizeChange());
     
         sliderSliderPanel.add(title, BorderLayout.NORTH);
-        sliderSliderPanel.add(sliderWidthSlider, BorderLayout.CENTER);
+        sliderSliderPanel.add(sliderSizeSlider, BorderLayout.CENTER);
         controlPanel.add(sliderSliderPanel);
     
         JPanel spacer = new JPanel();
@@ -180,8 +180,8 @@ public class TopPanel extends JPanel {
         controlPanel.add(spacer);
     }
     
-    private void onSliderWidthChange() {
-        chaptersPanel.onSliderWidthChange(sliderWidthSlider.getValue());
+    private void onSliderSizeChange() {
+        chaptersPanel.onSliderSizeChange(sliderSizeSlider.getValue());
     }
     
     private void onSentenceSizeChange() {
