@@ -1,5 +1,6 @@
 package panel;
 
+import SentenceLabel.SentenceLabel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;

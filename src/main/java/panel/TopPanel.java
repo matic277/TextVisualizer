@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class TopPanel extends JPanel {
     
-    MainPanel parent;
+    public MainPanel parent;
     
     JPanel controlPanel;
         JPanel importFilePanel;
@@ -24,6 +24,8 @@ public class TopPanel extends JPanel {
             JComboBox<VisualType> dropdownType;
         JPanel chapterTypePanel;
             JComboBox<ChapterType> chapterTypeDropdown;
+        JPanel sentenceLabelVisualType;
+            JComboBox<SentenceLabelVisualType> sentenceLabelVisualTypeDropdown;
     
     ChaptersPanel chaptersPanel;
     
@@ -41,6 +43,7 @@ public class TopPanel extends JPanel {
         initSliderSizeSlider();
         initDropdownPanel();
         initChapterTypePanel();
+        initSentenceLabelVisualTypePanel();
         
         chaptersPanel = new ChaptersPanel(this);
         
@@ -49,8 +52,24 @@ public class TopPanel extends JPanel {
         this.add(chaptersPanel, BorderLayout.CENTER);
     }
     
+    private void initSentenceLabelVisualTypePanel() {
+        JLabel title = new JLabel("Sentence label visual type:");
+        title.setFont(Utils.getFont(12));
+    
+        sentenceLabelVisualType = new JPanel();
+        sentenceLabelVisualType.setLayout(new BorderLayout());
+    
+        sentenceLabelVisualTypeDropdown = new JComboBox<>(SentenceLabelVisualType.values());
+        sentenceLabelVisualTypeDropdown.addActionListener(a -> chaptersPanel.onSentenceLabelVisualTypeChange((SentenceLabelVisualType) sentenceLabelVisualTypeDropdown.getSelectedItem()));
+    
+        sentenceLabelVisualType.add(title, BorderLayout.NORTH);
+        sentenceLabelVisualType.add(sentenceLabelVisualTypeDropdown, BorderLayout.CENTER);
+    
+        controlPanel.add(sentenceLabelVisualType);
+    }
+    
     private void initChapterTypePanel() {
-        JLabel title = new JLabel("Chapter orientation: ");
+        JLabel title = new JLabel("Chapter orientation:");
         title.setFont(Utils.getFont(12));
         
         chapterTypePanel = new JPanel();

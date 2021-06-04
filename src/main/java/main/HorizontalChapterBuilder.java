@@ -1,14 +1,12 @@
 package main;
 
 import panel.ChaptersPanel;
-import panel.SentenceLabel;
+import SentenceLabel.SentenceLabel;
 
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class HorizontalChapterBuilder implements ChapterBuilder {
     
@@ -40,7 +38,7 @@ public class HorizontalChapterBuilder implements ChapterBuilder {
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
         
             v.forEach(s -> {
-                SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType.sentenceLblBuilder);
+                SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType,  panel.currentSentenceLblVisualType);
                 lbl.init();
                 sentencesPanel.add(lbl);
             });

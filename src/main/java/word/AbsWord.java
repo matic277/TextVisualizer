@@ -1,5 +1,6 @@
 package word;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +68,30 @@ public abstract class AbsWord {
     public String getTag() {
         return "<" + tag + ">";
     }
-
+    
+    // position in SentenceLabel
+    // and size of word  (in vertical   should be used as height)
+    //                   (in horizontal should be used as width )
+    private int position;
+    private int size;
+    public void setPosition(int p) { this.position = p; }
+    public int getPosition() { return this.position; }
+    public void setSize(int s) { this.size = s; }
+    public int getSize() { return this.size; }
+    
+    // color used when rendering in SentenceLabel
+    Color currentColor;
+    Color normalColor;
+    Color hoveredColor;
+    public void setNormalRenderColor(Color c) { this.normalColor = c; }
+    public Color setNormalRenderColor() { return this.normalColor; }
+    public void setCurrentRenderColor(Color c) { this.currentColor = c; }
+    public Color getCurrentRenderColor() { return this.currentColor; }
+    public void setHoveredRenderColor(Color c) { this.hoveredColor = c; }
+    public Color getHoveredRenderColor() { return this.hoveredColor; }
+    
+    public int getProcessedWordLength() { return this.processedText.length(); }
+    
     @Override
     public String toString() {
         return "[" + getTag() + ", src:'" + sourceText + "', prc:'" + processedText + "']";

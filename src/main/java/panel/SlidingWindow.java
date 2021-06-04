@@ -1,5 +1,6 @@
 package panel;
 
+import SentenceLabel.SentenceLabel;
 import main.ChapterType;
 import main.Utils;
 
@@ -94,7 +95,6 @@ public class SlidingWindow extends Rectangle {
         else if (currentChapterType == ChapterType.VERTICAL) {
             for (int i = 0; i < sentenceCmps.length; i++) {
                 SentenceLabel slbl = (SentenceLabel) sentenceCmps[i];
-                System.out.println(slbl.getLocation());
                 // +25 offset probably because of mainSentencePanel header width (title of chapterPanel)
                 if (this.getBounds().contains(mainSentencePanel.getX(), sentenceCmps[i].getLocation().y + mainSentencePanel.getY()+25)) {
                     slbl.isHighlightedBySlider = true;

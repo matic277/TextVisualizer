@@ -1,9 +1,9 @@
 package panel;
 
+import SentenceLabel.SentenceLabel;
 import main.*;
 
 import javax.swing.*;
-import javax.swing.border.StrokeBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ChaptersPanel extends JScrollPane {
     
-    TopPanel parent;
+    public TopPanel parent;
     
     public JPanel mainPanel;
     public List<JPanel> chapterPanels = new ArrayList<>(20);
@@ -26,6 +26,7 @@ public class ChaptersPanel extends JScrollPane {
     
     public VisualType currentVisualType;
     public ChapterType currentChapterType;
+    public SentenceLabelVisualType currentSentenceLblVisualType;
     
     ChapterBuilder chapterBuilder = new HorizontalChapterBuilder();
     
@@ -33,8 +34,10 @@ public class ChaptersPanel extends JScrollPane {
         this.parent = parent;
         this.chapters = parent.chapters;
         
+        // defaults
         currentVisualType = VisualType.SENTIMENT;
         currentChapterType = ChapterType.HORIZONTAL;
+        currentSentenceLblVisualType = SentenceLabelVisualType.DEFAULT;
         
         slider = new SlidingWindow(this);
         
@@ -136,6 +139,25 @@ public class ChaptersPanel extends JScrollPane {
         
         init();
         slider.onNewChapterTypeChange(chapterType);
+    }
+    
+    public void onSentenceLabelVisualTypeChange(SentenceLabelVisualType visualType) {
+        currentSentenceLblVisualType = visualType;
+        
+        chapterPanels.forEach(chapterPanel -> {
+            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
+            for (Component sentenceCmp : sentencesPanel.getComponents()) {
+                if (sentenceCmp instanceof SentenceLabel sentLbl) {
+                    sentLbl.onSentenceLblVisualTypeChange(visualType);
+                }
+            }
+            sentencesPanel.revalidate();
+        });
+    
+        mainPanel.revalidate();
+        mainPanel.doLayout();
+        mainPanel.repaint();
+        this.updateUI();
     }
     
     class SlidingWindowListener implements MouseMotionListener, MouseListener {

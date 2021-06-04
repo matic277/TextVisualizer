@@ -1,7 +1,7 @@
 package main;
 
 import panel.ChaptersPanel;
-import panel.SentenceLabel;
+import SentenceLabel.SentenceLabel;
 
 import javax.swing.*;
 import javax.swing.border.StrokeBorder;
@@ -36,17 +36,12 @@ public class VerticalChapterBuilder implements ChapterBuilder {
             sentencesPanel.setLayout(panel.currentChapterType.sentenceLblBuilder.getParentLayout(sentencesPanel));
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
             
-//            int[] maxSentLblWidth = new int[]{0};
-//            int[] height = new int[]{0};
             v.forEach(s -> {
-                SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType.sentenceLblBuilder);
+                SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType, panel.currentSentenceLblVisualType);
                 lbl.init();
                 sentencesPanel.add(lbl);
-//                if (lbl.getSize().width > maxSentLblWidth[0]) maxSentLblWidth[0] = lbl.getPreferredSize().width;
-//                height[0] += lbl.getPreferredSize().height;
             });
             
-//            sentencesPanel.setPreferredSize(new Dimension(maxSentLblWidth[0], height[0]));
             sentencesPanel.doLayout();
             sentencesPanel.revalidate();
             

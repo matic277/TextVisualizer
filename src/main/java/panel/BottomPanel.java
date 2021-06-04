@@ -1,5 +1,6 @@
 package panel;
 
+import SentenceLabel.SentenceLabel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
@@ -48,4 +49,7 @@ public class BottomPanel extends JSplitPane {
         rightPanel.onNewTextImport(processedChapters);
         leftPanel.onNewTextImport(processedChapters);
     }
+    
+    public RightPanel getRightPanel() { return this.rightPanel; }
+    public LeftPanel getLeftPanel() { return this.leftPanel; }
 }

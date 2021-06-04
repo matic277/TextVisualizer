@@ -1,5 +1,6 @@
 package panel;
 
+import SentenceLabel.SentenceLabel;
 import main.Pair;
 import main.Sentence;
 import main.Utils;
@@ -152,7 +153,7 @@ public class LeftPanel extends JScrollPane {
             
             hoveredSentence.getSentence().getWords().forEach(w -> {
                 WordLabel lbl = new WordLabel(this, sentencePanel, w, currentVisualType);
-                lbl.setName("WORDLBL=> " + w);
+//                lbl.setName("WORDLBL=> " + w);
                 lbl.setParentSentence(hoveredSentence.sentence);
                 lbl.addMouseListener(new MouseListener() {
                     @Override

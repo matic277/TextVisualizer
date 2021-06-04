@@ -1,5 +1,9 @@
 package main;
 
+import SentenceLabel.HorizontalSentenceLabelBuilder;
+import SentenceLabel.SentenceLabelBuilder;
+import SentenceLabel.VerticalSentenceLabelBuilder;
+
 public enum ChapterType {
     HORIZONTAL(0, "Horizontal", new VerticalSentenceLabelBuilder()),
     VERTICAL(0, "Vertical", new HorizontalSentenceLabelBuilder())

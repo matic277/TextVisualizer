@@ -156,6 +156,17 @@ public class Sentence {
 //                .sum();
     }
     
+    /**
+     * Returns the sum of length of all words.
+     * Ignores spaces, only considers length of processed words, not source words!
+     */
+    public double getLengthOfSentence() {
+        return this.words.stream()
+                .map(AbsWord::getProcessedWordLength)
+                .reduce(0, Integer::sum)
+                .doubleValue();
+    }
+    
     public void magnifySentiment() { this.sentiment *= magnifyValue; }
     
     public double getSentiment() { return sentiment; }
