@@ -84,7 +84,7 @@ public abstract class AbsWord {
     Color normalColor;
     Color hoveredColor;
     public void setNormalRenderColor(Color c) { this.normalColor = c; }
-    public Color setNormalRenderColor() { return this.normalColor; }
+    public Color getNormalRenderColor() { return this.normalColor; }
     public void setCurrentRenderColor(Color c) { this.currentColor = c; }
     public Color getCurrentRenderColor() { return this.currentColor; }
     public void setHoveredRenderColor(Color c) { this.hoveredColor = c; }

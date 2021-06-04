@@ -229,6 +229,12 @@ public class SentenceLabel extends JLabel {
         CURRENT_COLOR_MED = HOVERED_COLOR_MED;
         CURRENT_COLOR_LOW = HOVERED_COLOR_LOW;
         CURRENT_UNRECOGNIZED_COLOR = HOVERED_UNRECOGNIZED_COLOR;
+        
+        // shitty
+        if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
+            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getHoveredRenderColor()));
+        }
+        
         this.parent.repaint();
     }
     
@@ -239,6 +245,12 @@ public class SentenceLabel extends JLabel {
         CURRENT_COLOR_MED = NORMAL_COLOR_MED;
         CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
         CURRENT_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR;
+    
+        // shitty
+        if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
+            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
+        }
+        
         this.parent.repaint();
     }
     
