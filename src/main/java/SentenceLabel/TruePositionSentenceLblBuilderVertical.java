@@ -22,9 +22,7 @@ public class TruePositionSentenceLblBuilderVertical implements SentenceLabelBuil
         // assign height and position to each word
         // based on how long it is and its successors
         
-        // the words should start at the top of the label, not bottom!
-        // so initial position is the max
-        int wordHeight = totalHeight;
+        int wordHeight = 0;
         for (AbsWord word : label.getSentence().getWords()) {
             // how long is this word percentage wise,
             // based on sentence length?
@@ -42,7 +40,7 @@ public class TruePositionSentenceLblBuilderVertical implements SentenceLabelBuil
             
             // set position
             word.setPosition(wordHeight);
-            wordHeight -= height;
+            wordHeight += height;
         }
         
         int lblWidth  = 5;
