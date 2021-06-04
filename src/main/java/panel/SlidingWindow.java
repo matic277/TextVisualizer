@@ -1,29 +1,22 @@
 package panel;
 
 import main.ChapterType;
-import main.Pair;
-import main.Sentence;
 import main.Utils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SlidingWindow extends Rectangle {
     
     ChaptersPanel parent;
-    Map<Pair<Integer, String>, List<Sentence>> chapters;
     
-    Color color = Color.black;
-    Stroke stroke = new BasicStroke(3f);
+    final Color COLOR = Color.black;
+    final Stroke STROKE = new BasicStroke(3f);
     
     ChapterType currentChapterType = ChapterType.VERTICAL;
-    
     Renderer renderer = new VerticalRenderer();
-    
-    interface Renderer { void draw(Graphics2D g, SlidingWindow slider); }
     
     public SlidingWindow(ChaptersPanel parent) {
         this.parent = parent;
@@ -41,36 +34,35 @@ public class SlidingWindow extends Rectangle {
         this.parent.repaint();
     }
     
-    class HorizontalRenderer implements Renderer {
-        @Override public void draw(Graphics2D gr, SlidingWindow slider) {
-            gr.setColor(color);
-            // lines, draw before antialiasing hints!
-            gr.setStroke(stroke);
-            gr.drawRect(x+1, y+2, width-2, height-6);
-            
-    
-            gr.setColor(Color.black);
+    private interface Renderer {
+        void draw(Graphics2D g, SlidingWindow slider);
+        default void drawBaseRectangle(Graphics2D gr, SlidingWindow slider) {
+            gr.setColor(slider.COLOR);
+            // lines, draw before antialiasing!
+            gr.setStroke(slider.STROKE);
+            gr.drawRect(slider.x+1, slider.y+2, slider.width-2, slider.height-6);
+        }
+        default void enableAntiAliasing(Graphics2D gr) {
             gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
+    }
+    private class HorizontalRenderer implements Renderer {
+        @Override public void draw(Graphics2D gr, SlidingWindow slider) {
+            drawBaseRectangle(gr, slider);
+            enableAntiAliasing(gr);
             
-//            gr.setColor(new Color(255,0,0,150));
             // left
             gr.fillRoundRect(x-2, y+1, 11, height-3, 5, 5);
             // right
             gr.fillRoundRect(x+width, y+1,  5, height-3, 5, 5);
         }
     }
-    class VerticalRenderer implements Renderer {
+    private class VerticalRenderer implements Renderer {
         @Override public void draw(Graphics2D gr, SlidingWindow slider) {
-            gr.setColor(color);
-            // vertical lines, draw before antialiasing hints!
-            gr.setStroke(stroke);
-            gr.drawRect(x+1, y+2, width-2, height-6);
+            drawBaseRectangle(gr, slider);
+            enableAntiAliasing(gr);
             
-            gr.setColor(Color.black);
-            gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-//            gr.setColor(new Color(255,0,0,150));
             // top
             gr.fillRoundRect(x, y, width+1, 11, 5, 5);
             // bottom
@@ -80,7 +72,7 @@ public class SlidingWindow extends Rectangle {
     
     public void paint(Graphics g) {
         Graphics2D gr = (Graphics2D) g;
-        gr.setColor(color);
+        gr.setColor(COLOR);
         
         renderer.draw(gr, this);
     }
@@ -120,9 +112,5 @@ public class SlidingWindow extends Rectangle {
         }
         
         return hovered;
-    }
-    
-    public void setColor(Color color) {
-        this.color = color;
     }
 }
