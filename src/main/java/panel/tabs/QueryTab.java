@@ -1,8 +1,10 @@
-package panel;
+package panel.tabs;
+
+import panel.VerticalFlowLayout2;
+import panel.tabs.TabsPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class QueryTab extends JPanel {

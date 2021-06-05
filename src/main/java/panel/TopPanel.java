@@ -1,6 +1,7 @@
 package panel;
 
 import main.*;
+import panel.tabs.TabsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +58,7 @@ public class TopPanel extends JPanel {
         splitPane = new JSplitPane();
         splitPane.setLeftComponent(tabsPanel);
         splitPane.setRightComponent(chaptersPanel);
-        splitPane.setDividerLocation(200);
+        splitPane.setDividerLocation(250);
         
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.NORTH);
@@ -232,4 +233,6 @@ public class TopPanel extends JPanel {
         this.chapters = processedChapters;
         chaptersPanel.onNewTextImport(processedChapters);
     }
+    
+    public ChaptersPanel getChaptersPanel() { return this.chaptersPanel; }
 }

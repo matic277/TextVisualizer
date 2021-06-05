@@ -2,6 +2,7 @@ package panel;
 
 import SentenceLabel.SentenceLabel;
 import main.*;
+import panel.tabs.QueryTab;
 
 import javax.swing.*;
 import java.awt.*;

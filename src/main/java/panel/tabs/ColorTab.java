@@ -1,7 +1,8 @@
-package panel;
+package panel.tabs;
+
+import panel.tabs.TabsPanel;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class ColorTab extends JPanel {
     
