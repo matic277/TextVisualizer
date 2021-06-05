@@ -32,7 +32,7 @@ public class HorizontalChapterBuilder implements ChapterBuilder {
             JPanel sentencesPanel = new JPanel();
             sentencesPanel.setName("Sentence panel for chapter " + k.getB());
             sentencesPanel.setOpaque(true);
-            sentencesPanel.setBackground(Utils.GRAY);
+            sentencesPanel.setBackground(Utils.TITLE_BACKGROUND);
 //            sentencesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
             sentencesPanel.setLayout(panel.currentChapterType.sentenceLblBuilder.getParentLayout(sentencesPanel));
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);

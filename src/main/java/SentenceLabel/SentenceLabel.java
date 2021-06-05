@@ -18,16 +18,16 @@ public class SentenceLabel extends JLabel {
     public Sentence sentence;
     public ChaptersPanel parent;
 
+    private static final SentenceLabelBuilder truePositionVerticalBuilder = new TruePositionSentenceLblBuilderVertical();
+    private static final SentenceLabelBuilder truePositionHorizontalBuilder = new TruePositionSentenceLblBuilderHorizontal();
+    private static final SentenceLabelBuilder defaultVerticalBuilder = new VerticalSentenceLabelBuilder();
+    private static final SentenceLabelBuilder defaultHorizontalBuilder = new HorizontalSentenceLabelBuilder();
     SentenceLabelBuilder labelBuilder;
-    final SentenceLabelBuilder truePositionVerticalBuilder = new TruePositionSentenceLblBuilderVertical();
-    final SentenceLabelBuilder truePositionHorizontalBuilder = new TruePositionSentenceLblBuilderHorizontal();
-    final SentenceLabelBuilder defaultVerticalBuilder = new VerticalSentenceLabelBuilder();
-    final SentenceLabelBuilder defaultHorizontalBuilder = new HorizontalSentenceLabelBuilder();
     
-    final SentenceRenderer verticalRenderer = new VerticalSentenceLblRenderer();
-    final SentenceRenderer horizontalRenderer = new HorizontalSentenceLblRenderer();
-    final SentenceRenderer truePositionVerticalRenderer = new TruePositionSentenceLblVerticalRenderer();
-    final SentenceRenderer truePositionHorizontalRenderer = new TruePositionSentenceLblHorizontalRenderer();
+    private static final SentenceRenderer verticalRenderer = new VerticalSentenceLblRenderer();
+    private static final SentenceRenderer horizontalRenderer = new HorizontalSentenceLblRenderer();
+    private static final SentenceRenderer truePositionVerticalRenderer = new TruePositionSentenceLblVerticalRenderer();
+    private static final SentenceRenderer truePositionHorizontalRenderer = new TruePositionSentenceLblHorizontalRenderer();
     SentenceRenderer renderer; // default at start
     
     public boolean isHighlightedBySlider = false;
@@ -143,7 +143,6 @@ public class SentenceLabel extends JLabel {
             g.setColor(new Color(255, 255, 0, 100));
             g.fillRect(0, 0, slbl.getWidth(), slbl.getHeight());
         };
-        //searchWordBorderDrawer = searchWordFoundBorderDrawer;
     }
     
     public void init() {
@@ -180,6 +179,7 @@ public class SentenceLabel extends JLabel {
         }
         this.init();
         this.repaint();
+        this.parent.repaint();
     }
     
     private static Consumer<SentenceLabel> getSentimentColorer() {

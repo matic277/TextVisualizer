@@ -152,7 +152,7 @@ public class ChaptersPanel extends JScrollPane {
             }
             sentencesPanel.revalidate();
         });
-    
+        
         mainPanel.revalidate();
         mainPanel.doLayout();
         mainPanel.repaint();
