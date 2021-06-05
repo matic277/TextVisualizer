@@ -28,7 +28,7 @@ public class MainWindow {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         
-        FlatLightLaf.install();
+        FlatLightLaf.setup();
         UIManager.put("Button.arc", 15 );
         UIManager.put("Component.arc", 30 );
         UIManager.put("Component.focusWidth", 1);

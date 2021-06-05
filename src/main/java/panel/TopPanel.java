@@ -12,6 +12,12 @@ public class TopPanel extends JPanel {
     
     public MainPanel parent;
     
+    // BorderLayout.CENTER
+    TabsPanel tabsPanel; // left
+    ChaptersPanel chaptersPanel; // right
+    JSplitPane splitPane;
+    
+    // BorderLayout.TOP
     JPanel controlPanel;
         JPanel importFilePanel;
             JTextField importField;
@@ -27,7 +33,7 @@ public class TopPanel extends JPanel {
         JPanel sentenceLabelVisualType;
             JComboBox<SentenceLabelVisualType> sentenceLabelVisualTypeDropdown;
     
-    ChaptersPanel chaptersPanel;
+    
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
@@ -46,10 +52,17 @@ public class TopPanel extends JPanel {
         initSentenceLabelVisualTypePanel();
         
         chaptersPanel = new ChaptersPanel(this);
+        tabsPanel = new TabsPanel(this);
+        
+        splitPane = new JSplitPane();
+        splitPane.setLeftComponent(tabsPanel);
+        splitPane.setRightComponent(chaptersPanel);
+        splitPane.setDividerLocation(200);
         
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.NORTH);
-        this.add(chaptersPanel, BorderLayout.CENTER);
+        //this.add(chaptersPanel, BorderLayout.CENTER);
+        this.add(splitPane, BorderLayout.CENTER);
     }
     
     private void initSentenceLabelVisualTypePanel() {
@@ -141,9 +154,9 @@ public class TopPanel extends JPanel {
         int sliderMin = 80, sliderMax = 200;
         sliderSizeSlider = new JSlider(sliderMin, sliderMax, Utils.INITIAL_SLIDER_WIDTH);
         Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
-        Font lblFont = new Font("Calibri", Font.BOLD, 12);
-        JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);
-        JLabel maxLbl = new JLabel(sliderMax+""); maxLbl.setFont(lblFont);
+        //Font lblFont = new Font("Calibri", Font.BOLD, 12);
+        JLabel minLbl = new JLabel(sliderMin+""); //minLbl.setFont(lblFont);
+        JLabel maxLbl = new JLabel(sliderMax+""); //maxLbl.setFont(lblFont);
         sliderMap.put(sliderMin, minLbl);
         sliderMap.put(sliderMax, maxLbl);
         sliderSizeSlider.setLabelTable(sliderMap);
@@ -171,13 +184,16 @@ public class TopPanel extends JPanel {
         
         JLabel title = new JLabel("Size of sentences");
         title.setFont(Utils.getFont(12));
+        //Font defaultFont = UIManager.getDefaults().getFont("Label.font");
+        //Font boldFont = new Font(defaultFont.getName(), Font.BOLD,defaultFont.getSize());
+        //title.setFont(defaultFont);
         
         int sliderMin = 1, sliderMax = 16;
         sentenceSizeSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.width);
         Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
-        Font lblFont = new Font("Calibri", Font.BOLD, 12);
-        JLabel minLbl = new JLabel(sliderMin+""); minLbl.setFont(lblFont);
-        JLabel maxLbl = new JLabel(sliderMax+""); maxLbl.setFont(lblFont);
+        //Font lblFont = new Font("Calibri", Font.BOLD, 12);
+        JLabel minLbl = new JLabel(sliderMin+""); //minLbl.setFont(lblFont);
+        JLabel maxLbl = new JLabel(sliderMax+""); //maxLbl.setFont(lblFont);
         sliderMap.put(sliderMin, minLbl);
         sliderMap.put(sliderMax, maxLbl);
         sentenceSizeSlider.setLabelTable(sliderMap);

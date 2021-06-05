@@ -15,7 +15,7 @@ public class SentenceLabel extends JLabel {
     
     public Sentence sentence;
     public ChaptersPanel parent;
-    
+
     SentenceLabelBuilder labelBuilder;
     final SentenceLabelBuilder truePositionVerticalBuilder = new TruePositionSentenceLblBuilderVertical();
     final SentenceLabelBuilder truePositionHorizontalBuilder = new TruePositionSentenceLblBuilderHorizontal();
@@ -216,15 +216,16 @@ public class SentenceLabel extends JLabel {
         
         renderer.draw(gr, this);
         
-//        gr.setFont(Utils.getFont(8));
-//        gr.setColor(Color.black);
-//        String s = getBounds().toString().toLowerCase().replace("java.awt.rectangle", "");
-//        gr.drawString(s, 0, 10);
+        // debug
+        // gr.setFont(Utils.getFont(8));
+        // gr.setColor(Color.black);
+        // String s = getBounds().toString().toLowerCase().replace("java.awt.rectangle", "");
+        // gr.drawString(s, 0, 10);
     }
     
     public void highlight() {
-//        isHighlightedBySlider = true;
-//        if (isSelected) return;
+        //isHighlightedBySlider = true;
+        //if (isSelected) return;
         CURRENT_COLOR_HIGH = HOVERED_COLOR_HIGH;
         CURRENT_COLOR_MED = HOVERED_COLOR_MED;
         CURRENT_COLOR_LOW = HOVERED_COLOR_LOW;
@@ -241,6 +242,7 @@ public class SentenceLabel extends JLabel {
     public void unhighlight() {
         isHighlightedBySlider = false;
         if (isSelected) return;
+        
         CURRENT_COLOR_HIGH = NORMAL_COLOR_HIGH;
         CURRENT_COLOR_MED = NORMAL_COLOR_MED;
         CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
@@ -256,12 +258,24 @@ public class SentenceLabel extends JLabel {
     
     public void onUnselect() {
         this.isSelected = false;
+        if (isHighlightedBySlider) {
+            this.borderDrawer = nullBorderDrawer;
+            this.repaint();
+            return;
+        }
         CURRENT_COLOR_HIGH = NORMAL_COLOR_HIGH;
         CURRENT_COLOR_MED = NORMAL_COLOR_MED;
         CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
         CURRENT_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR;
         this.borderDrawer = nullBorderDrawer;
-        this.parent.repaint();
+    
+        // shitty
+        if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
+            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
+        }
+        
+        this.repaint();
+       // this.parent.repaint();
     }
     
     public void onSelect() {
@@ -269,10 +283,16 @@ public class SentenceLabel extends JLabel {
         CURRENT_COLOR_HIGH = HOVERED_COLOR_HIGH;
         CURRENT_COLOR_MED = HOVERED_COLOR_MED;
         CURRENT_COLOR_LOW = HOVERED_COLOR_LOW;
+    
+        // shitty
+        if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
+            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getHoveredRenderColor()));
+        }
         
         CURRENT_UNRECOGNIZED_COLOR = HOVERED_UNRECOGNIZED_COLOR;
         this.borderDrawer = actualBorderDrawer;
-        this.parent.repaint();
+        this.repaint();
+        //this.parent.repaint();
     }
     
     private void addListener() {
@@ -283,7 +303,7 @@ public class SentenceLabel extends JLabel {
                 if (isSelected()) {
                     clickedSentence.onUnselect();
                     boolean removed = parent.parent.parent.getBottomPanel().getRightPanel().removeSentence(clickedSentence);
-//                    System.out.println("size, removed => " + parent.parent.parent.getBottomPanel().rightPanel.allSelectedSentences.size() + ", " + removed);
+                    //System.out.println("size, removed => " + parent.parent.parent.getBottomPanel().rightPanel.allSelectedSentences.size() + ", " + removed);
                     assert removed;
                 }
                 else {

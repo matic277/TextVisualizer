@@ -14,4 +14,8 @@ public enum ChapterType {
     SentenceLabelBuilder sentenceLblBuilder;
     
     ChapterType(int id_, String dVal, SentenceLabelBuilder slb) { id=id_; displayVal=dVal; sentenceLblBuilder=slb; }
+    
+    @Override
+    public String toString() { return this.displayVal; }
+    
 }

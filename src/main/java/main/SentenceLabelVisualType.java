@@ -11,4 +11,7 @@ public enum SentenceLabelVisualType {
     int id; String displayVal;
     
     SentenceLabelVisualType(int id_, String dv) { id=id_; displayVal=dv; }
+    
+    @Override
+    public String toString() { return this.displayVal; }
 }
