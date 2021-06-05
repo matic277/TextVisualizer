@@ -1,11 +1,9 @@
 package panel;
 
-import main.Utils;
-
 import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class QueryTab extends JPanel {
     
@@ -19,8 +17,8 @@ public class QueryTab extends JPanel {
     JPanel mainPanel;
         JLabel title2; // NORTH
         JPanel statsPanel; // CENTER
-            JLabel wordOccurence;
-            JLabel testLabel;
+            JLabel wordOccurrence;
+            JLabel sentenceOccurrence;
     
     public QueryTab(TabsPanel parent) {
         this.parent = parent;
@@ -46,10 +44,10 @@ public class QueryTab extends JPanel {
         statsPanel = new JPanel();
         statsPanel.setLayout(new VerticalFlowLayout2(VerticalFlowLayout2.LEFT, VerticalFlowLayout2.TOP, 0, 10));
         
-        wordOccurence = new JLabel("     Number of occurences: ");
-        testLabel = new JLabel("     test");
-        statsPanel.add(wordOccurence);
-        statsPanel.add(testLabel);
+        wordOccurrence = new JLabel("     Number of occurences: ");
+        sentenceOccurrence = new JLabel("     Number of sentence occurrence: ");
+        statsPanel.add(wordOccurrence);
+        statsPanel.add(sentenceOccurrence);
         
         
         mainPanel.add(title, BorderLayout.NORTH);
@@ -66,7 +64,9 @@ public class QueryTab extends JPanel {
         
         searchBar = new JTextField();
         searchBar.addActionListener(a -> {
-            wordOccurenceCounter.set(0);
+            // potential synchronization issues if searching in fast succession?....
+            wordOccurrenceCounter.set(0);
+            sentenceOccurrenceCounter.set(0);
             parent.chaptersPanel.onWordSearch(searchBar.getText().toLowerCase(), this);
             updateStatistics();
         });
@@ -79,13 +79,19 @@ public class QueryTab extends JPanel {
     }
     
     private void updateStatistics() {
-        wordOccurence.setText("     Number of occurences: " + wordOccurenceCounter.get());
+        wordOccurrence.setText("     Number of word occurrence: " + wordOccurrenceCounter.get());
+        sentenceOccurrence.setText("     Number of sentence occurrence: " + sentenceOccurrenceCounter.get());
     }
     
-    private final AtomicInteger wordOccurenceCounter = new AtomicInteger(0);
+    private final AtomicLong wordOccurrenceCounter = new AtomicLong(0);
+    private final AtomicLong sentenceOccurrenceCounter = new AtomicLong(0);
     
-    public void incrementWordFoundOccurence() {
-        wordOccurenceCounter.incrementAndGet();
+    public synchronized void incrementWordFoundOccurrence(long byAmmount) {
+        wordOccurrenceCounter.set(wordOccurrenceCounter.get() + byAmmount);
+    }
+    
+    public void incrementWordInSentenceFoundOccurrence() {
+        sentenceOccurrenceCounter.incrementAndGet();
     }
     
     private JLabel getDummySpacer(int width, int height) {

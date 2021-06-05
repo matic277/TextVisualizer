@@ -140,12 +140,8 @@ public class SentenceLabel extends JLabel {
         
         // on word found by querytab border drawer
         this.searchWordFoundBorderDrawer = (g, slbl) -> {
-            g.setStroke(new BasicStroke(3));
-            System.out.println("painting border");
-            // add border
-            //g.setColor(BORDER_COLOR);
             g.setColor(new Color(255, 255, 0, 100));
-            g.drawRect(1, 1, slbl.getWidth()-3, slbl.getHeight()-2);
+            g.fillRect(0, 0, slbl.getWidth(), slbl.getHeight());
         };
         //searchWordBorderDrawer = searchWordFoundBorderDrawer;
     }
@@ -347,9 +343,11 @@ public class SentenceLabel extends JLabel {
     public boolean isSelected() { return this.isSelected; }
     
     public void onWordSearch(String word, QueryTab caller) {
-        if (this.sentence.containsWord(word)) {
+        long occurrences = this.sentence.countOccurrences(word);
+        if (occurrences > 0) {
             this.searchWordBorderDrawer = searchWordFoundBorderDrawer;
-            caller.incrementWordFoundOccurence();
+            caller.incrementWordInSentenceFoundOccurrence();
+            caller.incrementWordFoundOccurrence(occurrences);
             this.repaint();
         } else {
             this.searchWordBorderDrawer = nullBorderDrawer;

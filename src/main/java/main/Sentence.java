@@ -168,11 +168,13 @@ public class Sentence {
     }
     
     /**
-     * Only check processedText, not source!
+     * Only checks processedText, not source!
      * Check by using contains, not equals.
      */
-    public boolean containsWord(String word) {
-        return this.getWords().stream().anyMatch(w -> w.getProcessedText().contains(word));
+    public long countOccurrences(String word) {
+        return this.getWords().stream()
+                .filter(w -> w.getProcessedText().contains(word))
+                .count();
     }
     
     public void magnifySentiment() { this.sentiment *= magnifyValue; }
