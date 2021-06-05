@@ -13,29 +13,33 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
     @Override
     public void rebuild(SentenceLabel label) {
         // calculate true position of words in sentence
-        int wordSize = 3;
+        int charSize = 3;
         double totalWords = label.getSentence().getWords().size();
-        int totalWidth = (int)customLog(1.035, totalWords * wordSize);
+        int totalWidth = (int)customLog(1.035, totalWords * charSize);
         
-        double sentenceLength = label.getSentence().getLengthOfSentence();
+        int sentenceLength = label.getSentence().getLengthOfSentence();
         
         // assign height and position to each word
         // based on how long it is and its successors
-        int wordWidth = 0;
+        int offsetPosition = 0;
+        int widthSum = 0;
         for (AbsWord word : label.getSentence().getWords()) {
             // how long is this word percentage wise,
             // based on sentence length?
             double wrdLenPerc = (double) word.getProcessedWordLength() / sentenceLength;
             
             // TODO
-            // Either: the math is wrong
-            // Or    : rounding errors add up, which is why some sentences are
-            //         rendered shorter than they actually are (this is visible
-            //         when selecting them, border is wider, always to the right!)
-            // (same for vertical builder?)
+
+            //   Rounding errors add up, which is why some sentences are
+            //   rendered shorter than they actually are (this is visible
+            //   when selecting them, border is wider, always to the right!)
+            // The renderer is probably written correctly, but the word
+            // lengths don' add up.
+            // (same for vertical builder)
+            // Using Math.round (below) smooths the errors about a bit
             
             // based off percentage, calculate height (size)
-            int width = (int) (totalWidth * wrdLenPerc);
+            int width = (int) Math.round(totalWidth * wrdLenPerc);
             word.setSize(width);
             
             // set it's color used by renderer
@@ -45,9 +49,17 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
             word.setHoveredRenderColor(clr.brighter());
             
             // set position
-            word.setPosition(wordWidth);
-            wordWidth += width;
+            word.setPosition(offsetPosition);
+            offsetPosition += width;
+            widthSum += width;
         }
+    
+        int diff = totalWidth - widthSum;
+        
+        // the problem
+        //if (Math.abs(diff) >= 3) {
+        //    System.out.println("dif " + diff);
+        //}
         
         int lblHeight  = 5;
         label.setPreferredSize(new Dimension(totalWidth, lblHeight));

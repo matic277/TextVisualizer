@@ -160,11 +160,10 @@ public class Sentence {
      * Returns the sum of length of all words.
      * Ignores spaces, only considers length of processed words, not source words!
      */
-    public double getLengthOfSentence() {
+    public int getLengthOfSentence() {
         return this.words.stream()
                 .map(AbsWord::getProcessedWordLength)
-                .reduce(0, Integer::sum)
-                .doubleValue();
+                .reduce(0, Integer::sum);
     }
     
     /**
