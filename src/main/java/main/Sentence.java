@@ -167,10 +167,18 @@ public class Sentence {
                 .doubleValue();
     }
     
-    public void magnifySentiment() { this.sentiment *= magnifyValue; }
+    /**
+     * Only check processedText, not source!
+     * Check by using contains, not equals.
+     */
+    public boolean containsWord(String word) {
+        return this.getWords().stream().anyMatch(w -> w.getProcessedText().contains(word));
+    }
     
+    public void magnifySentiment() { this.sentiment *= magnifyValue; }
     public double getSentiment() { return sentiment; }
     public double getImagery() { return imagery; }
+    
     public double getActivation() { return activation; }
     
     public String getSentenceString() { return sentence; }
@@ -193,8 +201,8 @@ public class Sentence {
         sb.append("\t\t|-> Sentence sentiment value: ").append(format.format(sentiment));
         return sb.toString();
     }
-    
     static final DecimalFormat format = new DecimalFormat("#.###");
+    
     static final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     
     @Override

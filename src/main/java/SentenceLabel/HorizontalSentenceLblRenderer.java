@@ -4,19 +4,20 @@ import java.awt.*;
 
 public class HorizontalSentenceLblRenderer implements SentenceRenderer {
     @Override
-    public void draw(Graphics2D gr, SentenceLabel label) {
-        gr.setColor(label.CURRENT_COLOR_HIGH);
-        gr.fillRect(0, 0, label.highWidth, label.getHeight());
+    public void draw(Graphics2D gr, SentenceLabel lbl) {
+        gr.setColor(lbl.CURRENT_COLOR_HIGH);
+        gr.fillRect(0, 0, lbl.highWidth, lbl.getHeight());
         
-        gr.setColor(label.CURRENT_COLOR_MED);
-        gr.fillRect(label.highWidth, 0, label.medWidth, label.getHeight());
+        gr.setColor(lbl.CURRENT_COLOR_MED);
+        gr.fillRect(lbl.highWidth, 0, lbl.medWidth, lbl.getHeight());
         
-        gr.setColor(label.CURRENT_COLOR_LOW);
-        gr.fillRect(label.highWidth + label.medWidth, 0, label.lowWidth, label.getHeight());
+        gr.setColor(lbl.CURRENT_COLOR_LOW);
+        gr.fillRect(lbl.highWidth + lbl.medWidth, 0, lbl.lowWidth, lbl.getHeight());
         
-        gr.setColor(label.CURRENT_UNRECOGNIZED_COLOR);
-        gr.fillRect(label.highWidth + label.medWidth + label.lowWidth, 0, label.unknWidth, label.getHeight());
+        gr.setColor(lbl.CURRENT_UNRECOGNIZED_COLOR);
+        gr.fillRect(lbl.highWidth + lbl.medWidth + lbl.lowWidth, 0, lbl.unknWidth, lbl.getHeight());
         
-        label.borderDrawer.accept(gr);
+        lbl.searchWordBorderDrawer.accept(gr, lbl);
+        lbl.selectionBorderDrawer.accept(gr, lbl);
     }
 }

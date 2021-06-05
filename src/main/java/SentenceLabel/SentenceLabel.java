@@ -2,6 +2,7 @@ package SentenceLabel;
 
 import main.*;
 import panel.ChaptersPanel;
+import panel.QueryTab;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class SentenceLabel extends JLabel {
@@ -50,9 +52,13 @@ public class SentenceLabel extends JLabel {
     
     private boolean isSelected = false;
     private static final Color BORDER_COLOR = new Color(0, 0, 0, 100);
-    private Consumer<Graphics2D> actualBorderDrawer;
-    private Consumer<Graphics2D> nullBorderDrawer = (g) -> {};
-    public Consumer<Graphics2D> borderDrawer = nullBorderDrawer;
+    
+    // borders on found and selected
+    private final BiConsumer<Graphics2D, SentenceLabel> nullBorderDrawer = (g, lbl) -> {};
+    private final BiConsumer<Graphics2D, SentenceLabel> selectedSentenceBorderDrawer;
+    private final BiConsumer<Graphics2D, SentenceLabel> searchWordFoundBorderDrawer;
+    public BiConsumer<Graphics2D, SentenceLabel> selectionBorderDrawer = nullBorderDrawer;
+    public BiConsumer<Graphics2D, SentenceLabel> searchWordBorderDrawer = nullBorderDrawer;
     
     // sentiment
     public static final Color SENTIMENT_HIGH_COLOR = Utils.GREEN;
@@ -123,13 +129,25 @@ public class SentenceLabel extends JLabel {
         colorMap.get(visualType).accept(this);
         addListener();
         
-        this.actualBorderDrawer = (g) -> {
+        // on selected border drawer
+        this.selectedSentenceBorderDrawer = (g, slbl) -> {
             g.setStroke(new BasicStroke(1));
             
             // add border
             g.setColor(BORDER_COLOR);
-            g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+            g.drawRect(0, 0, slbl.getWidth()-1, slbl.getHeight()-1);
         };
+        
+        // on word found by querytab border drawer
+        this.searchWordFoundBorderDrawer = (g, slbl) -> {
+            g.setStroke(new BasicStroke(3));
+            System.out.println("painting border");
+            // add border
+            //g.setColor(BORDER_COLOR);
+            g.setColor(new Color(255, 255, 0, 100));
+            g.drawRect(1, 1, slbl.getWidth()-3, slbl.getHeight()-2);
+        };
+        //searchWordBorderDrawer = searchWordFoundBorderDrawer;
     }
     
     public void init() {
@@ -215,7 +233,7 @@ public class SentenceLabel extends JLabel {
         Graphics2D gr = (Graphics2D) g;
         
         renderer.draw(gr, this);
-        
+        //System.out.println("redrawn");
         // debug
         // gr.setFont(Utils.getFont(8));
         // gr.setColor(Color.black);
@@ -247,7 +265,7 @@ public class SentenceLabel extends JLabel {
         CURRENT_COLOR_MED = NORMAL_COLOR_MED;
         CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
         CURRENT_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR;
-    
+        
         // shitty
         if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
             sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
@@ -259,7 +277,7 @@ public class SentenceLabel extends JLabel {
     public void onUnselect() {
         this.isSelected = false;
         if (isHighlightedBySlider) {
-            this.borderDrawer = nullBorderDrawer;
+            this.selectionBorderDrawer = nullBorderDrawer;
             this.repaint();
             return;
         }
@@ -267,8 +285,8 @@ public class SentenceLabel extends JLabel {
         CURRENT_COLOR_MED = NORMAL_COLOR_MED;
         CURRENT_COLOR_LOW = NORMAL_COLOR_LOW;
         CURRENT_UNRECOGNIZED_COLOR = NORMAL_UNRECOGNIZED_COLOR;
-        this.borderDrawer = nullBorderDrawer;
-    
+        this.selectionBorderDrawer = nullBorderDrawer;
+        
         // shitty
         if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
             sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
@@ -290,7 +308,7 @@ public class SentenceLabel extends JLabel {
         }
         
         CURRENT_UNRECOGNIZED_COLOR = HOVERED_UNRECOGNIZED_COLOR;
-        this.borderDrawer = actualBorderDrawer;
+        this.selectionBorderDrawer = selectedSentenceBorderDrawer;
         this.repaint();
         //this.parent.repaint();
     }
@@ -327,4 +345,15 @@ public class SentenceLabel extends JLabel {
     }
     
     public boolean isSelected() { return this.isSelected; }
+    
+    public void onWordSearch(String word, QueryTab caller) {
+        if (this.sentence.containsWord(word)) {
+            this.searchWordBorderDrawer = searchWordFoundBorderDrawer;
+            caller.incrementWordFoundOccurence();
+            this.repaint();
+        } else {
+            this.searchWordBorderDrawer = nullBorderDrawer;
+            this.repaint();
+        }
+    }
 }

@@ -8,9 +8,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class ChaptersPanel extends JScrollPane {
     
@@ -158,6 +157,31 @@ public class ChaptersPanel extends JScrollPane {
         mainPanel.doLayout();
         mainPanel.repaint();
         this.updateUI();
+    }
+    
+    public void onWordSearch(String word, QueryTab caller) {
+        chapterPanels.parallelStream()
+                .map(panel -> (JPanel) panel.getComponents()[1])
+                .map(Container::getComponents)
+                .flatMap(Arrays::stream)
+                .map(sentenceCmp -> {
+                    if(sentenceCmp instanceof SentenceLabel sentLbl) return sentLbl;
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .forEach(sentLbl -> sentLbl.onWordSearch(word, caller));
+        
+        this.repaint();
+        
+        //chapterPanels.forEach(chapterPanel -> {
+        //    JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
+        //    for (Component sentenceCmp : sentencesPanel.getComponents()) {
+        //        if (sentenceCmp instanceof SentenceLabel sentLbl) {
+        //            sentLbl.onSentenceLblVisualTypeChange(visualType);
+        //        }
+        //    }
+        //    sentencesPanel.revalidate();
+        //});
     }
     
     class SlidingWindowListener implements MouseMotionListener, MouseListener {

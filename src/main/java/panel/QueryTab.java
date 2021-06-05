@@ -5,6 +5,7 @@ import main.Utils;
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class QueryTab extends JPanel {
     
@@ -18,6 +19,8 @@ public class QueryTab extends JPanel {
     JPanel mainPanel;
         JLabel title2; // NORTH
         JPanel statsPanel; // CENTER
+            JLabel wordOccurence;
+            JLabel testLabel;
     
     public QueryTab(TabsPanel parent) {
         this.parent = parent;
@@ -37,11 +40,16 @@ public class QueryTab extends JPanel {
         title = new JLabel("     Statistics: ");
         title.setPreferredSize(new Dimension(70, 30));
         //title.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, (ColorUIResource)UIManager.getLookAndFeel().getDefaults().get("TabbedPane.darkShadow")));
-    
+        
         System.out.println(UIManager.getLookAndFeel().getDefaults().get("TabbedPane.shadow"));
-    
+        
         statsPanel = new JPanel();
-        //statsPanel.setBackground((ColorUIResource)UIManager.getLookAndFeel().getDefaults().get("TabbedPane.darkShadow"));
+        statsPanel.setLayout(new VerticalFlowLayout2(VerticalFlowLayout2.LEFT, VerticalFlowLayout2.TOP, 0, 10));
+        
+        wordOccurence = new JLabel("     Number of occurences: ");
+        testLabel = new JLabel("     test");
+        statsPanel.add(wordOccurence);
+        statsPanel.add(testLabel);
         
         
         mainPanel.add(title, BorderLayout.NORTH);
@@ -58,8 +66,9 @@ public class QueryTab extends JPanel {
         
         searchBar = new JTextField();
         searchBar.addActionListener(a -> {
-            // TODO
-            System.out.println("Search action");
+            wordOccurenceCounter.set(0);
+            parent.chaptersPanel.onWordSearch(searchBar.getText().toLowerCase(), this);
+            updateStatistics();
         });
         
         searchPanel.add(getDummySpacer(10,10), BorderLayout.NORTH);
@@ -67,6 +76,16 @@ public class QueryTab extends JPanel {
         searchPanel.add(searchBar, BorderLayout.CENTER);
         
         this.add(searchPanel, BorderLayout.NORTH);
+    }
+    
+    private void updateStatistics() {
+        wordOccurence.setText("     Number of occurences: " + wordOccurenceCounter.get());
+    }
+    
+    private final AtomicInteger wordOccurenceCounter = new AtomicInteger(0);
+    
+    public void incrementWordFoundOccurence() {
+        wordOccurenceCounter.incrementAndGet();
     }
     
     private JLabel getDummySpacer(int width, int height) {

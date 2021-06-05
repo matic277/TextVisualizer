@@ -15,7 +15,8 @@ public class TruePositionSentenceLblHorizontalRenderer implements SentenceRender
             gr.setColor(w.getCurrentRenderColor());
             gr.fillRect(w.getPosition(), 0, w.getSize(), lbl.getHeight());
         });
-    
-        lbl.borderDrawer.accept(gr);
+        
+        lbl.searchWordBorderDrawer.accept(gr, lbl);
+        lbl.selectionBorderDrawer.accept(gr, lbl);
     }
 }
