@@ -1,74 +1,141 @@
 package panel.tabs;
 
-import com.formdev.flatlaf.ui.FlatRoundBorder;
 import main.UserDictionary.UserDictionary;
 import main.Utils;
 import main.fileParsers.DictionaryReader;
-import panel.VerticalFlowLayout2;
+import panel.WrapLayout;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicBorders;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-public class DictionaryTab extends JScrollPane {
+public class DictionaryTab extends JPanel {
     
     TabsPanel parent;
     
-    JPanel mainPanel;
-        JPanel chaptersInputPanel; // NORTH
+    //JPanel mainPanel;
+    //    JPanel InputPanel; // NORTH
+    //    JPanel dictionaryPanel; // CENTER
+    //        JLabel dictionaryPanelTitle; // NORTH
+    //        JScrollPane dictionaryPane;
+    //            JTextArea dictionaryText; // CENTER
+    
+    JPanel InputPanel;
+    JTextArea textArea;
     
     public DictionaryTab(TabsPanel parent) {
         this.parent = parent;
         
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        //this.setBorder(BorderFactory.createMatteBorder(0,1,1,0,Color.lightGray));
         
-        initChaptersInputPanel();
-    
-        this.setViewportView(mainPanel);
+        initPanel();
     }
     
-    private void initChaptersInputPanel() {
+    // Layout done as documented in:
+    // https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#TextSamplerDemo
+    // TextAreaDemo
+    private void initPanel() {
+        // TOP ROW
         JLabel title = new JLabel("Path to dictionary :");
         JPanel titleContainer = new JPanel();
         titleContainer.setLayout(new BorderLayout());
         titleContainer.add(getDummySpacer(10,10), BorderLayout.WEST);
         titleContainer.add(title, BorderLayout.CENTER);
-        
+    
         JLabel info = new JLabel();
         info.setHorizontalAlignment(SwingConstants.CENTER);
         info.setOpaque(false);
-        info.setForeground(Utils.GREEN);
         info.setFont(Utils.getFont(12));
-        
+    
         JTextField dictionaryInput = new JTextField("./dictionary/testdict.txt");
         dictionaryInput.addActionListener(getImportListener(dictionaryInput, info));
         // put the same listener to btn and field, so enter press and btn
         // press behaves the same
         JButton importBtn = new JButton("Import");
         importBtn.addActionListener(getImportListener(dictionaryInput, info));
-        
+    
         JPanel btnContainer = new JPanel();
         btnContainer.setLayout(new BorderLayout());
         btnContainer.add(importBtn, BorderLayout.CENTER);
         btnContainer.add(getDummySpacer(10, 10), BorderLayout.EAST);
         
-        chaptersInputPanel = new JPanel();
-        chaptersInputPanel.setLayout(new BorderLayout(10, 0));
-        chaptersInputPanel.add(titleContainer, BorderLayout.WEST);
-        chaptersInputPanel.add(dictionaryInput, BorderLayout.CENTER);
-        chaptersInputPanel.add(btnContainer, BorderLayout.EAST);
-        chaptersInputPanel.add(getDummySpacer(10, 10), BorderLayout.NORTH);
+        InputPanel = new JPanel();
+        InputPanel.setLayout(new BorderLayout(10, 0));
+        InputPanel.add(titleContainer, BorderLayout.WEST);
+        InputPanel.add(dictionaryInput, BorderLayout.CENTER);
+        InputPanel.add(btnContainer, BorderLayout.EAST);
+        InputPanel.add(getDummySpacer(10, 10), BorderLayout.NORTH);
         
         JPanel infoContainer = new JPanel();
         infoContainer.setLayout(new FlowLayout(FlowLayout.CENTER));
         infoContainer.add(info);
-        chaptersInputPanel.add(infoContainer, BorderLayout.SOUTH);
+        InputPanel.add(infoContainer, BorderLayout.SOUTH);
+        InputPanel.setMaximumSize(new Dimension(1, 40)); // prevents vertical stretching
         
-        mainPanel.add(chaptersInputPanel, BorderLayout.NORTH);
+        // TEXT AREA
+        textArea = new JTextArea();
+        textArea.setFont(Utils.getFont(12));
+        //textArea.setColumns(20);
+        //textArea.setLineWrap(true);
+        //textArea.setWrapStyleWord(true);
+        //textArea.setRows(5);
+    
+        JLabel updateInfo = new JLabel("");
+        JButton updateBtn = new JButton("Apply update");
+        updateBtn.addActionListener(a -> applyUpdate(updateInfo));
+        
+        JPanel buttonContainer = new JPanel();
+        buttonContainer.setLayout(new WrapLayout(WrapLayout.RIGHT, 10, 0));
+        buttonContainer.setMaximumSize(new Dimension(1, 20)); // prevents vertical stretching
+        buttonContainer.add(updateInfo);
+        buttonContainer.add(updateBtn);
+        
+        JScrollPane textScrollPane = new JScrollPane(textArea);
+        
+        GroupLayout layout = new GroupLayout(this);
+        this.setLayout(layout);
+        
+        //Create a sequential and a parallel groups
+        ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
+        h2.addComponent(textScrollPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(InputPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(buttonContainer, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        
+        
+        SequentialGroup h1 = layout.createSequentialGroup();
+        h1.addContainerGap();
+        h1.addGroup(h2);
+        h1.addContainerGap();
+        
+        //Create a parallel group for the horizontal axis
+        ParallelGroup hGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        hGroup.addGroup(GroupLayout.Alignment.TRAILING,h1);
+        layout.setHorizontalGroup(hGroup);
+        
+        SequentialGroup v1 = layout.createSequentialGroup();
+        v1.addContainerGap();
+        v1.addComponent(InputPanel);
+        v1.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED);
+        v1.addComponent(textScrollPane, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE);
+        v1.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED);
+        v1.addComponent(buttonContainer);
+        v1.addContainerGap();
+        
+        ParallelGroup vGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        vGroup.addGroup(v1);
+        
+        //Create the vertical group
+        layout.setVerticalGroup(vGroup);
+    }
+    
+    private void applyUpdate(JLabel info) {
+        // TODO
+        // should probably refactor code
+        // one function should be given a supplier, which provides lines of dictionary
+        // pass different suppliers (one supplying lines from file, other from textArea)
     }
     
     private ActionListener getImportListener(JTextField dictionaryInput, JLabel info) {
@@ -76,22 +143,40 @@ public class DictionaryTab extends JScrollPane {
             CompletableFuture.runAsync(() -> {
                 System.out.println("Input: " + dictionaryInput.getText());
                 info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
-                info.setText(" Input (not supported yet): " + dictionaryInput.getText() + " ");
+                info.setForeground(Utils.GREEN);
+                info.setText("Reading dictionary...");
                 info.setVisible(true);
-    
+                
                 UserDictionary userDict;
                 try {
-                    userDict = new DictionaryReader(dictionaryInput.getText()).buildDictionary();
-                    System.out.println(userDict);
+                    DictionaryReader reader = new DictionaryReader(dictionaryInput.getText());
+                    userDict = reader.buildDictionary();
+                    
+                    textArea.setText("");
+                    reader.fileLines.forEach(line -> {
+                        textArea.append(line);
+                        textArea.append("\n");
+                    });
+                    
+                    info.setText("Done!");
+                    info.repaint();
+                    Utils.sleep(2000);
+                    info.setVisible(false);
+                    info.setBorder(null);
+                    info.setText("");
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
+                    
+                    info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 5));
+                    info.setForeground(Utils.RED);
+                    info.setText(e.getLocalizedMessage());
+                    info.repaint();
+                    Utils.sleep(2000);
                 }
-    
-                Utils.sleep(1000);
-    
-                info.setVisible(false);
-                info.setBorder(null);
+                
                 info.setText("");
+                info.setVisible(false);
             });
         };
     }

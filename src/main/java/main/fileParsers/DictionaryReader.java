@@ -6,6 +6,8 @@ import main.UserDictionary.WordGroup;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,9 +18,12 @@ public class DictionaryReader {
     private final Pattern nameRgx = Pattern.compile("<name=\"(.*)\">");
     private final Pattern groupRgx = Pattern.compile("<group name=\"(.*)\" color=\"(.*)\">");
     
+    public List<String> fileLines;
+    
     
     public DictionaryReader(String file) {
         this.file = file;
+        fileLines = new LinkedList<>();
     }
     
     public UserDictionary buildDictionary() throws RuntimeException, IOException {
@@ -31,6 +36,7 @@ public class DictionaryReader {
         
         for (String line : Files.readAllLines(Paths.get(file))) {
             line = line.trim();
+            fileLines.add(line);
             
             // header (dictionary name)
             if (firstLine) {

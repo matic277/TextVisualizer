@@ -12,7 +12,7 @@ public class UserDictionary {
     List<WordGroup> groups;
     
     // groupName -> group
-    Map<String, WordGroup> groupMap;
+    public Map<String, WordGroup> groupMap;
     
     String name;
     
