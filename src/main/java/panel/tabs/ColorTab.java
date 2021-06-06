@@ -14,7 +14,7 @@ public class ColorTab extends JPanel {
         this.parent = parent;
         
         this.add(new JLabel("Unsupported"));
-    
+        
         Border b = BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
                 BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray));

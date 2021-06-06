@@ -3,6 +3,7 @@ package panel.tabs;
 import main.UserDictionary.UserDictionary;
 import main.Utils;
 import main.fileParsers.DictionaryReader;
+import opennlp.tools.util.ObjectStreamUtils;
 import panel.WrapLayout;
 
 import javax.swing.*;
@@ -54,17 +55,22 @@ public class DictionaryTab extends JPanel {
         titleContainer.add(getDummySpacer(10,10), BorderLayout.WEST);
         titleContainer.add(title, BorderLayout.CENTER);
     
-        JLabel info = new JLabel();
-        info.setHorizontalAlignment(SwingConstants.CENTER);
-        info.setOpaque(false);
-        info.setFont(Utils.getFont(12));
+        JLabel updateInfo = new JLabel();
+        JLabel importInfo = new JLabel();
+        importInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+        importInfo.setHorizontalAlignment(SwingConstants.CENTER);
+        importInfo.setOpaque(false);
+        importInfo.setFont(Utils.getFont(12));
     
         JTextField dictionaryInput = new JTextField("./dictionary/testdict.txt");
-        dictionaryInput.addActionListener(getImportListener(dictionaryInput, info));
+        dictionaryInput.addActionListener(getImportListener(dictionaryInput, importInfo));
         // put the same listener to btn and field, so enter press and btn
         // press behaves the same
         JButton importBtn = new JButton("Import");
-        importBtn.addActionListener(getImportListener(dictionaryInput, info));
+        importBtn.addActionListener(a -> {
+            updateInfo.setVisible(false);
+            getImportListener(dictionaryInput, importInfo).actionPerformed(null);
+        });
     
         JPanel btnContainer = new JPanel();
         btnContainer.setLayout(new BorderLayout());
@@ -80,9 +86,9 @@ public class DictionaryTab extends JPanel {
         
         JPanel infoContainer = new JPanel();
         infoContainer.setLayout(new FlowLayout(FlowLayout.CENTER));
-        infoContainer.add(info);
+        infoContainer.add(importInfo);
         InputPanel.add(infoContainer, BorderLayout.SOUTH);
-        InputPanel.setMaximumSize(new Dimension(1, 40)); // prevents vertical stretching
+        InputPanel.setMaximumSize(new Dimension(1, 25)); // prevents vertical stretching
         
         // TEXT AREA
         textArea = new JTextArea();
@@ -91,15 +97,19 @@ public class DictionaryTab extends JPanel {
         //textArea.setLineWrap(true);
         //textArea.setWrapStyleWord(true);
         //textArea.setRows(5);
-    
-        JLabel updateInfo = new JLabel("");
+        
+        updateInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
         JButton updateBtn = new JButton("Apply update");
-        updateBtn.addActionListener(a -> applyUpdate(updateInfo));
+        updateBtn.addActionListener(a -> {
+            importInfo.setVisible(false);
+            applyUpdate(updateInfo);
+        } );
         
         JPanel buttonContainer = new JPanel();
-        buttonContainer.setLayout(new WrapLayout(WrapLayout.RIGHT, 10, 0));
+        buttonContainer.setLayout(new WrapLayout(WrapLayout.RIGHT, 0, 0));
         buttonContainer.setMaximumSize(new Dimension(1, 20)); // prevents vertical stretching
         buttonContainer.add(updateInfo);
+        buttonContainer.add(getDummySpacer(10, 10));
         buttonContainer.add(updateBtn);
         
         JScrollPane textScrollPane = new JScrollPane(textArea);
@@ -142,31 +152,26 @@ public class DictionaryTab extends JPanel {
     
     // Reading from JTextField
     private void applyUpdate(JLabel info) {
-        info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
-        info.setForeground(Utils.GREEN);
-        info.setText(" Reading dictionary... ");
-        info.setVisible(true);
-        
-        List<String> lines = Arrays.stream(textArea.getText().split("\n")).collect(Collectors.toList());
-        onNewDictionaryImport(info, lines);
+        CompletableFuture.runAsync(() ->{
+            info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
+            info.setForeground(Utils.GREEN);
+            info.setText(" Reading dictionary... ");
+            info.setVisible(true);
+            info.repaint();
+            
+            List<String> lines = Arrays.stream(textArea.getText().split("\n")).collect(Collectors.toList());
+            onNewDictionaryImport(info, lines);
+        });
     }
     
     private void onNewDictionaryImport(JLabel info, List<String> dictionaryLines) {
         try {
             UserDictionary dict = DictionaryReader.buildDictionary(dictionaryLines);
-    
-            
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 5));
             info.setForeground(Utils.RED);
             info.setText(e.getLocalizedMessage());
             info.repaint();
-            
-            Utils.sleep(2000);
-            
-            info.setVisible(false);
-            info.setBorder(null);
-            info.setText("");
             return;
         }
         

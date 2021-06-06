@@ -49,14 +49,15 @@ public class DictionaryReader {
             // header (dictionary name)
             if (firstLine) {
                 firstLine = false;
-                System.out.println("Detected header: \"" + line + "\".");
                 Matcher matcher = nameRgx.matcher(line);
                 if (matcher.matches()) {
+                    System.out.println("Detected header: \"" + line + "\".");
                     String dictName = matcher.group(1).trim();
                     if (dictName.isBlank() || dictName.isEmpty()) throw new RuntimeException("Dictionary name can't be empty.");
                     dict.setName(dictName);
+                    continue;
                 }
-                continue;
+                throw new RuntimeException("Unable to parse dictionary header, line \"" + line + "\".");
             }
             
             if (secondLine) {
