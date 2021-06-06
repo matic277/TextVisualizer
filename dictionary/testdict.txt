@@ -1,0 +1,15 @@
+<name="Test dictionary">
+<group name="Some words" color="200,    30, 30">
+test
+holmes
+sherlock
+flower
+mr.
+house <color="30, 200, 30">
+here <color="30, 30, 200">
+other
+another
+<group name="Second group" color="   200   , 200, 30">
+hello
+inside
+beautiful <color="250   ,     250, 20    ">

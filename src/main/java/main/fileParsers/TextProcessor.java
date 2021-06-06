@@ -1,11 +1,11 @@
-package main;
+package main.fileParsers;
 
+import main.Pair;
+import main.Sentence;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
-import word.AbsWord;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;

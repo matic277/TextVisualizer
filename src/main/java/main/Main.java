@@ -1,5 +1,7 @@
 package main;
 
+import main.fileParsers.FileReader;
+import main.fileParsers.TextProcessor;
 import window.MainWindow;
 
 import javax.swing.*;

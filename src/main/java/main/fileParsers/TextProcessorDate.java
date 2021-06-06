@@ -1,11 +1,9 @@
-package main;
+package main.fileParsers;
 
-import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.sentdetect.SentenceModel;
+import main.Pair;
+import main.Sentence;
+import main.fileParsers.FileReaderDate;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -52,6 +52,28 @@ public class Utils {
     
     public static Font getButtonFont(int size) { return new Font("Source sans pro", Font.PLAIN, size); }
     
+    // expected input: "255, 255, 255"
+    // 3 ints split by ","
+    // spaces are optional
+    public static Color parseColor(String str) throws RuntimeException {
+        String[] tokens = str.trim().split(",");
+    
+        int r = Integer.parseInt(tokens[0].trim());
+        int g = Integer.parseInt(tokens[1].trim());
+        int b = Integer.parseInt(tokens[2].trim());
+        
+        if ((r >= 0 && r <= 255) &&
+                (g >= 0 && g <= 255) &&
+                (b >= 0 && b <= 255)) {
+            return new Color(r, g, b);
+        }
+        throw new RuntimeException("Color value out of range.");
+    }
+    
+    public static String colorToString(Color c) {
+        return "RGBa("+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+")";
+    }
+    
     
     // SF UI  Text
     // SF UI  Text 2

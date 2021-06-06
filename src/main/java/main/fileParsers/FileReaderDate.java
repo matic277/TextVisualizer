@@ -1,5 +1,6 @@
-package main;
+package main.fileParsers;
 
+import main.Pair;
 import word.Tweet;
 
 import java.io.IOException;

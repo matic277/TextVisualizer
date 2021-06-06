@@ -58,7 +58,7 @@ public class TopPanel extends JPanel {
         splitPane = new JSplitPane();
         splitPane.setLeftComponent(tabsPanel);
         splitPane.setRightComponent(chaptersPanel);
-        splitPane.setDividerLocation(250);
+        splitPane.setDividerLocation(300);
         
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.NORTH);

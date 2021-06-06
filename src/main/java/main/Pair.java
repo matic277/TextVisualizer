@@ -3,7 +3,7 @@ package main;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Pair<A, B> {
-    A a; B b;
+    public A a; B b;
     
     public Pair(A a, B b) { this.a = a; this.b = b; }
     

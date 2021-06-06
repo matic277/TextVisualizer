@@ -1,16 +1,15 @@
 package window;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import main.*;
-import panel.BottomPanel;
+import main.fileParsers.FileReader;
+import main.fileParsers.TextProcessor;
 import panel.MainPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class MainWindow {
     

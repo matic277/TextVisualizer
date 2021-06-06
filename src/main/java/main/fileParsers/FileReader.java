@@ -1,4 +1,6 @@
-package main;
+package main.fileParsers;
+
+import main.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -65,7 +67,7 @@ public class FileReader {
                 lastChapter = key;
                 return;
             } else {
-                if (lastChapter.a < chapterCounter) {
+                if (lastChapter.getA() < chapterCounter) {
                     lastChapter.a = chapterCounter;
                 }
                 chapters.put(lastChapter,  textBuilder.toString());
