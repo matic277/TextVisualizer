@@ -8,9 +8,13 @@ import panel.WrapLayout;
 import javax.swing.*;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DictionaryTab extends JPanel {
     
@@ -32,6 +36,11 @@ public class DictionaryTab extends JPanel {
         //this.setBorder(BorderFactory.createMatteBorder(0,1,1,0,Color.lightGray));
         
         initPanel();
+    
+        Border b = BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
+                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray));
+        this.setBorder(b);
     }
     
     // Layout done as documented in:
@@ -131,52 +140,66 @@ public class DictionaryTab extends JPanel {
         layout.setVerticalGroup(vGroup);
     }
     
+    // Reading from JTextField
     private void applyUpdate(JLabel info) {
-        // TODO
-        // should probably refactor code
-        // one function should be given a supplier, which provides lines of dictionary
-        // pass different suppliers (one supplying lines from file, other from textArea)
+        info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
+        info.setForeground(Utils.GREEN);
+        info.setText(" Reading dictionary... ");
+        info.setVisible(true);
+        
+        List<String> lines = Arrays.stream(textArea.getText().split("\n")).collect(Collectors.toList());
+        onNewDictionaryImport(info, lines);
     }
     
+    private void onNewDictionaryImport(JLabel info, List<String> dictionaryLines) {
+        try {
+            UserDictionary dict = DictionaryReader.buildDictionary(dictionaryLines);
+    
+            
+        } catch (Exception e) {
+            info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 5));
+            info.setForeground(Utils.RED);
+            info.setText(e.getLocalizedMessage());
+            info.repaint();
+            
+            Utils.sleep(2000);
+            
+            info.setVisible(false);
+            info.setBorder(null);
+            info.setText("");
+            return;
+        }
+        
+        info.setText(" Done! ");
+        info.repaint();
+        
+        Utils.sleep(2000);
+        
+        info.setVisible(false);
+        info.setBorder(null);
+        info.setText("");
+    }
+    
+    // Reading from file
     private ActionListener getImportListener(JTextField dictionaryInput, JLabel info) {
         return a -> {
             CompletableFuture.runAsync(() -> {
                 System.out.println("Input: " + dictionaryInput.getText());
                 info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
                 info.setForeground(Utils.GREEN);
-                info.setText("Reading dictionary...");
+                info.setText(" Reading dictionary... ");
                 info.setVisible(true);
                 
-                UserDictionary userDict;
-                try {
-                    DictionaryReader reader = new DictionaryReader(dictionaryInput.getText());
-                    userDict = reader.buildDictionary();
-                    
-                    textArea.setText("");
-                    reader.fileLines.forEach(line -> {
-                        textArea.append(line);
-                        textArea.append("\n");
-                    });
-                    
-                    info.setText("Done!");
-                    info.repaint();
-                    Utils.sleep(2000);
-                    info.setVisible(false);
-                    info.setBorder(null);
-                    info.setText("");
-                    
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    
-                    info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 5));
-                    info.setForeground(Utils.RED);
-                    info.setText(e.getLocalizedMessage());
-                    info.repaint();
-                    Utils.sleep(2000);
-                }
+                DictionaryReader reader = new DictionaryReader(dictionaryInput.getText());
+                reader.readLines();
                 
-                info.setText("");
-                info.setVisible(false);
+                textArea.setText("");
+                reader.fileLines.forEach(line -> {
+                    textArea.append(line);
+                    textArea.append("\n");
+                });
+                
+                onNewDictionaryImport(info, reader.getLines());
             });
         };
     }

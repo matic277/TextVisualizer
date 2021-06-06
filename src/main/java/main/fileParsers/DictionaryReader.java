@@ -15,18 +15,27 @@ public class DictionaryReader {
     
     String file;
     
-    private final Pattern nameRgx = Pattern.compile("<name=\"(.*)\">");
-    private final Pattern groupRgx = Pattern.compile("<group name=\"(.*)\" color=\"(.*)\">");
+    private static final Pattern nameRgx = Pattern.compile("<name=\"(.*)\">");
+    private static final Pattern groupRgx = Pattern.compile("<group name=\"(.*)\" color=\"(.*)\">");
     
     public List<String> fileLines;
     
-    
+    // Reading from file
     public DictionaryReader(String file) {
         this.file = file;
         fileLines = new LinkedList<>();
     }
     
-    public UserDictionary buildDictionary() throws RuntimeException, IOException {
+    public void readLines() {
+        try { fileLines = Files.readAllLines(Paths.get(file)); }
+        catch (IOException e) { System.out.println("Cannot read file specified: \"" + file+ "\"."); e.printStackTrace(); }
+    }
+    
+    public List<String> getLines() {
+        return this.fileLines;
+    }
+    
+    public static UserDictionary buildDictionary(List<String> lines) throws RuntimeException {
         final var dict = new UserDictionary();
         
         boolean firstLine = true;
@@ -34,9 +43,8 @@ public class DictionaryReader {
     
         WordGroup currentGroup = null;
         
-        for (String line : Files.readAllLines(Paths.get(file))) {
+        for (String line : lines) {
             line = line.trim();
-            fileLines.add(line);
             
             // header (dictionary name)
             if (firstLine) {

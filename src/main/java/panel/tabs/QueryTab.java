@@ -4,6 +4,7 @@ import panel.VerticalFlowLayout2;
 import panel.tabs.TabsPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -27,9 +28,14 @@ public class QueryTab extends JPanel {
         
         //this.setBackground(Color.pink);
         this.setLayout(new BorderLayout());
-    
+        
         initSearchpanel();
         initMainPanel();
+        
+        Border b = BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
+                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray));
+        this.setBorder(b);
     }
     
     private void initMainPanel() {
@@ -46,7 +52,7 @@ public class QueryTab extends JPanel {
         statsPanel = new JPanel();
         statsPanel.setLayout(new VerticalFlowLayout2(VerticalFlowLayout2.LEFT, VerticalFlowLayout2.TOP, 0, 10));
         
-        wordOccurrence = new JLabel("     Number of occurences: ");
+        wordOccurrence = new JLabel("     Number of word occurrences: ");
         sentenceOccurrence = new JLabel("     Number of sentence occurrence: ");
         statsPanel.add(wordOccurrence);
         statsPanel.add(sentenceOccurrence);
@@ -76,13 +82,14 @@ public class QueryTab extends JPanel {
         searchPanel.add(getDummySpacer(10,10), BorderLayout.NORTH);
         searchPanel.add(title, BorderLayout.WEST);
         searchPanel.add(searchBar, BorderLayout.CENTER);
+        searchPanel.add(getDummySpacer(15, 10), BorderLayout.EAST);
         
         this.add(searchPanel, BorderLayout.NORTH);
     }
     
     private void updateStatistics() {
-        wordOccurrence.setText("     Number of word occurrence: " + wordOccurrenceCounter.get());
-        sentenceOccurrence.setText("     Number of sentence occurrence: " + sentenceOccurrenceCounter.get());
+        wordOccurrence.setText("     Number of word occurrences: " + wordOccurrenceCounter.get());
+        sentenceOccurrence.setText("     Number of sentence occurrences: " + sentenceOccurrenceCounter.get());
     }
     
     private final AtomicLong wordOccurrenceCounter = new AtomicLong(0);

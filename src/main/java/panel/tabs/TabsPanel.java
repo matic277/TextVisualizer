@@ -4,6 +4,10 @@ import panel.ChaptersPanel;
 import panel.TopPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 public class TabsPanel extends JTabbedPane {
     
@@ -26,4 +30,17 @@ public class TabsPanel extends JTabbedPane {
         this.addTab("Colors", colorTab);
         this.addTab("Dictionary", dictionaryTab);
     }
+    
+    //@Override
+    //public void paintComponent(Graphics g) {
+    //    super.paintComponent(g);
+    //
+    //    System.out.println(this.getHeight());
+    //
+    //    g.setColor(Color.PINK);
+    //    g.fillRect(0, 0, getWidth(), getHeight()+20);
+    //
+    //    g.setColor(Color.lightGray);
+    //    g.drawRect(3, 2, getWidth()-3, getHeight());
+    //}
 }
