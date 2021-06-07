@@ -34,14 +34,11 @@ public class DictionaryTab extends JPanel {
     public DictionaryTab(TabsPanel parent) {
         this.parent = parent;
         
-        //this.setBorder(BorderFactory.createMatteBorder(0,1,1,0,Color.lightGray));
-        
         initPanel();
-    
-        Border b = BorderFactory.createCompoundBorder(
+        
+        this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
-                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray));
-        this.setBorder(b);
+                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray)));
     }
     
     // Layout done as documented in:

@@ -32,10 +32,9 @@ public class QueryTab extends JPanel {
         initSearchpanel();
         initMainPanel();
         
-        Border b = BorderFactory.createCompoundBorder(
+        this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
-                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray));
-        this.setBorder(b);
+                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray)));
     }
     
     private void initMainPanel() {

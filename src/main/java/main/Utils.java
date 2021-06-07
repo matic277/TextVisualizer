@@ -19,7 +19,7 @@ public class Utils {
     public static final Color LIGHT_GRAY = new Color(243, 243, 243);
     public static final Color MEUN_COLORS = Color.decode("#E0DDDD");
     
-    Color c = new Color(20, 199, 38);
+    Color c = new Color(10, 226, 39, 133);
     
     public static final Dimension MENU_BUTTON_SIZE = new Dimension(40, 40);
     public static final Dimension MENU_BUTTON_SIZE_WIDE = new Dimension(100, 40);

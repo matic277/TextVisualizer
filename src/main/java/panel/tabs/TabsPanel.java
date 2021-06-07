@@ -25,9 +25,9 @@ public class TabsPanel extends JTabbedPane {
         queryTab = new QueryTab(this);
         colorTab = new ColorTab(this);
         dictionaryTab = new DictionaryTab(this);
-        
-        this.addTab("Query", queryTab);
+    
         this.addTab("Colors", colorTab);
+        this.addTab("Query", queryTab);
         this.addTab("Dictionary", dictionaryTab);
     }
     
