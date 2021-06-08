@@ -86,7 +86,7 @@ public class ColorTab extends JPanel {
         
         JPanel rgbContainer = new JPanel();
         rgbContainer.setLayout(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.CENTER, 0, 10));
-        rgbContainer.setBorder(new FlatRoundBorder());
+        //rgbContainer.setBorder(new FlatRoundBorder());
         rgbContainer.add(containerR);
         rgbContainer.add(containerG);
         rgbContainer.add(containerB);
@@ -110,7 +110,7 @@ public class ColorTab extends JPanel {
         JPanel selectedClrAndRGBcontainer = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.TOP));
         selectedClrAndRGBcontainer.add(rgbContainer);
         selectedClrAndRGBcontainer.add(selectedColorPanel);
-        selectedClrAndRGBcontainer.setBorder(brd);
+        //selectedClrAndRGBcontainer.setBorder(brd);
         
         
         
@@ -168,6 +168,10 @@ public class ColorTab extends JPanel {
                 // extract color
                 selectedColor.clr = new Color(gradientImg.getRGB(e.getPoint().x, e.getPoint().y));
                 
+                clrR.setText(selectedColor.clr.getRed()+"");
+                clrG.setText(selectedColor.clr.getGreen()+"");
+                clrB.setText(selectedColor.clr.getBlue()+"");
+                
                 selectedColorPanel.repaint();
                 gradientPanel.repaint();
             }
@@ -196,19 +200,17 @@ public class ColorTab extends JPanel {
                 
                 // render rainbowImg so that we can extract colors from it
                 Graphics2D imgG = rainbowImg.img.createGraphics();
-                //imgG.setPaint(primary);
-                //imgG.fillRect(0, 0, getWidth(), getHeight());
-                //imgG.setPaint(shade);
-                //imgG.fillRect(0, 0, getWidth(), getHeight());
-    
+                
+                // modified, thanks to
+                // https://stackoverflow.com/questions/27641641/creating-a-jlabel-with-a-gradient
                 LinearGradientPaint lgp = new LinearGradientPaint(
                         new Point(0, 0),
                         new Point(getWidth(), 0),
-                        new float[]{0.112f, 0.254f, 0.396f, 0.538f, 0.68f, 0.822f, 1f},
+                        new float[]{0.072f, 0.214f, 0.356f, 0.498f, 0.68f, 0.782f, 1f},
                         new Color[]{Color.PINK, Color.MAGENTA, Color.BLUE, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.RED});
                 imgG.setPaint(lgp);
                 imgG.fill(new Rectangle(0, 0, getWidth(), getHeight()));
-    
+                
                 rainbowImg.img = makeRoundedCorner(rainbowImg.img, 20);
                 gr.drawImage(rainbowImg.img, null, 0, 0);
                 
@@ -250,13 +252,16 @@ public class ColorTab extends JPanel {
         JPanel gradientsContainer = new JPanel(new VerticalFlowLayout());
         gradientsContainer.add(gradientPanel);
         gradientsContainer.add(rainbowPanel);
-        
+    
+        //selectedClrAndRGBcontainer.setMinimumSize(new Dimension(100, 400));
+        selectedClrAndRGBcontainer.setPreferredSize(new Dimension(100, 250));
         mainColorContainer.add(gradientsContainer);
         mainColorContainer.add(selectedClrAndRGBcontainer);
         
         this.add(mainColorContainer);
     }
     
+    // thanks to https://stackoverflow.com/questions/7603400/how-to-make-a-rounded-corner-image-in-java
     public static BufferedImage makeRoundedCorner(BufferedImage image, int cornerRadius) {
         int w = image.getWidth();
         int h = image.getHeight();
