@@ -15,7 +15,7 @@ public class HorizontalSentenceLabelBuilder implements SentenceLabelBuilder {
     public void rebuild(SentenceLabel label) {
         int wordSize = 3;
         double totalWords = label.getSentence().getWords().size();
-        double totalWidth = (int) customLog(1.035, totalWords * wordSize);
+        double totalWidth = label.currentSentenceSizeType.sizeDeterminator.applyAsInt((int)totalWords, wordSize);
     
         double highPerc;
         double medPerc;

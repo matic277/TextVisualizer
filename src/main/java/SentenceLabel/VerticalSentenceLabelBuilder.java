@@ -14,7 +14,8 @@ public class VerticalSentenceLabelBuilder implements SentenceLabelBuilder {
     public void rebuild(SentenceLabel label) {
         int wordSize = 3;
         double totalWords = label.getSentence().getWords().size();
-        double totalHeight = (int)customLog(1.035, totalWords * wordSize);
+        //double totalHeight = (int)customLog(1.035, totalWords * wordSize);
+        double totalHeight = label.currentSentenceSizeType.sizeDeterminator.applyAsInt(wordSize, (int)totalWords);
         
         double highPerc;
         double medPerc;

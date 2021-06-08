@@ -15,9 +15,6 @@ public interface SentenceLabelBuilder {
     void rebuild(SentenceLabel label);
     LayoutManager getParentLayout(JPanel parent);
     
-    default double customLog(double base, double logNumber) {
-        return Math.log(logNumber) / Math.log(base);
-    }
     
     default Color determineWordColor(AbsWord word, VisualType visType) {
         // this is kind of ugly here

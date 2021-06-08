@@ -1,5 +1,6 @@
 package panel;
 
+import SentenceLabel.SentenceSizeType;
 import main.*;
 import panel.tabs.TabsPanel;
 
@@ -33,6 +34,8 @@ public class TopPanel extends JPanel {
             JComboBox<ChapterType> chapterTypeDropdown;
         JPanel sentenceLabelVisualType;
             JComboBox<SentenceLabelVisualType> sentenceLabelVisualTypeDropdown;
+        JPanel sentenceSizeType;
+            JComboBox<SentenceSizeType> sentenceSizeTypeDropdown;
     
     
     
@@ -51,6 +54,7 @@ public class TopPanel extends JPanel {
         initDropdownPanel();
         initChapterTypePanel();
         initSentenceLabelVisualTypePanel();
+        initSentenceSizeTypePanel();
         
         chaptersPanel = new ChaptersPanel(this);
         tabsPanel = new TabsPanel(this);
@@ -64,6 +68,22 @@ public class TopPanel extends JPanel {
         this.add(controlPanel, BorderLayout.NORTH);
         //this.add(chaptersPanel, BorderLayout.CENTER);
         this.add(splitPane, BorderLayout.CENTER);
+    }
+    
+    private void initSentenceSizeTypePanel() {
+        JLabel title = new JLabel("Sentence label visual type:");
+        title.setFont(Utils.getFont(12));
+        
+        sentenceSizeType = new JPanel();
+        sentenceSizeType.setLayout(new BorderLayout());
+        
+        sentenceSizeTypeDropdown = new JComboBox<>(SentenceSizeType.values());
+        sentenceSizeTypeDropdown.addActionListener(a -> chaptersPanel.onSentenceSizeTypeChange((SentenceSizeType) sentenceSizeTypeDropdown.getSelectedItem()));
+        
+        sentenceSizeType.add(title, BorderLayout.NORTH);
+        sentenceSizeType.add(sentenceSizeTypeDropdown, BorderLayout.CENTER);
+        
+        controlPanel.add(sentenceSizeType);
     }
     
     private void initSentenceLabelVisualTypePanel() {

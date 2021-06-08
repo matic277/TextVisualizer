@@ -93,15 +93,18 @@ public class SentenceLabel extends JLabel {
     public VisualType currentVisualType;
     public ChapterType currentChapterType;
     public SentenceLabelVisualType currentLabelVisualType;
+    public SentenceSizeType currentSentenceSizeType;
     
-    public SentenceLabel(ChaptersPanel parent, Sentence sentence, VisualType visualType, ChapterType chapterType, SentenceLabelVisualType labelVisualType) {
+    public SentenceLabel(ChaptersPanel parent, Sentence sentence, VisualType visualType, ChapterType chapterType, SentenceLabelVisualType labelVisualType, SentenceSizeType sentenceSizeType) {
         super();
         this.sentence = sentence;
         this.parent = parent;
         this.currentChapterType = chapterType;
         this.currentVisualType = visualType;
         this.currentLabelVisualType = labelVisualType;
+        this.currentSentenceSizeType = sentenceSizeType;
         this.setOpaque(true);
+        
         
         // set up renderers and label builders
         if (chapterType == ChapterType.HORIZONTAL) {

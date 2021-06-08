@@ -1,6 +1,6 @@
 package panel;
 
-import SentenceLabel.SentenceLabel;
+import SentenceLabel.*;
 import main.*;
 import panel.tabs.QueryTab;
 
@@ -27,6 +27,7 @@ public class ChaptersPanel extends JScrollPane {
     public VisualType currentVisualType;
     public ChapterType currentChapterType;
     public SentenceLabelVisualType currentSentenceLblVisualType;
+    public SentenceSizeType currentSentenceSizeType;
     
     ChapterBuilder chapterBuilder = new HorizontalChapterBuilder();
     
@@ -38,6 +39,7 @@ public class ChaptersPanel extends JScrollPane {
         currentVisualType = VisualType.SENTIMENT;
         currentChapterType = ChapterType.HORIZONTAL;
         currentSentenceLblVisualType = SentenceLabelVisualType.DEFAULT;
+        currentSentenceSizeType = SentenceSizeType.LOGARITHMIC;
         
         slider = new SlidingWindow(this);
         
@@ -158,6 +160,12 @@ public class ChaptersPanel extends JScrollPane {
         mainPanel.doLayout();
         mainPanel.repaint();
         this.updateUI();
+    }
+    
+    public void onSentenceSizeTypeChange(SentenceSizeType sizeType) {
+        currentSentenceSizeType = sizeType;
+        
+        init();
     }
     
     public void onWordSearch(String word, QueryTab caller) {

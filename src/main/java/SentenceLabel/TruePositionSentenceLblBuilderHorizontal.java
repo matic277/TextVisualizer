@@ -15,7 +15,7 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
         // calculate true position of words in sentence
         int charSize = 3;
         double totalWords = label.getSentence().getWords().size();
-        int totalWidth = (int)customLog(1.035, totalWords * charSize);
+        int totalWidth = label.currentSentenceSizeType.sizeDeterminator.applyAsInt((int)totalWords, charSize);
         
         int sentenceLength = label.getSentence().getLengthOfSentence();
         

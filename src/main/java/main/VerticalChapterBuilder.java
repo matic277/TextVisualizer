@@ -37,7 +37,7 @@ public class VerticalChapterBuilder implements ChapterBuilder {
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
             
             v.forEach(s -> {
-                SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType, panel.currentSentenceLblVisualType);
+                SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType, panel.currentSentenceLblVisualType, panel.currentSentenceSizeType);
                 lbl.init();
                 sentencesPanel.add(lbl);
             });
