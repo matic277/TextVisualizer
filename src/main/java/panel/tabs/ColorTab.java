@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
 public class ColorTab extends JPanel {
@@ -38,20 +39,18 @@ public class ColorTab extends JPanel {
         //mainColorContainer.setMinimumSize(containerSize);
         mainColorContainer.setLayout(new FlowLayout(FlowLayout.CENTER));
         
-        Color gradientColor = Color.RED;
+        //Color gradientColor = Color.RED;
         Point mouseGradient = new Point(100, 100);
+        final var rainbowSelectedClr = new Object() { Color clr = Color.red; };
         final var selectedColor = new Object() { Color clr = Color.yellow; };
         
         // overwrite default border of FlatLaf, to decrease arc
         final FlatRoundBorder brd = new FlatRoundBorder() {
             protected final int arc = 10;
             protected int getArc(Component c) {
-                if (this.isCellEditor(c)) {
-                    return 0;
-                } else {
-                    Boolean roundRect = FlatUIUtils.isRoundRect(c);
-                    return roundRect != null ? (roundRect ? 32767 : 0) : this.arc;
-                }
+                if (this.isCellEditor(c)) return 0;
+                Boolean roundRect = FlatUIUtils.isRoundRect(c);
+                return roundRect != null ? (roundRect ? 32767 : 0) : this.arc;
             }
         };
         
@@ -117,9 +116,8 @@ public class ColorTab extends JPanel {
         
         // MAIN GRADIENT PANEL
         Dimension gradPanelSize = new Dimension(200, 200);
-        GradientPaint primary = new GradientPaint(
-                0f, 0f, Color.WHITE, gradPanelSize.width, 0f, gradientColor);
-        final GradientPaint shade = new GradientPaint(
+        
+        GradientPaint shade = new GradientPaint(
                 0f, 0f, new Color(0, 0, 0, 0),
                 0f, gradPanelSize.height, new Color(0, 0, 0, 255));
         BufferedImage gradientImg = new BufferedImage(gradPanelSize.width, gradPanelSize.height, BufferedImage.TYPE_INT_RGB);
@@ -137,6 +135,9 @@ public class ColorTab extends JPanel {
                 //gr.fillRect(0, 0, getWidth(), getHeight());
                 //gr.setPaint(shade);
                 //gr.fillRect(0, 0, getWidth(), getHeight());
+                
+                GradientPaint primary = new GradientPaint(
+                        0f, 0f, Color.WHITE, gradPanelSize.width, 0f, rainbowSelectedClr.clr);
                 
                 // render gradientImg so that we can extract colors from it
                 Graphics2D imgG = gradientImg.createGraphics();
@@ -177,6 +178,8 @@ public class ColorTab extends JPanel {
         
         // RAINBOW PANEL
         Point mouseRainbow = new Point(0, 0);
+        Dimension rainbowPanelSize = new Dimension(new Dimension(gradPanelSize.width, 30));
+        final var rainbowImg = new Object() { BufferedImage img = new BufferedImage(gradPanelSize.width, 30, BufferedImage.TYPE_INT_RGB); };
         JPanel rainbowPanel = new JPanel() {
             @Override
             public void paintComponent(Graphics g) {
@@ -185,17 +188,29 @@ public class ColorTab extends JPanel {
                 gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 
-                GradientPaint primary = new GradientPaint(
-                        0f, 0f, Color.WHITE, 200f, 0f, gradientColor);
-                GradientPaint shade = new GradientPaint(
-                        0f, 0f, new Color(0, 0, 0, 0),
-                        0f, 200f, new Color(0, 0, 0, 255));
-                
                 // rainbow fill (TODO)
-                gr.setPaint(primary);
-                gr.fillRoundRect(0, 0, getWidth()-1, getHeight(), 20, 20);
-                gr.setPaint(shade);
-                gr.fillRoundRect(0, 0, getWidth()-1, getHeight(), 20, 20);
+                //gr.setPaint(primary);
+                //gr.fillRoundRect(0, 0, getWidth()-1, getHeight(), 20, 20);
+                //gr.setPaint(shade);
+                //gr.fillRoundRect(0, 0, getWidth()-1, getHeight(), 20, 20);
+                
+                // render rainbowImg so that we can extract colors from it
+                Graphics2D imgG = rainbowImg.img.createGraphics();
+                //imgG.setPaint(primary);
+                //imgG.fillRect(0, 0, getWidth(), getHeight());
+                //imgG.setPaint(shade);
+                //imgG.fillRect(0, 0, getWidth(), getHeight());
+    
+                LinearGradientPaint lgp = new LinearGradientPaint(
+                        new Point(0, 0),
+                        new Point(getWidth(), 0),
+                        new float[]{0.112f, 0.254f, 0.396f, 0.538f, 0.68f, 0.822f, 1f},
+                        new Color[]{Color.PINK, Color.MAGENTA, Color.BLUE, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.RED});
+                imgG.setPaint(lgp);
+                imgG.fill(new Rectangle(0, 0, getWidth(), getHeight()));
+    
+                rainbowImg.img = makeRoundedCorner(rainbowImg.img, 20);
+                gr.drawImage(rainbowImg.img, null, 0, 0);
                 
                 // border
                 gr.setColor(Color.lightGray);
@@ -209,13 +224,27 @@ public class ColorTab extends JPanel {
         rainbowPanel.addMouseMotionListener(new MouseMotionListener() {
             @Override public void mouseMoved(MouseEvent e) { }
             @Override public void mouseDragged(MouseEvent e) {
-                if (!gradientPanel.contains(e.getPoint())) return;
+                if (!rainbowPanel.contains(e.getPoint())) return;
                 if (e.getPoint().getX() >= rainbowPanel.getWidth()-7) return; // subtract slider width
+                
                 mouseRainbow.setLocation(e.getPoint());
+                // extract color
+                rainbowSelectedClr.clr = new Color(rainbowImg.img.getRGB(mouseRainbow.x, mouseRainbow.y));
                 rainbowPanel.repaint();
+                gradientPanel.repaint();
+                
+                // force generate (simulate) a call to mouseDragged
+                // so that function exectues, recalculating selected color
+                // for selectedColorPanel
+                // +2 on coords, beucase that method subtracts 2
+                gradientPanel.getListeners(MouseMotionListener.class)[0]
+                        .mouseDragged(new MouseEvent(
+                                gradientPanel,0,0,0,
+                                mouseGradient.x+2, mouseGradient.y+2,
+                                0,0, 0, false, 0));
             }
         });
-        rainbowPanel.setPreferredSize(new Dimension(gradPanelSize.width, 30));
+        rainbowPanel.setPreferredSize(rainbowPanelSize);
         
         
         JPanel gradientsContainer = new JPanel(new VerticalFlowLayout());
@@ -226,6 +255,33 @@ public class ColorTab extends JPanel {
         mainColorContainer.add(selectedClrAndRGBcontainer);
         
         this.add(mainColorContainer);
+    }
+    
+    public static BufferedImage makeRoundedCorner(BufferedImage image, int cornerRadius) {
+        int w = image.getWidth();
+        int h = image.getHeight();
+        BufferedImage output = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        
+        Graphics2D g2 = output.createGraphics();
+        
+        // This is what we want, but it only does hard-clipping, i.e. aliasing
+        // g2.setClip(new RoundRectangle2D ...)
+        
+        // so instead fake soft-clipping by first drawing the desired clip shape
+        // in fully opaque white with antialiasing enabled...
+        g2.setComposite(AlphaComposite.Src);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.WHITE);
+        g2.fill(new RoundRectangle2D.Float(0, 0, w, h, cornerRadius, cornerRadius));
+        
+        // ... then compositing the image on top,
+        // using the white shape from above as alpha source
+        g2.setComposite(AlphaComposite.SrcAtop);
+        g2.drawImage(image, 0, 0, null);
+        
+        g2.dispose();
+        
+        return output;
     }
 }
 
