@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 public class ColorTab extends JPanel {
     
@@ -21,13 +22,15 @@ public class ColorTab extends JPanel {
         
         initColorPanel();
         
+        this.setMinimumSize(new Dimension(0,0));
+        
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
                 BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray)));
     }
     
     private void initColorPanel() {
-        final Dimension containerSize = new Dimension(320, 260);
+        final Dimension containerSize = new Dimension(370, 260);
         JPanel mainColorContainer = new JPanel();
         mainColorContainer.setBorder(new FlatRoundBorder());
         mainColorContainer.setPreferredSize(containerSize);
@@ -38,10 +41,8 @@ public class ColorTab extends JPanel {
         Color gradientColor = Color.RED;
         Point mouseGradient = new Point(100, 100);
         final var selectedColor = new Object() { Color clr = Color.yellow; };
-        Robot rbt = null;
-        try { rbt = new Robot(); }
-        catch (Exception e) { e.printStackTrace(); }
-    
+        
+        // overwrite default border of FlatLaf, to decrease arc
         final FlatRoundBorder brd = new FlatRoundBorder() {
             protected final int arc = 10;
             protected int getArc(Component c) {
@@ -85,11 +86,13 @@ public class ColorTab extends JPanel {
         
         
         JPanel rgbContainer = new JPanel();
-        rgbContainer.setLayout(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.BOTTOM, 0, 10));
+        rgbContainer.setLayout(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.CENTER, 0, 10));
         rgbContainer.setBorder(new FlatRoundBorder());
         rgbContainer.add(containerR);
         rgbContainer.add(containerG);
         rgbContainer.add(containerB);
+    
+        //BufferedImage gradientImgBufferedImage = null;
         
         JPanel selectedColorPanel = new JPanel(){
             @Override public void paintComponent(Graphics g) {
@@ -105,9 +108,10 @@ public class ColorTab extends JPanel {
             }};
         selectedColorPanel.setPreferredSize(new Dimension(75, 75));
         
-        JPanel selectedClrAndRGBcontainer = new JPanel(new VerticalFlowLayout());
+        JPanel selectedClrAndRGBcontainer = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.TOP));
         selectedClrAndRGBcontainer.add(rgbContainer);
         selectedClrAndRGBcontainer.add(selectedColorPanel);
+        selectedClrAndRGBcontainer.setBorder(brd);
         
         
         
@@ -118,6 +122,7 @@ public class ColorTab extends JPanel {
         final GradientPaint shade = new GradientPaint(
                 0f, 0f, new Color(0, 0, 0, 0),
                 0f, gradPanelSize.height, new Color(0, 0, 0, 255));
+        BufferedImage gradientImg = new BufferedImage(gradPanelSize.width, gradPanelSize.height, BufferedImage.TYPE_INT_RGB);
         // thanks to https://stackoverflow.com/questions/13771575/java-3-color-gradient
         JPanel gradientPanel = new JPanel() {
             @Override
@@ -128,10 +133,19 @@ public class ColorTab extends JPanel {
                 gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 
-                gr.setPaint(primary);
-                gr.fillRect(0, 0, getWidth(), getHeight());
-                gr.setPaint(shade);
-                gr.fillRect(0, 0, getWidth(), getHeight());
+                //gr.setPaint(primary);
+                //gr.fillRect(0, 0, getWidth(), getHeight());
+                //gr.setPaint(shade);
+                //gr.fillRect(0, 0, getWidth(), getHeight());
+                
+                // render gradientImg so that we can extract colors from it
+                Graphics2D imgG = gradientImg.createGraphics();
+                imgG.setPaint(primary);
+                imgG.fillRect(0, 0, getWidth(), getHeight());
+                imgG.setPaint(shade);
+                imgG.fillRect(0, 0, getWidth(), getHeight());
+                
+                gr.drawImage(gradientImg, null, 0, 0);
                 
                 // border
                 gr.setColor(Color.lightGray);
@@ -143,19 +157,15 @@ public class ColorTab extends JPanel {
                 gr.drawOval(mouseGradient.x-5, mouseGradient.y-5, 15, 15);
             }
         };
-        Robot finalRbt = rbt;
+        //Robot finalRbt = rbt;
         gradientPanel.addMouseMotionListener(new MouseMotionListener() {
             @Override public void mouseMoved(MouseEvent e) { }
             @Override public void mouseDragged(MouseEvent e) {
                 if (!gradientPanel.contains(e.getPoint())) return;
                 mouseGradient.setLocation(e.getPoint().x-2, e.getPoint().y-2);
                 
-                Color selectedClr = finalRbt.getPixelColor(e.getXOnScreen(), e.getYOnScreen()); // how else? creating buffered images from Graphics then taking RGB? meh...
-                selectedColor.clr = selectedClr;
-                
-                clrR.setText(selectedClr.getRed()+"");
-                clrG.setText(selectedClr.getGreen()+"");
-                clrB.setText(selectedClr.getBlue()+"");
+                // extract color
+                selectedColor.clr = new Color(gradientImg.getRGB(e.getPoint().x, e.getPoint().y));
                 
                 selectedColorPanel.repaint();
                 gradientPanel.repaint();
@@ -206,15 +216,14 @@ public class ColorTab extends JPanel {
             }
         });
         rainbowPanel.setPreferredSize(new Dimension(gradPanelSize.width, 30));
-    
+        
+        
         JPanel gradientsContainer = new JPanel(new VerticalFlowLayout());
         gradientsContainer.add(gradientPanel);
         gradientsContainer.add(rainbowPanel);
         
-        
         mainColorContainer.add(gradientsContainer);
         mainColorContainer.add(selectedClrAndRGBcontainer);
-        //mainColorContainer.seP
         
         this.add(mainColorContainer);
     }

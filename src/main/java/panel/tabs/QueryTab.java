@@ -32,6 +32,8 @@ public class QueryTab extends JPanel {
         initSearchpanel();
         initMainPanel();
         
+        this.setMinimumSize(new Dimension(0,0));
+        
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
                 BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray)));
