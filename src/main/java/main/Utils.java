@@ -107,10 +107,10 @@ public class Utils {
             }
             gr.setColor(clr);
             gr.setStroke(stroke);
-            gr.drawRoundRect(x+1, y+3, width-3, height-6, rad, rad);
+            gr.drawRoundRect(x+1, y+1, width-3, height-3, rad, rad); // these offsets should probably depend on Stroke thickness
         }
         public boolean isBorderOpaque() { return true; }
-        public Insets getBorderInsets(Component c) { return new Insets(this.rad+1, this.rad+1, this.rad+2, this.rad); }
+        public Insets getBorderInsets(Component c) { return new Insets(4, 8, 4, 8); }
     }
     
     public static Color getRandomColor() {

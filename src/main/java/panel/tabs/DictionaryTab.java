@@ -96,20 +96,22 @@ public class DictionaryTab extends JPanel {
         //textArea.setLineWrap(true);
         //textArea.setWrapStyleWord(true);
         //textArea.setRows(5);
-        
-        updateInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+    
         JButton updateBtn = new JButton("Apply update");
         updateBtn.addActionListener(a -> {
             importInfo.setVisible(false);
             applyUpdate(updateInfo);
-        } );
+        });
         
+        updateInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, updateBtn.getPreferredSize().height));
+    
         JPanel buttonContainer = new JPanel();
         buttonContainer.setLayout(new WrapLayout(WrapLayout.RIGHT, 0, 0));
         buttonContainer.setMaximumSize(new Dimension(1, 20)); // prevents vertical stretching
         buttonContainer.add(updateInfo);
         buttonContainer.add(getDummySpacer(10, 10));
         buttonContainer.add(updateBtn);
+        
         
         JScrollPane textScrollPane = new JScrollPane(textArea);
         
@@ -152,7 +154,7 @@ public class DictionaryTab extends JPanel {
     // Reading from JTextField
     private void applyUpdate(JLabel info) {
         CompletableFuture.runAsync(() ->{
-            info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
+            info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 10));
             info.setForeground(Utils.GREEN);
             info.setText(" Reading dictionary... ");
             info.setVisible(true);
@@ -167,7 +169,7 @@ public class DictionaryTab extends JPanel {
         try {
             UserDictionary dict = DictionaryReader.buildDictionary(dictionaryLines);
         } catch (RuntimeException e) {
-            info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 5));
+            info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 10));
             info.setForeground(Utils.RED);
             info.setText(e.getLocalizedMessage());
             info.repaint();
@@ -189,7 +191,7 @@ public class DictionaryTab extends JPanel {
         return a -> {
             CompletableFuture.runAsync(() -> {
                 System.out.println("Input: " + dictionaryInput.getText());
-                info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 5));
+                info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 10));
                 info.setForeground(Utils.GREEN);
                 info.setText(" Reading dictionary... ");
                 info.setVisible(true);
