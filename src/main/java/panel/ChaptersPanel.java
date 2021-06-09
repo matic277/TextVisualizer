@@ -2,6 +2,7 @@ package panel;
 
 import SentenceLabel.*;
 import main.*;
+import main.UserDictionary.UserDictionary;
 import panel.tabs.QueryTab;
 
 import javax.swing.*;
@@ -22,12 +23,15 @@ public class ChaptersPanel extends JScrollPane {
     SlidingWindow slider;
     SlidingWindowListener listener;
     
+    public UserDictionary userDict;
     public Map<Pair<Integer, String>, List<Sentence>> chapters;
     
     public VisualType currentVisualType;
     public ChapterType currentChapterType;
     public SentenceLabelVisualType currentSentenceLblVisualType;
     public SentenceSizeType currentSentenceSizeType;
+    
+    //public Dimension charSize = new Dimension(Utils.SENTENCE_SIZE.width, Utils.SENTENCE_SIZE.height);
     
     ChapterBuilder chapterBuilder = new HorizontalChapterBuilder();
     
@@ -40,6 +44,7 @@ public class ChaptersPanel extends JScrollPane {
         currentChapterType = ChapterType.HORIZONTAL;
         currentSentenceLblVisualType = SentenceLabelVisualType.DEFAULT;
         currentSentenceSizeType = SentenceSizeType.LOGARITHMIC;
+        userDict = new UserDictionary();
         
         slider = new SlidingWindow(this);
         
@@ -50,7 +55,7 @@ public class ChaptersPanel extends JScrollPane {
             }
         };
         mainPanel.setBackground(Utils.GRAY3);
-        mainPanel.setLayout(new WrapLayout(WrapLayout.CENTER));
+        mainPanel.setLayout(new WrapLayout(WrapLayout.LEFT, 10, 10));
         
         init(); // should be called before instantiating slider listener!
         
@@ -69,7 +74,7 @@ public class ChaptersPanel extends JScrollPane {
         chapterPanels.clear();
         this.mainPanel.removeAll();
         
-        this.mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
+        //this.mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         
         chapterBuilder.rebuild(this);
         
@@ -92,19 +97,25 @@ public class ChaptersPanel extends JScrollPane {
         });
     }
     
-    public void onSentenceSizeChange(int newSize) {
+    public void onSentenceSizeChange(int newWidth, int newHeight) {
+        //this.charSize.setSize(newWidth, newHeight);
+        SentenceLabel.charSize.setSize(newWidth, newHeight);
+        
         chapterPanels.forEach(chapterPanel -> {
             JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
             for (Component sentenceCmp : sentencesPanel.getComponents()) {
                 if (sentenceCmp instanceof SentenceLabel sentLbl) {
                     if (currentChapterType == ChapterType.HORIZONTAL) {
-                        sentLbl.setPreferredSize(new Dimension(newSize, sentLbl.getHeight()));
-                        sentLbl.setMinimumSize(new Dimension(newSize, sentLbl.getHeight()));
+                        //sentLbl.setPreferredSize(new Dimension(newWidth, newHeight));
+                        //sentLbl.setMinimumSize(new Dimension(newWidth, newHeight));
 //                        sentLbl.init();
+                        
+                        sentLbl.onSizeChange();
                     } else if (currentChapterType == ChapterType.VERTICAL) {
-                        sentLbl.setPreferredSize(new Dimension(sentLbl.getWidth(), newSize));
-                        sentLbl.setMinimumSize(new Dimension(sentLbl.getWidth(), newSize));
+                        //sentLbl.setPreferredSize(new Dimension(newWidth, newHeight));
+                        //sentLbl.setMinimumSize(new Dimension(newWidth, newHeight));
 //                        sentLbl.init();
+                        sentLbl.onSizeChange();
                     }
                 }
             }
@@ -128,6 +139,22 @@ public class ChaptersPanel extends JScrollPane {
         init();
         
         System.out.println(" -> Chapters inited.");
+    }
+    
+    public void onNewDictionaryImport(UserDictionary dict) {
+        this.userDict = dict;
+        
+        // recolor chapter panels
+        chapterPanels.forEach(chapterPanel -> {
+            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
+            System.out.println("Changing colors");
+            for (Component sentenceCmp : sentencesPanel.getComponents()) {
+                if (sentenceCmp instanceof SentenceLabel sentLbl) {
+                    sentLbl.onNewDictionaryImport(dict);
+                }
+            }
+            sentencesPanel.revalidate();
+        });
     }
     
     public void onChapterTypeChange(ChapterType chapterType) {

@@ -1,5 +1,6 @@
 package panel.tabs;
 
+import main.UserDictionary.UserDictionary;
 import panel.ChaptersPanel;
 import panel.TopPanel;
 
@@ -12,7 +13,7 @@ import java.awt.*;
 public class TabsPanel extends JTabbedPane {
     
     TopPanel parent;
-    ChaptersPanel chaptersPanel;
+    public ChaptersPanel chaptersPanel;
     
     QueryTab queryTab;
     ColorTab colorTab;
@@ -25,7 +26,7 @@ public class TabsPanel extends JTabbedPane {
         queryTab = new QueryTab(this);
         colorTab = new ColorTab(this);
         dictionaryTab = new DictionaryTab(this);
-    
+        
         this.addTab("Colors", colorTab);
         this.addTab("Query", queryTab);
         this.addTab("Dictionary", dictionaryTab);

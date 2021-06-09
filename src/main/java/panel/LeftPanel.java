@@ -27,7 +27,6 @@ public class LeftPanel extends JScrollPane {
     
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
-    
     public LeftPanel(BottomPanel parent) {
         this.parent = parent;
         this.chapters = parent.parent.getChapters();

@@ -24,8 +24,10 @@ public class TopPanel extends JPanel {
         JPanel importFilePanel;
             JTextField importField;
             JButton importBtn;
-        JPanel sentenceSliderPanel;
-            JSlider sentenceSizeSlider;
+        JPanel sentenceWidthSliderPanel;
+            JSlider sentenceWidthSlider;
+        JPanel sentenceHeightSliderPanel;
+            JSlider sentenceHeightSlider;
         JPanel sliderSliderPanel;
             JSlider sliderSizeSlider;
         JPanel dropdownPanel;
@@ -49,7 +51,8 @@ public class TopPanel extends JPanel {
         controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         
         initImportField();
-        initSentenceSizeSlider();
+        initSentenceWidthSlider();
+        initSentenceHeightSlider();
         initSliderSizeSlider();
         initDropdownPanel();
         initChapterTypePanel();
@@ -68,6 +71,77 @@ public class TopPanel extends JPanel {
         this.add(controlPanel, BorderLayout.NORTH);
         //this.add(chaptersPanel, BorderLayout.CENTER);
         this.add(splitPane, BorderLayout.CENTER);
+    }
+    
+    private void initSentenceHeightSlider() {
+        sentenceHeightSliderPanel = new JPanel();
+        sentenceHeightSliderPanel.setLayout(new BorderLayout());
+    
+        JLabel title = new JLabel("Size of sentences");
+        title.setFont(Utils.getFont(12));
+        //Font defaultFont = UIManager.getDefaults().getFont("Label.font");
+        //Font boldFont = new Font(defaultFont.getName(), Font.BOLD,defaultFont.getSize());
+        //title.setFont(defaultFont);
+    
+        int sliderMin = Utils.SENTENCE_HEIGHT_RANGE.getMinimum(), sliderMax = Utils.SENTENCE_HEIGHT_RANGE.getMaximum();
+        sentenceHeightSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.height);
+        Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
+        //Font lblFont = new Font("Calibri", Font.BOLD, 12);
+        JLabel minLbl = new JLabel(sliderMin+""); //minLbl.setFont(lblFont);
+        JLabel maxLbl = new JLabel(sliderMax+""); //maxLbl.setFont(lblFont);
+        sliderMap.put(sliderMin, minLbl);
+        sliderMap.put(sliderMax, maxLbl);
+        sentenceHeightSlider.setLabelTable(sliderMap);
+        sentenceHeightSlider.setMajorTickSpacing(5);
+        sentenceHeightSlider.setPaintTicks(true);
+        sentenceHeightSlider.setPaintLabels(true);
+        sentenceHeightSlider.setPreferredSize(new Dimension(100, 40));
+        sentenceHeightSlider.setFont(Utils.getFont(12));
+        sentenceHeightSlider.setEnabled(true);
+        sentenceHeightSlider.addChangeListener(c -> onSentenceSizeChange(sentenceWidthSlider.getValue(), sentenceHeightSlider.getValue()));
+        
+        sentenceHeightSliderPanel.add(title, BorderLayout.NORTH);
+        sentenceHeightSliderPanel.add(sentenceHeightSlider, BorderLayout.CENTER);
+        controlPanel.add(sentenceHeightSliderPanel);
+        
+        //JPanel spacer = new JPanel();
+        //spacer.setPreferredSize(new Dimension(30, 30));
+        //spacer.setOpaque(false);
+        //controlPanel.add(spacer);
+    }
+    
+    private void initSentenceWidthSlider() {
+        //JPanel sentenceWidthSliderPanel;
+        //JSlider sentenceWidthSlider;
+        sentenceWidthSliderPanel = new JPanel();
+        sentenceWidthSliderPanel.setLayout(new BorderLayout());
+    
+        JLabel title = new JLabel("Size of sentences");
+        title.setFont(Utils.getFont(12));
+        //Font defaultFont = UIManager.getDefaults().getFont("Label.font");
+        //Font boldFont = new Font(defaultFont.getName(), Font.BOLD,defaultFont.getSize());
+        //title.setFont(defaultFont);
+        
+        int sliderMin = Utils.SENTENCE_WIDTH_RANGE.getMinimum(), sliderMax = Utils.SENTENCE_WIDTH_RANGE.getMaximum();
+        sentenceWidthSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.width);
+        Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
+        //Font lblFont = new Font("Calibri", Font.BOLD, 12);
+        JLabel minLbl = new JLabel(sliderMin+""); //minLbl.setFont(lblFont);
+        JLabel maxLbl = new JLabel(sliderMax+""); //maxLbl.setFont(lblFont);
+        sliderMap.put(sliderMin, minLbl);
+        sliderMap.put(sliderMax, maxLbl);
+        sentenceWidthSlider.setLabelTable(sliderMap);
+        sentenceWidthSlider.setMajorTickSpacing(5);
+        sentenceWidthSlider.setPaintTicks(true);
+        sentenceWidthSlider.setPaintLabels(true);
+        sentenceWidthSlider.setPreferredSize(new Dimension(100, 40));
+        sentenceWidthSlider.setFont(Utils.getFont(12));
+        sentenceWidthSlider.setEnabled(true);
+        sentenceWidthSlider.addChangeListener(c -> onSentenceSizeChange(sentenceWidthSlider.getValue(), sentenceHeightSlider.getValue()));
+        
+        sentenceWidthSliderPanel.add(title, BorderLayout.NORTH);
+        sentenceWidthSliderPanel.add(sentenceWidthSlider, BorderLayout.CENTER);
+        controlPanel.add(sentenceWidthSliderPanel);
     }
     
     private void initSentenceSizeTypePanel() {
@@ -199,50 +273,12 @@ public class TopPanel extends JPanel {
         controlPanel.add(spacer);
     }
     
-    private void initSentenceSizeSlider() {
-        sentenceSliderPanel = new JPanel();
-        sentenceSliderPanel.setLayout(new BorderLayout());
-        
-        JLabel title = new JLabel("Size of sentences");
-        title.setFont(Utils.getFont(12));
-        //Font defaultFont = UIManager.getDefaults().getFont("Label.font");
-        //Font boldFont = new Font(defaultFont.getName(), Font.BOLD,defaultFont.getSize());
-        //title.setFont(defaultFont);
-        
-        int sliderMin = 1, sliderMax = 16;
-        sentenceSizeSlider = new JSlider(sliderMin, sliderMax, Utils.SENTENCE_SIZE.width);
-        Hashtable<Integer, JLabel> sliderMap = new Hashtable<>();
-        //Font lblFont = new Font("Calibri", Font.BOLD, 12);
-        JLabel minLbl = new JLabel(sliderMin+""); //minLbl.setFont(lblFont);
-        JLabel maxLbl = new JLabel(sliderMax+""); //maxLbl.setFont(lblFont);
-        sliderMap.put(sliderMin, minLbl);
-        sliderMap.put(sliderMax, maxLbl);
-        sentenceSizeSlider.setLabelTable(sliderMap);
-        sentenceSizeSlider.setMajorTickSpacing(5);
-        sentenceSizeSlider.setPaintTicks(true);
-        sentenceSizeSlider.setPaintLabels(true);
-        sentenceSizeSlider.setPreferredSize(new Dimension(100, 40));
-        sentenceSizeSlider.setFont(Utils.getFont(12));
-        sentenceSizeSlider.setEnabled(true);
-        sentenceSizeSlider.addChangeListener(c -> onSentenceSizeChange());
-        
-        sentenceSliderPanel.add(title, BorderLayout.NORTH);
-        sentenceSliderPanel.add(sentenceSizeSlider, BorderLayout.CENTER);
-        controlPanel.add(sentenceSliderPanel);
-    
-        JPanel spacer = new JPanel();
-        spacer.setPreferredSize(new Dimension(30, 30));
-        spacer.setOpaque(false);
-        controlPanel.add(spacer);
-    }
-    
     private void onSliderSizeChange() {
         chaptersPanel.onSliderSizeChange(sliderSizeSlider.getValue());
     }
     
-    private void onSentenceSizeChange() {
-        int newSize = sentenceSizeSlider.getValue();
-        chaptersPanel.onSentenceSizeChange(newSize);
+    private void onSentenceSizeChange(int newWidth, int newHeight) {
+        chaptersPanel.onSentenceSizeChange(newWidth, newHeight);
     }
     
     public void onVisualTypeChange(VisualType selectedItem) {

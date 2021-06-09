@@ -1,6 +1,7 @@
 package SentenceLabel;
 
 import main.*;
+import main.UserDictionary.UserDictionary;
 import panel.ChaptersPanel;
 import panel.tabs.QueryTab;
 
@@ -9,6 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -68,7 +70,7 @@ public class SentenceLabel extends JLabel {
     public static final Color SENTIMENT_NEUTRAL_COLOR_HOVERED = SENTIMENT_MED_COLOR.brighter();
     public static final Color SENTIMENT_NEGATIVE_COLOR_HOVERED = SENTIMENT_LOW_COLOR.brighter();
     // imagery
-    public static final Color IMAGERY_HIGH_COLOR = new Color(66,133,244);
+    public static final Color IMAGERY_HIGH_COLOR = new Color(219, 219, 219);
     public static final Color IMAGERY_MED_COLOR = new Color(137, 177, 238);
     public static final Color IMAGERY_LOW_COLOR = new Color(204, 227, 246);
     public static final Color IMAGERY_HIGH_COLOR_HOVERED = IMAGERY_HIGH_COLOR.brighter();
@@ -94,6 +96,8 @@ public class SentenceLabel extends JLabel {
     public ChapterType currentChapterType;
     public SentenceLabelVisualType currentLabelVisualType;
     public SentenceSizeType currentSentenceSizeType;
+    
+    public static Dimension charSize = new Dimension(Utils.SENTENCE_SIZE.width, Utils.SENTENCE_SIZE.height);
     
     public SentenceLabel(ChaptersPanel parent, Sentence sentence, VisualType visualType, ChapterType chapterType, SentenceLabelVisualType labelVisualType, SentenceSizeType sentenceSizeType) {
         super();
@@ -183,6 +187,25 @@ public class SentenceLabel extends JLabel {
         this.init();
         this.repaint();
         this.parent.repaint();
+    }
+    
+    
+    public void onNewDictionaryImport(UserDictionary dict) {
+        // switch colors
+        this.sentence.getWords().forEach(w -> {
+            Color newColor = dict.getColorForWord(w.getProcessedText()); // TODO source text or processed text or both?
+            newColor = newColor == null ? NORMAL_UNRECOGNIZED_COLOR : newColor;
+    
+            //System.out.println("new color " + w + " -> " + Utils.colorToString(newColor));
+            
+            w.setNormalRenderColor(newColor);
+            w.setCurrentRenderColor(newColor);
+            w.setHoveredRenderColor(newColor.brighter());
+        });
+    }
+    
+    public void onSizeChange() {
+        labelBuilder.rebuild(this);
     }
     
     private static Consumer<SentenceLabel> getSentimentColorer() {
@@ -312,6 +335,19 @@ public class SentenceLabel extends JLabel {
         //this.parent.repaint();
     }
     
+    public void onWordSearch(String word, QueryTab caller) {
+        long occurrences = this.sentence.countOccurrences(word);
+        if (occurrences > 0) {
+            this.searchWordBorderDrawer = searchWordFoundBorderDrawer;
+            caller.incrementWordInSentenceFoundOccurrence();
+            caller.incrementWordFoundOccurrence(occurrences);
+            this.repaint();
+        } else {
+            this.searchWordBorderDrawer = nullBorderDrawer;
+            this.repaint();
+        }
+    }
+    
     private void addListener() {
         this.addMouseListener(new MouseListener() {
             @Override
@@ -344,17 +380,4 @@ public class SentenceLabel extends JLabel {
     }
     
     public boolean isSelected() { return this.isSelected; }
-    
-    public void onWordSearch(String word, QueryTab caller) {
-        long occurrences = this.sentence.countOccurrences(word);
-        if (occurrences > 0) {
-            this.searchWordBorderDrawer = searchWordFoundBorderDrawer;
-            caller.incrementWordInSentenceFoundOccurrence();
-            caller.incrementWordFoundOccurrence(occurrences);
-            this.repaint();
-        } else {
-            this.searchWordBorderDrawer = nullBorderDrawer;
-            this.repaint();
-        }
-    }
 }

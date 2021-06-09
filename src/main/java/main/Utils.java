@@ -1,5 +1,8 @@
 package main;
 
+import com.ibm.icu.number.IntegerWidth;
+import org.apache.commons.lang3.Range;
+
 import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Random;
@@ -19,13 +22,16 @@ public class Utils {
     public static final Color LIGHT_GRAY = new Color(243, 243, 243);
     public static final Color MEUN_COLORS = Color.decode("#E0DDDD");
     
+    public static final Range<Integer> SENTENCE_WIDTH_RANGE = Range.between(1, 300);
+    public static final Range<Integer> SENTENCE_HEIGHT_RANGE = Range.between(1, 300);
+    public static final Dimension SENTENCE_SIZE = new Dimension(5, 50);
+    
     Color c = new Color(10, 226, 39, 133);
     
     public static final Dimension MENU_BUTTON_SIZE = new Dimension(40, 40);
     public static final Dimension MENU_BUTTON_SIZE_WIDE = new Dimension(100, 40);
     public static final Dimension MENU_CHECKBOX_SIZE = new Dimension(125, 15);
     
-    public static final Dimension SENTENCE_SIZE = new Dimension(5, 50);
     public static final int INITIAL_SLIDER_WIDTH = 120;
     
     public static final Stroke PLAIN_STROKE = new BasicStroke(1);

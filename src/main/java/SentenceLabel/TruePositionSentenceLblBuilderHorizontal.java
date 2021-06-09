@@ -13,7 +13,7 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
     @Override
     public void rebuild(SentenceLabel label) {
         // calculate true position of words in sentence
-        int charSize = 3;
+        int charSize = SentenceLabel.charSize.width;
         double totalWords = label.getSentence().getWords().size();
         int totalWidth = label.currentSentenceSizeType.sizeDeterminator.applyAsInt((int)totalWords, charSize);
         
@@ -43,10 +43,10 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
             word.setSize(width);
             
             // set it's color used by renderer
-            Color clr = determineWordColor(word, label.currentVisualType);
-            word.setNormalRenderColor(clr);
-            word.setCurrentRenderColor(clr);
-            word.setHoveredRenderColor(clr.brighter());
+            //Color clr = determineWordColor(word, label.currentVisualType);
+            //word.setNormalRenderColor(clr);
+            //word.setCurrentRenderColor(clr);
+            //word.setHoveredRenderColor(clr.brighter());
             
             // set position
             word.setPosition(offsetPosition);
@@ -61,7 +61,7 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
         //    System.out.println("dif " + diff);
         //}
         
-        int lblHeight  = 5;
+        int lblHeight  = SentenceLabel.charSize.height;
         label.setPreferredSize(new Dimension(totalWidth, lblHeight));
     }
     

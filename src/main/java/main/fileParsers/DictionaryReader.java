@@ -80,16 +80,14 @@ public class DictionaryReader {
                     if (groupColor.isBlank() || groupColor.isEmpty()) throw new RuntimeException("Group color can't be empty.");
                     
                     if (currentGroup == null) {
-                        currentGroup = new WordGroup()
-                                .setGroupName(groupName)
-                                .setDefaultGroupColor(groupColor);
+                        currentGroup = new WordGroup(groupColor)
+                                .setGroupName(groupName);
                     } else {
                         boolean error = dict.addGroup(currentGroup);
                         if (error) throw new RuntimeException("Couldn't add group with name \"" + currentGroup.name + "\". Probably a duplicate group name.");
                         
-                        currentGroup = new WordGroup()
-                                .setGroupName(groupName)
-                                .setDefaultGroupColor(groupColor);
+                        currentGroup = new WordGroup(groupColor)
+                                .setGroupName(groupName);
                     }
                 } else {
                     throw new RuntimeException("Line started with '<', but group tag was not detected, line \"" + line + "\".");

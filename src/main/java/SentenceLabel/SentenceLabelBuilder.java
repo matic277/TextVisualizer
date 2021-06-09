@@ -12,9 +12,9 @@ import javax.swing.border.StrokeBorder;
 import java.awt.*;
 
 public interface SentenceLabelBuilder {
+    
     void rebuild(SentenceLabel label);
     LayoutManager getParentLayout(JPanel parent);
-    
     
     default Color determineWordColor(AbsWord word, VisualType visType) {
         // this is kind of ugly here

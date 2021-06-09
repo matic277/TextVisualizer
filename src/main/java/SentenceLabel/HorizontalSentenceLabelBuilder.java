@@ -13,7 +13,7 @@ public class HorizontalSentenceLabelBuilder implements SentenceLabelBuilder {
     
     @Override
     public void rebuild(SentenceLabel label) {
-        int wordSize = 3;
+        int wordSize = SentenceLabel.charSize.width;
         double totalWords = label.getSentence().getWords().size();
         double totalWidth = label.currentSentenceSizeType.sizeDeterminator.applyAsInt((int)totalWords, wordSize);
     
@@ -46,9 +46,9 @@ public class HorizontalSentenceLabelBuilder implements SentenceLabelBuilder {
         label.unknWidth = (int)(totalWidth - label.highWidth - label.medWidth - label.lowWidth);// whatever is left
         
         int lblWidth = label.highWidth + label.medWidth + label.lowWidth + label.unknWidth;
-        int lblHeight = 5;
+        int lblHeight = SentenceLabel.charSize.height;
         
-        label.setMinimumSize(new Dimension(lblWidth, lblHeight));
+        //label.setMinimumSize(new Dimension(lblWidth, lblHeight));
         label.setPreferredSize(new Dimension(lblWidth, lblHeight));
     }
     

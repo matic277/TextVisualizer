@@ -12,7 +12,7 @@ public class VerticalSentenceLabelBuilder implements SentenceLabelBuilder {
     
     @Override
     public void rebuild(SentenceLabel label) {
-        int wordSize = 3;
+        int wordSize = SentenceLabel.charSize.height;
         double totalWords = label.getSentence().getWords().size();
         //double totalHeight = (int)customLog(1.035, totalWords * wordSize);
         double totalHeight = label.currentSentenceSizeType.sizeDeterminator.applyAsInt(wordSize, (int)totalWords);
@@ -46,7 +46,7 @@ public class VerticalSentenceLabelBuilder implements SentenceLabelBuilder {
         label.unknHeight = (int)(totalHeight - label.highHeight - label.medHeight - label.lowHeight);// whatever is left
 
         int lblHeight = label.highHeight + label.medHeight + label.lowHeight + label.unknHeight;
-        int lblWidth  = 5;
+        int lblWidth  = SentenceLabel.charSize.width;
         
         label.setPreferredSize(new Dimension(lblWidth, lblHeight));
     }

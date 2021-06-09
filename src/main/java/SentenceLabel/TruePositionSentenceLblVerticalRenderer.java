@@ -13,7 +13,7 @@ public class TruePositionSentenceLblVerticalRenderer implements SentenceRenderer
             gr.setColor(w.getCurrentRenderColor());
             gr.fillRect(0, w.getPosition(), lbl.getWidth(), w.getSize());
         });
-    
+        
         lbl.searchWordBorderDrawer.accept(gr, lbl);
         lbl.selectionBorderDrawer.accept(gr, lbl);
     }

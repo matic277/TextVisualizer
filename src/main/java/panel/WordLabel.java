@@ -51,10 +51,32 @@ public class WordLabel extends JLabel {
         this.containerParent = containerParent;
         this.word = word;
         
+        
+        CURRENT_COLOR = Utils.GRAY2;
+        HOVERED_COLOR = CURRENT_COLOR.brighter();
+        
         this.setOpaque(true);
         this.setFont(Utils.getFont(14));
         
         colorMap.get(visualType).accept(this); // current coloring mode
+        
+        this.setBackground(CURRENT_COLOR);
+    }
+    
+    public WordLabel (String word, Color clr) {
+        super(" " + word + " ");
+        
+        if (clr != null) {
+            CURRENT_COLOR = clr;
+            HOVERED_COLOR = CURRENT_COLOR.brighter();
+            this.setOpaque(true);
+        } else {
+            this.setOpaque(false);
+        }
+        
+        this.setFont(Utils.getFont(14));
+        
+        //colorMap.get(visualType).accept(this); // current coloring mode
         
         this.setBackground(CURRENT_COLOR);
     }
@@ -73,17 +95,17 @@ public class WordLabel extends JLabel {
             else {
                 // transparent with border
                 wrdLbl.setBorder(new StrokeBorder(new BasicStroke(1)));
-        
+
                 if (wrdLbl.word instanceof StopWord) {
                     wrdLbl.setForeground(Utils.GRAY.darker().darker());
                 }
-    
+
                 wrdLbl.CURRENT_COLOR = new Color(240, 240, 240);
                 wrdLbl.HOVERED_COLOR = Color.white;
             }
         };
     }
-    
+
     private static Consumer<WordLabel> getImageryColorer() {
         return (wrdLbl) -> {
             if (wrdLbl.word instanceof AbsMeasurableWord absWord) {
@@ -103,13 +125,13 @@ public class WordLabel extends JLabel {
                 if (wrdLbl.word instanceof StopWord) {
                     wrdLbl.setForeground(Utils.GRAY.darker().darker());
                 }
-    
+
                 wrdLbl.CURRENT_COLOR = new Color(240, 240, 240);
                 wrdLbl.HOVERED_COLOR = Color.white;
             }
         };
     }
-    
+
     private static Consumer<WordLabel> getActivationColorer() {
         return (wrdLbl) -> {
             if (wrdLbl.word instanceof AbsMeasurableWord absWord) {
@@ -129,7 +151,7 @@ public class WordLabel extends JLabel {
                 if (wrdLbl.word instanceof StopWord) {
                     wrdLbl.setForeground(Utils.GRAY.darker().darker());
                 }
-                
+
                 wrdLbl.CURRENT_COLOR = new Color(240, 240, 240);
                 wrdLbl.HOVERED_COLOR = Color.white;
             }

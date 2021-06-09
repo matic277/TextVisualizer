@@ -21,7 +21,7 @@ public class HorizontalChapterBuilder implements ChapterBuilder {
             chapterPanel.setBorder(new StrokeBorder(new BasicStroke(2)));
             chapterPanel.setLayout(new BorderLayout());
             chapterPanel.setBackground(Color.white);
-            chapterPanel.setName("Main panel for chapter " + k.getB());
+            //chapterPanel.setName("Main panel for chapter " + k.getB());
             
             JLabel title = new JLabel(k.getB());
             title.setBorder(new StrokeBorder(new BasicStroke(1)));
@@ -30,24 +30,24 @@ public class HorizontalChapterBuilder implements ChapterBuilder {
             chapterPanel.add(title, BorderLayout.NORTH);
             
             JPanel sentencesPanel = new JPanel();
-            sentencesPanel.setName("Sentence panel for chapter " + k.getB());
+            //sentencesPanel.setName("Sentence panel for chapter " + k.getB());
             sentencesPanel.setOpaque(true);
             sentencesPanel.setBackground(Utils.GRAY);
 //            sentencesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
             sentencesPanel.setLayout(panel.currentChapterType.sentenceLblBuilder.getParentLayout(sentencesPanel));
             chapterPanel.add(sentencesPanel, BorderLayout.CENTER);
-        
+            
             v.forEach(s -> {
                 SentenceLabel lbl = new SentenceLabel(panel, s, panel.currentVisualType, panel.currentChapterType,  panel.currentSentenceLblVisualType, panel.currentSentenceSizeType);
                 lbl.init();
                 sentencesPanel.add(lbl);
             });
-        
+            
             chapterPanel.setMaximumSize(chapterPanel.getPreferredSize());
             chapterPanels.add(chapterPanel);
             
             panel.mainPanel.add(chapterPanel);
-            panel.mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
+            //panel.mainPanel.add(Box.createRigidArea(new Dimension(100, 10))); // dummy spacing component
         });
     }
 }
