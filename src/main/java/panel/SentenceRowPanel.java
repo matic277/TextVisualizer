@@ -2,6 +2,7 @@ package panel;
 
 import SentenceLabel.SentenceLabel;
 import main.Sentence;
+import main.UserDictionary.Word;
 import main.Utils;
 import main.VisualType;
 import word.AbsWord;
@@ -29,13 +30,6 @@ public class SentenceRowPanel extends JPanel {
     JPanel sentencePanel;
         List<WordLabel> words;
     
-    // map: visualType -> keyExtractor(extracting Sentence.getSentiment or getActivation or getImagery)
-    private static Map<VisualType, Function<Sentence, Double>> typeMap = new HashMap<>(); static {
-        typeMap.put(VisualType.SENTIMENT, Sentence::getSentiment);
-        typeMap.put(VisualType.IMAGERY, Sentence::getImagery);
-        typeMap.put(VisualType.ACTIVATION, Sentence::getActivation);
-    }
-    
     public static final DecimalFormat format = new DecimalFormat("#.##"); static {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
@@ -51,19 +45,6 @@ public class SentenceRowPanel extends JPanel {
         
         initStatsPanel();
         initSentencePanel(currentVisualType);
-    }
-    
-    public void onVisualTypeChange(VisualType visualType) {
-        currentVisualType = visualType;
-        Double val = typeMap.get(visualType).apply(sentenceLabel.sentence);
-        visualTypeLbl.setText(" " + visualType.toString() + ": " + format.format(val));
-        visualTypeLbl.revalidate();
-        visualTypeLbl.doLayout();
-        
-        words.forEach(w -> w.onVisualTypeChange(visualType));
-        
-        this.repaint();
-        visualTypeLbl.repaint();
     }
     
     private void initStatsPanel() {
@@ -116,9 +97,6 @@ public class SentenceRowPanel extends JPanel {
         wordsNumLbl.setPreferredSize(new Dimension(wordsNumLbl.getPreferredSize().width, 11));
         infoContainer.add(wordsNumLbl);
         
-        visualTypeLbl = getStatLabel(" " + currentVisualType.toString() + ": " + format.format(sentenceLabel.getSentence().getSentiment()));
-        visualTypeLbl.setSize(new Dimension(visualTypeLbl.getPreferredSize().width, 11));
-        infoContainer.add(visualTypeLbl);
         
         statsContainer.add(removeSentenceLbl, BorderLayout.EAST);
         statsContainer.add(infoContainer, BorderLayout.CENTER);
@@ -134,8 +112,8 @@ public class SentenceRowPanel extends JPanel {
         words = new ArrayList<>(sentenceLabel.getSentence().getWords().size());
         
         // SELECTED SENTENCE
-        for (AbsWord word : sentenceLabel.getSentence().getWords()) {
-            WordLabel wrdLbl = new WordLabel(this, null, word, visualType);
+        for (Word word : sentenceLabel.getSentence().getWords()) {
+            WordLabel wrdLbl = new WordLabel(this, null, word);
             wrdLbl.setParentSentence(sentenceLabel.getSentence());
             wrdLbl.addMouseListener(new MouseListener() {
                 @Override

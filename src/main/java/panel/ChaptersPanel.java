@@ -42,7 +42,7 @@ public class ChaptersPanel extends JScrollPane {
         // defaults
         currentVisualType = VisualType.SENTIMENT;
         currentChapterType = ChapterType.HORIZONTAL;
-        currentSentenceLblVisualType = SentenceLabelVisualType.DEFAULT;
+        currentSentenceLblVisualType = SentenceLabelVisualType.TRUE_POSITION;
         currentSentenceSizeType = SentenceSizeType.LOGARITHMIC;
         userDict = new UserDictionary();
         
@@ -84,19 +84,6 @@ public class ChaptersPanel extends JScrollPane {
         this.updateUI();
     }
     
-    public void onVisualTypeChange(VisualType visualType) {
-        currentVisualType = visualType;
-        chapterPanels.forEach(chapterPanel -> {
-            JPanel sentencesPanel = (JPanel) chapterPanel.getComponents()[1];
-            for (Component sentenceCmp : sentencesPanel.getComponents()) {
-                if (sentenceCmp instanceof SentenceLabel sentLbl) {
-                    sentLbl.onVisualTypeChange(visualType);
-                }
-            }
-            sentencesPanel.revalidate();
-        });
-    }
-    
     public void onSentenceSizeChange(int newWidth, int newHeight) {
         //this.charSize.setSize(newWidth, newHeight);
         SentenceLabel.charSize.setSize(newWidth, newHeight);
@@ -131,7 +118,7 @@ public class ChaptersPanel extends JScrollPane {
     
     public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
         chapters = processedChapters;
-        slider.setLocation(10, 10);
+        slider.setLocation(1, 1);
         
         mainPanel.removeAll();
         chapterPanels.clear();

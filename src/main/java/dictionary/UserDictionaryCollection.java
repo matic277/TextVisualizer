@@ -30,4 +30,10 @@ public class UserDictionaryCollection {
     public Set<String> getDictionaryNames() {
         return dictMap.keySet();
     }
+    
+    //public void getWord(String word) {
+    //    for (Map.Entry<String, UserDictionary> entry : dictMap.entrySet()) {
+    //        entry.getValue().
+    //    }
+    //}
 }

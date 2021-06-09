@@ -12,10 +12,10 @@ public class WordGroup {
     
     // map of words that have specific color defined, which overwrites DEFAULT_COLOR
     // as specified in user dictionary txt file
-    Map<String, Color> specificColors;
+    Map<Word, Color> specificColors;
     
     // set of words which have DEFAULT_COLOR
-    Set<String> words;
+    Set<Word> words;
     
     public String name;
     
@@ -31,11 +31,16 @@ public class WordGroup {
     // these default_clr checks might be excessive, field is final!
     public boolean addWord(String word, String c) {
         if (DEFAULT_COLOR == null) throw new RuntimeException("Trying to add word " + word + ", witch color " + c + " to WordGroup, but default group color is unspecified!");
+        
         Color clr;
         String parsed = c.substring(7, c.length()-2); // remove 'color="..."'
         try { clr = Utils.parseColor(parsed); }
-        catch (Exception e) { throw new RuntimeException("Color value \"" + parsed+ "\" out of range for word \"" + word + "\" in group \"" + name + "\"."); }
-        return this.specificColors.put(word, clr) != null;
+        catch (Exception e) { throw e; }
+        
+        Word wrd = Word.of(word, word, clr);
+        if (words.contains(wrd) || specificColors.containsKey(wrd)) throw new RuntimeException("Trying to add word " + word + ", to group \"" + name + "\", but it already exists.");
+        
+        return this.specificColors.put(wrd, clr) != null;
     }
     
     public Color getColorForWord(String word) {
@@ -47,22 +52,21 @@ public class WordGroup {
     // these default_clr checks might be excessive, field is final!
     public boolean addWord(String word) {
         if (DEFAULT_COLOR == null) throw new RuntimeException("Trying to add word " + word + ", to WordGroup, but default group color is unspecified!");
-        return this.words.add(word);
+        
+        Word wrd = Word.of(word, word, DEFAULT_COLOR);
+        if (words.contains(wrd) || specificColors.containsKey(wrd)) throw new RuntimeException("Trying to add word " + word + ", to group \"" + name + "\", but it already exists.");
+        
+        return this.words.add(wrd);
     }
     
-    //public WordGroup setDefaultGroupColor (String c) {
-    //    try { DEFAULT_COLOR = Utils.parseColor(c); }
-    //    catch (Exception e) { throw new RuntimeException("Color value out of range for group \"" + name + "\"."); }
-    //    return this;
-    //}
     public WordGroup setGroupName(String n) {
         this.name = n;
         return this;
     }
     
-    public Set<String> getWords() { return this.words; }
+    public Set<Word> getWords() { return this.words; }
     
-    public Map<String, Color> getWordsWithSpecificColors() { return this.specificColors; }
+    public Map<Word, Color> getWordsWithSpecificColors() { return this.specificColors; }
     
     public Color getDefaultColor() { return this.DEFAULT_COLOR; }
     

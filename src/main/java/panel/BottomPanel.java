@@ -40,11 +40,6 @@ public class BottomPanel extends JSplitPane {
         rightPanel.onSentenceHover(hoveredSentences);
     }
     
-    public void onVisualTypeChange(VisualType selectedItem) {
-        leftPanel.onVisualTypeChange(selectedItem);
-        rightPanel.onVisualTypeChange(selectedItem);
-    }
-    
     public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
         rightPanel.onNewTextImport(processedChapters);
         leftPanel.onNewTextImport(processedChapters);

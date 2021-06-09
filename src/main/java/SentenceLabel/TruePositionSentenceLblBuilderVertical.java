@@ -1,5 +1,6 @@
 package SentenceLabel;
 
+import main.SentenceLabelWord;
 import main.VisualType;
 import word.AbsWord;
 
@@ -23,7 +24,7 @@ public class TruePositionSentenceLblBuilderVertical implements SentenceLabelBuil
         // based on how long it is and its successors
         
         int wordHeight = 0;
-        for (AbsWord word : label.getSentence().getWords()) {
+        for (SentenceLabelWord word : label.getSentence().getSentenceLabelWords()) {
             // how long is this word percentage wise,
             // based on sentence length?
             double wrdLenPerc = (double) word.getProcessedWordLength() / sentenceLength;

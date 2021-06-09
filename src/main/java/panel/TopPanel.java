@@ -30,8 +30,6 @@ public class TopPanel extends JPanel {
             JSlider sentenceHeightSlider;
         JPanel sliderSliderPanel;
             JSlider sliderSizeSlider;
-        JPanel dropdownPanel;
-            JComboBox<VisualType> dropdownType;
         JPanel chapterTypePanel;
             JComboBox<ChapterType> chapterTypeDropdown;
         JPanel sentenceLabelVisualType;
@@ -54,7 +52,6 @@ public class TopPanel extends JPanel {
         initSentenceWidthSlider();
         initSentenceHeightSlider();
         initSliderSizeSlider();
-        initDropdownPanel();
         initChapterTypePanel();
         initSentenceLabelVisualTypePanel();
         initSentenceSizeTypePanel();
@@ -197,7 +194,6 @@ public class TopPanel extends JPanel {
         title.setFont(Utils.getFont(12));
         
         importField = new JTextField("./texts/SherlockHolmes-AStudyInScarlet.txt");
-        importField.addActionListener(a -> parent.onVisualTypeChange((VisualType) dropdownType.getSelectedItem()));
     
         importFilePanel = new JPanel();
         importFilePanel.setLayout(new BorderLayout());
@@ -213,26 +209,6 @@ public class TopPanel extends JPanel {
         
         controlPanel.add(importFilePanel);
         
-        JPanel spacer = new JPanel();
-        spacer.setPreferredSize(new Dimension(30, 30));
-        spacer.setOpaque(false);
-        controlPanel.add(spacer);
-    }
-    
-    private void initDropdownPanel() {
-        JLabel title = new JLabel("Select visual mapping: ");
-        title.setFont(Utils.getFont(12));
-        
-        dropdownType = new JComboBox<>(VisualType.values());
-        dropdownType.addActionListener(a -> parent.onVisualTypeChange((VisualType) dropdownType.getSelectedItem()));
-        
-        dropdownPanel = new JPanel();
-        dropdownPanel.setLayout(new BorderLayout());
-        
-        dropdownPanel.add(title, BorderLayout.NORTH);
-        dropdownPanel.add(dropdownType, BorderLayout.CENTER);
-        
-        controlPanel.add(dropdownPanel);
         JPanel spacer = new JPanel();
         spacer.setPreferredSize(new Dimension(30, 30));
         spacer.setOpaque(false);
@@ -281,9 +257,6 @@ public class TopPanel extends JPanel {
         chaptersPanel.onSentenceSizeChange(newWidth, newHeight);
     }
     
-    public void onVisualTypeChange(VisualType selectedItem) {
-        chaptersPanel.onVisualTypeChange(selectedItem);
-    }
     
     public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
         this.chapters = processedChapters;

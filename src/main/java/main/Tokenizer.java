@@ -2,7 +2,9 @@ package main;
 
 
 import dictionary.DictionaryCollection;
+import dictionary.UserDictionaryCollection;
 import dictionary.WhissellDictionary;
+import main.UserDictionary.Word;
 import word.*;
 
 import java.util.ArrayList;
@@ -167,11 +169,13 @@ public class Tokenizer {
         }
         return token;
     }
+    
+    static final UserDictionaryCollection dictionary = UserDictionaryCollection.get();
 
     // input should be a tokenized (by spaces)
     // string that is in a single line
-    public ArrayList<AbsWord> classifyAndGetWords(String[] tokens) {
-        ArrayList<AbsWord> words = new ArrayList<AbsWord>(tokens.length);
+    public ArrayList<Word> classifyAndGetWords(String[] tokens) {
+        ArrayList<Word> words = new ArrayList<>(tokens.length);
         for (String token : tokens)
         {
             if (token.length() == 0) continue;
@@ -185,34 +189,39 @@ public class Tokenizer {
             Use *checkToken1* and *checkToken2* for checking types!
             Use *rawToken* when checking for emojis!
             */
-        
+            
             String checkToken1 = cleanToken1(rawToken).toLowerCase();	// without -
             String checkToken2 = cleanToken2(rawToken).toLowerCase(); 	// with -
             
-            // SMILEY
-            if (Smiley.isType(rawToken)) {
-                words.add(new Smiley(rawToken));
-            }
             
-            // URL
-            else if (URL.isType(rawToken)) {
-                words.add(new URL(rawToken));
-            }
+            Word w = Word.of(rawToken, checkToken1);
+            words.add(w);
             
-            // HASHTAG
-            else if (Hashtag.isType(rawToken)) {
-                words.add(new Hashtag(rawToken, null));
-            }
-            
-            // TARGET
-            else if (Target.isType(rawToken)) {
-                words.add(new Target(rawToken));
-            }
-            
-            // EMOJI
-            else if (Emoji.isType(rawToken)) {
-                words.add(new Emoji(rawToken, null));
-            }
+            //
+            //// SMILEY
+            //if (Smiley.isType(rawToken)) {
+            //    words.add(new Smiley(rawToken));
+            //}
+            //
+            //// URL
+            //else if (URL.isType(rawToken)) {
+            //    words.add(new URL(rawToken));
+            //}
+            //
+            //// HASHTAG
+            //else if (Hashtag.isType(rawToken)) {
+            //    words.add(new Hashtag(rawToken, null));
+            //}
+            //
+            //// TARGET
+            //else if (Target.isType(rawToken)) {
+            //    words.add(new Target(rawToken));
+            //}
+            //
+            //// EMOJI
+            //else if (Emoji.isType(rawToken)) {
+            //    words.add(new Emoji(rawToken, null));
+            //}
             
             
             
@@ -230,34 +239,34 @@ public class Tokenizer {
 //            }
             
             // ACRONYM
-            else if (Acronym.isType(checkToken1)) {
-                words.add(new Acronym(rawToken, checkToken1));
-
-            }
-            else if (Acronym.isType(checkToken2)) {
-                words.add(new Acronym(rawToken, checkToken2));
-            }
-            
-            // STOP WORD
-            else if (StopWord.isType(checkToken1)) {
-                words.add(new StopWord(rawToken, checkToken1));
-
-            }
-            else if (StopWord.isType(checkToken2)) {
-                words.add(new StopWord(rawToken, checkToken2));
-            }
-            
-            // AFFECTION WORD
-            else if (AffectionWord.isType(checkToken1)) {
-                words.add(new AffectionWord(rawToken, checkToken1));
-
-            }
-            else if (AffectionWord.isType(checkToken2)) {
-                words.add(new AffectionWord(rawToken, checkToken2));
-            }
-            
-            // unknown/other word
-            else words.add(new Other(rawToken, checkToken2));
+            //else if (Acronym.isType(checkToken1)) {
+            //    words.add(new Acronym(rawToken, checkToken1));
+            //
+            //}
+            //else if (Acronym.isType(checkToken2)) {
+            //    words.add(new Acronym(rawToken, checkToken2));
+            //}
+            //
+            //// STOP WORD
+            //else if (StopWord.isType(checkToken1)) {
+            //    words.add(new StopWord(rawToken, checkToken1));
+            //
+            //}
+            //else if (StopWord.isType(checkToken2)) {
+            //    words.add(new StopWord(rawToken, checkToken2));
+            //}
+            //
+            //// AFFECTION WORD
+            //else if (AffectionWord.isType(checkToken1)) {
+            //    words.add(new AffectionWord(rawToken, checkToken1));
+            //
+            //}
+            //else if (AffectionWord.isType(checkToken2)) {
+            //    words.add(new AffectionWord(rawToken, checkToken2));
+            //}
+            //
+            //// unknown/other word
+            //else words.add(new Other(rawToken, checkToken2));
         }
         return words;
     }

@@ -1,5 +1,7 @@
 package SentenceLabel;
 
+import main.SentenceLabelWord;
+import main.UserDictionary.Word;
 import panel.VerticalFlowLayout2;
 import word.AbsWord;
 
@@ -23,13 +25,12 @@ public class TruePositionSentenceLblBuilderHorizontal implements SentenceLabelBu
         // based on how long it is and its successors
         int offsetPosition = 0;
         int widthSum = 0;
-        for (AbsWord word : label.getSentence().getWords()) {
+        for (SentenceLabelWord word : label.getSentence().getSentenceLabelWords()) {
             // how long is this word percentage wise,
             // based on sentence length?
             double wrdLenPerc = (double) word.getProcessedWordLength() / sentenceLength;
             
             // TODO
-
             //   Rounding errors add up, which is why some sentences are
             //   rendered shorter than they actually are (this is visible
             //   when selecting them, border is wider, always to the right!)

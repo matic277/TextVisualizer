@@ -151,7 +151,7 @@ public class LeftPanel extends JScrollPane {
             });
             
             hoveredSentence.getSentence().getWords().forEach(w -> {
-                WordLabel lbl = new WordLabel(this, sentencePanel, w, currentVisualType);
+                WordLabel lbl = new WordLabel(this, sentencePanel, w);
 //                lbl.setName("WORDLBL=> " + w);
                 lbl.setParentSentence(hoveredSentence.sentence);
                 lbl.addMouseListener(new MouseListener() {
@@ -204,25 +204,6 @@ public class LeftPanel extends JScrollPane {
         this.parent.updateUI();
     }
     
-    public void onVisualTypeChange(VisualType selectedType) {
-        currentVisualType = selectedType;
-        
-        // TODO
-        Arrays.stream(mainPanel.getComponents()).forEach(c -> {
-            JPanel sentencePanel = ((JPanel) c);
-            Arrays.stream(sentencePanel.getComponents()).forEach(lbl -> {
-                if (lbl instanceof WordLabel wrdlbl) {
-//                    System.out.println("IS => " + wrdlbl);
-                    wrdlbl.onVisualTypeChange(currentVisualType);
-                }
-            });
-        });
-    }
-    
-//    JPanel mainPanel;
-//    JPanel titlePanel;
-//
-//    Map<Pair<Integer, String>, List<Sentence>> chapters;
     public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
         this.chapters = processedChapters;
         

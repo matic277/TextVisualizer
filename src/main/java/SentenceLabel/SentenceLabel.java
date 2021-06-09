@@ -84,14 +84,6 @@ public class SentenceLabel extends JLabel {
     public static final Color ACTIVATION_MED_COLOR_HOVERED = ACTIVATION_MED_COLOR.brighter();
     public static final Color ACTIVATION_LOW_COLOR_HOVERED = ACTIVATION_LOW_COLOR.brighter();
     
-    // map: visualType  -> coloringFunction
-    private static final Map<VisualType, Consumer<SentenceLabel>> colorMap = new HashMap<>();
-    static {
-        colorMap.put(VisualType.SENTIMENT, getSentimentColorer());
-        colorMap.put(VisualType.IMAGERY, getImageryColorer());
-        colorMap.put(VisualType.ACTIVATION, getActivationColorer());
-    }
-    
     public VisualType currentVisualType;
     public ChapterType currentChapterType;
     public SentenceLabelVisualType currentLabelVisualType;
@@ -133,7 +125,6 @@ public class SentenceLabel extends JLabel {
             }
         }
         
-        colorMap.get(visualType).accept(this);
         addListener();
         
         // on selected border drawer
@@ -156,12 +147,6 @@ public class SentenceLabel extends JLabel {
         labelBuilder.rebuild(this);
     }
     
-    public void onVisualTypeChange(VisualType visualType) {
-        currentVisualType = visualType;
-        colorMap.get(visualType).accept(this);
-        this.init();
-        this.repaint();
-    }
     
     public void onSentenceLblVisualTypeChange(SentenceLabelVisualType sentenceVisualType) {
         currentLabelVisualType = sentenceVisualType;
@@ -192,62 +177,21 @@ public class SentenceLabel extends JLabel {
     
     public void onNewDictionaryImport(UserDictionary dict) {
         // switch colors
-        this.sentence.getWords().forEach(w -> {
-            Color newColor = dict.getColorForWord(w.getProcessedText()); // TODO source text or processed text or both?
-            newColor = newColor == null ? NORMAL_UNRECOGNIZED_COLOR : newColor;
-    
-            //System.out.println("new color " + w + " -> " + Utils.colorToString(newColor));
+        this.sentence.getSentenceLabelWords().forEach(w -> {
+            //Color newColor = dict.getColorForWord(w.getProcessedText()); // TODO source text or processed text or both?
+            //newColor = newColor == null ? NORMAL_UNRECOGNIZED_COLOR : newColor;
             
-            w.setNormalRenderColor(newColor);
-            w.setCurrentRenderColor(newColor);
-            w.setHoveredRenderColor(newColor.brighter());
+            //System.out.println("new color " + w + " -> " + Utils.colorToString(newColor));
+            //System.out.println("new color: " + newColor);
+            //w.setNormalRenderColor(newColor);
+            //w.setCurrentRenderColor(newColor);
+            //w.setHoveredRenderColor(newColor.brighter());
+            w.updateColors(w.getWord().color);
         });
     }
     
     public void onSizeChange() {
         labelBuilder.rebuild(this);
-    }
-    
-    private static Consumer<SentenceLabel> getSentimentColorer() {
-        return (sentLbl) -> {
-            sentLbl.CURRENT_COLOR_HIGH = SENTIMENT_HIGH_COLOR;
-            sentLbl.CURRENT_COLOR_MED =  SENTIMENT_MED_COLOR;
-            sentLbl.CURRENT_COLOR_LOW =  SENTIMENT_LOW_COLOR;
-            sentLbl.NORMAL_COLOR_HIGH =  SENTIMENT_HIGH_COLOR;
-            sentLbl.NORMAL_COLOR_MED =   SENTIMENT_MED_COLOR;
-            sentLbl.NORMAL_COLOR_LOW =   SENTIMENT_LOW_COLOR;
-            sentLbl.HOVERED_COLOR_HIGH = SENTIMENT_POSITIVE_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_MED =  SENTIMENT_NEUTRAL_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_LOW =  SENTIMENT_NEGATIVE_COLOR_HOVERED;
-        };
-    }
-    
-    private static Consumer<SentenceLabel> getActivationColorer() {
-        return (sentLbl) -> {
-            sentLbl.CURRENT_COLOR_HIGH = ACTIVATION_HIGH_COLOR;
-            sentLbl.CURRENT_COLOR_MED =  ACTIVATION_MED_COLOR;
-            sentLbl.CURRENT_COLOR_LOW =  ACTIVATION_LOW_COLOR;
-            sentLbl.NORMAL_COLOR_HIGH =  ACTIVATION_HIGH_COLOR;
-            sentLbl.NORMAL_COLOR_MED =   ACTIVATION_MED_COLOR;
-            sentLbl.NORMAL_COLOR_LOW =   ACTIVATION_LOW_COLOR;
-            sentLbl.HOVERED_COLOR_HIGH = ACTIVATION_HIGH_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_MED =  ACTIVATION_MED_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_LOW =  ACTIVATION_LOW_COLOR_HOVERED;
-        };
-    }
-    
-    private static Consumer<SentenceLabel> getImageryColorer() {
-        return (sentLbl) -> {
-            sentLbl.CURRENT_COLOR_HIGH = IMAGERY_HIGH_COLOR;
-            sentLbl.CURRENT_COLOR_MED =  IMAGERY_MED_COLOR;
-            sentLbl.CURRENT_COLOR_LOW =  IMAGERY_LOW_COLOR;
-            sentLbl.NORMAL_COLOR_HIGH =  IMAGERY_HIGH_COLOR;
-            sentLbl.NORMAL_COLOR_MED =   IMAGERY_MED_COLOR;
-            sentLbl.NORMAL_COLOR_LOW =   IMAGERY_LOW_COLOR;
-            sentLbl.HOVERED_COLOR_HIGH = IMAGERY_HIGH_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_MED =  IMAGERY_MED_COLOR_HOVERED;
-            sentLbl.HOVERED_COLOR_LOW =  IMAGERY_LOW_COLOR_HOVERED;
-        };
     }
     
     @Override
@@ -273,7 +217,7 @@ public class SentenceLabel extends JLabel {
         
         // shitty
         if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
-            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getHoveredRenderColor()));
+            sentence.getSentenceLabelWords().forEach(w -> w.setCurrentRenderColor(w.getHoveredRenderColor()));
         }
         
         this.parent.repaint();
@@ -290,7 +234,7 @@ public class SentenceLabel extends JLabel {
         
         // shitty
         if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
-            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
+            sentence.getSentenceLabelWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
         }
         
         this.parent.repaint();
@@ -311,7 +255,7 @@ public class SentenceLabel extends JLabel {
         
         // shitty
         if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
-            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
+            sentence.getSentenceLabelWords().forEach(w -> w.setCurrentRenderColor(w.getNormalRenderColor()));
         }
         
         this.repaint();
@@ -326,7 +270,7 @@ public class SentenceLabel extends JLabel {
     
         // shitty
         if (currentLabelVisualType == SentenceLabelVisualType.TRUE_POSITION) {
-            sentence.getWords().forEach(w -> w.setCurrentRenderColor(w.getHoveredRenderColor()));
+            sentence.getSentenceLabelWords().forEach(w -> w.setCurrentRenderColor(w.getHoveredRenderColor()));
         }
         
         CURRENT_UNRECOGNIZED_COLOR = HOVERED_UNRECOGNIZED_COLOR;

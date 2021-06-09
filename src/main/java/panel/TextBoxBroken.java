@@ -2,6 +2,7 @@ package panel;
 
 import SentenceLabel.SentenceLabel;
 import main.Sentence;
+import main.UserDictionary.Word;
 import main.Utils;
 import word.AbsWord;
 
@@ -51,8 +52,8 @@ public class TextBoxBroken extends JPanel {
         sentencePanel.setAlignmentX(LEFT_ALIGNMENT);
         sentencePanel.setBackground(Utils.RED);
         
-        for (AbsWord word : clickedSentence.getWords()) {
-            WordLabel lbl = new WordLabel(this.parent, sentencePanel, word, null);
+        for (Word word : clickedSentence.getWords()) {
+            WordLabel lbl = new WordLabel(this.parent, sentencePanel, word);
             sentencePanel.add(lbl);
         }
         
@@ -125,11 +126,11 @@ public class TextBoxBroken extends JPanel {
 //                @Override public void componentShown(ComponentEvent e) { }
 //                @Override public void componentHidden(ComponentEvent e) { }
 //            });
-    
+
 //            sentencePanel.setBackground(Utils.getRandomColor());
-    
-            for (AbsWord word : slbl.getSentence().getWords()) {
-                WordLabel lbl = new WordLabel(this.parent, mainPanel, word, null);
+            
+            for (Word word : slbl.getSentence().getWords()) {
+                WordLabel lbl = new WordLabel(this.parent, mainPanel, word);
                 sentencePanel.add(lbl);
             }
             mainPanel.add(sentencePanel, BorderLayout.CENTER);

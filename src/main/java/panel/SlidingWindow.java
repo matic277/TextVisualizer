@@ -23,7 +23,7 @@ public class SlidingWindow extends Rectangle {
         this.parent = parent;
         
         this.renderer = VERTICAL_RENDERER;
-        this.setBounds(30, 100, Utils.INITIAL_SLIDER_WIDTH, 90);
+        this.setBounds(1, 1, Utils.INITIAL_SLIDER_WIDTH, 90);
     }
     
     private final Renderer HORIZONTAL_RENDERER = (gr, slider) -> {
@@ -69,7 +69,7 @@ public class SlidingWindow extends Rectangle {
         if (chapterType == ChapterType.HORIZONTAL) renderer = VERTICAL_RENDERER;
         else if (chapterType == ChapterType.VERTICAL) renderer = HORIZONTAL_RENDERER;
         
-        this.setLocation(10, 10);
+        this.setLocation(1, 1);
         this.parent.repaint();
     }
     

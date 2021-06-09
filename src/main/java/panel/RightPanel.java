@@ -3,6 +3,7 @@ package panel;
 import SentenceLabel.SentenceLabel;
 import main.Pair;
 import main.Sentence;
+import main.UserDictionary.Word;
 import main.Utils;
 import main.VisualType;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -50,10 +51,10 @@ public class RightPanel extends JScrollPane {
     
     // TABLE vars
     // map: MapKey -> columnIndex (based off MapKey.order ordering)
-    private final Map<AbsMeasurableWord.MapKey, Integer> columnIndexMap = new HashMap<>(10);
-    private final String[] tableHeader = new String[AbsMeasurableWord.MapKey.values().length]; {
+    private final Map<Word.MapKey, Integer> columnIndexMap = new HashMap<>(10);
+    private final String[] tableHeader = new String[Word.MapKey.values().length]; {
         int i = 0;
-        for (AbsMeasurableWord.MapKey key : Arrays.stream(AbsMeasurableWord.MapKey.values())
+        for (Word.MapKey key : Arrays.stream(Word.MapKey.values())
                 .sorted(Comparator.comparingInt(e -> e.order)).collect(Collectors.toList())) {
             tableHeader[i++] = key.printValue;
             columnIndexMap.put(key, key.order);
@@ -155,19 +156,19 @@ public class RightPanel extends JScrollPane {
         table.setAutoCreateRowSorter(true);
         
         // custom column renderers
-        TableColumn colSent = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
-        TableColumn colImag = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.IMAGERY));
-        TableColumn colActi = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.ACTIVATION));
-        colSent.setCellRenderer(new SentimentCustomRenderer());
-        colImag.setCellRenderer(new ImageryCustomRenderer());
-        colActi.setCellRenderer(new ActivationCustomRenderer());
+        //TableColumn colSent = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS));
+        //TableColumn colImag = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.IMAGERY));
+        //TableColumn colActi = table.getColumnModel().getColumn(columnIndexMap.get(AbsWord.MapKey.ACTIVATION));
+        //colSent.setCellRenderer(new SentimentCustomRenderer());
+        //colImag.setCellRenderer(new ImageryCustomRenderer());
+        //colActi.setCellRenderer(new ActivationCustomRenderer());
         
         // sorter
-        TableRowSorter<DefaultTableModel> tabSorter = new TableRowSorter<>(tableModel);
-        tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.PLEASANTNESS), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
-        tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.ACTIVATION), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
-        tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.IMAGERY), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
-        table.setRowSorter(tabSorter);
+        //TableRowSorter<DefaultTableModel> tabSorter = new TableRowSorter<>(tableModel);
+        //tabSorter.setComparator(columnIndexMap.get(Word.MapKey.PLEASANTNESS), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
+        //tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.ACTIVATION), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
+        //tabSorter.setComparator(columnIndexMap.get(AbsWord.MapKey.IMAGERY), Comparator.comparingDouble(x -> parseStringToDouble(x.toString())));
+        //table.setRowSorter(tabSorter);
         
         statsPanel.add(new JScrollPane(table), BorderLayout.CENTER);
         
@@ -310,7 +311,7 @@ public class RightPanel extends JScrollPane {
         this.parent.updateUI();
     }
     
-    public void onWordsClick(List<AbsWord> words) {
+    public void onWordsClick(List<Word> words) {
         appendWordsToTable(words);
         
         statsPanel.revalidate();
@@ -318,11 +319,11 @@ public class RightPanel extends JScrollPane {
         statsPanel.repaint();
     }
     
-    private void appendWordsToTable(List<AbsWord> words) {
+    private void appendWordsToTable(List<Word> words) {
         int i = 0;
         String[][] tableValues = new String[words.size()][tableHeader.length];
-        for (AbsWord word : words) {
-            for (Map.Entry<AbsMeasurableWord.MapKey, String> entry : word.getStatsMap().entrySet()) {
+        for (Word word : words) {
+            for (Map.Entry<Word.MapKey, String> entry : word.getStatsMap().entrySet()) {
                 int columnIndex = columnIndexMap.get(entry.getKey());
                 tableValues[i][columnIndex] =  NumberUtils.isNumber(entry.getValue()) ?
                         AbsMeasurableWord.format.format(Double.parseDouble(entry.getValue())) : entry.getValue();
@@ -330,25 +331,6 @@ public class RightPanel extends JScrollPane {
             tableModel.addRow(tableValues[i]);
             i++;
         }
-    }
-    
-    public void onVisualTypeChange(VisualType visualType) {
-        currentVisualType = visualType;
-        
-        // TODO
-        // This is kind of disgusting (casting)
-        // Could do: custom classes that extend JPanels
-        // and keep track of its components, which could be
-        // retrieved by a simple class method.
-        // That way, there is no need for JPanel.getComponents()
-        // and casting.
-        // Same applies to other Panels.onVisualTypeChange, where i
-        // do the same shit as here.
-        Arrays.stream(sentencesPanel.getComponents()).forEach(sc -> {
-            if (sc instanceof SentenceRowPanel srp) {
-                srp.onVisualTypeChange(visualType);
-            }
-        });
     }
     
     public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {

@@ -4,8 +4,8 @@ import SentenceLabel.SentenceLabelBuilder;
 
 public enum SentenceLabelVisualType {
     
-    DEFAULT(0, "Default"),
-    TRUE_POSITION(1, "True position")
+    DEFAULT(1, "Default"),
+    TRUE_POSITION(0, "True position")
     ;
     
     int id; String displayVal;

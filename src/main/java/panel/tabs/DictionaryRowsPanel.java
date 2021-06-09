@@ -2,6 +2,7 @@ package panel.tabs;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import main.UserDictionary.UserDictionary;
+import main.UserDictionary.Word;
 import main.Utils;
 import panel.VerticalFlowLayout;
 import panel.WordLabel;
@@ -43,20 +44,20 @@ public class DictionaryRowsPanel extends JPanel {
             groupPanel.setBorder(new Utils.RoundBorder( wordGroup.getDefaultColor(), null, new BasicStroke(2), arc));
     
             
-            JPanel groupTitle = getWordPanel(groupName, wordGroup.getDefaultColor());
-            groupTitle.setBorder(new FlatRoundBorder());
+            JLabel groupNameLbl = new JLabel(groupName);
+            groupNameLbl.setBorder(new FlatRoundBorder());
             
-            groupPanel.add(groupTitle);
+            groupPanel.add(groupNameLbl);
             
             // first list words with custom colors
             wordGroup.getWordsWithSpecificColors().forEach((word, color) -> {
-                JPanel wordPanel = getWordPanel(word, color);
+                JPanel wordPanel = getWordPanel(word);
                 groupPanel.add(wordPanel);
             });
             
             // list the rest of the words
             wordGroup.getWords().forEach(word -> {
-                JPanel wordPanel = getWordPanel(word, wordGroup.getDefaultColor());
+                JPanel wordPanel = getWordPanel(word);
                 groupPanel.add(wordPanel);
             });
             
@@ -64,16 +65,16 @@ public class DictionaryRowsPanel extends JPanel {
         });
     }
     
-    private JPanel getWordPanel(String w, Color c) {
+    private JPanel getWordPanel(Word w) {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         
-        JLabel wordLbl = new WordLabel(w, null);
+        JLabel wordLbl = new JLabel(w.getSourceText()); // TODO
         
         // TODO add color circle
-        JLabel colorInfo = new JLabel(Utils.colorToString(c));
+        JLabel colorInfo = new JLabel(Utils.colorToString(w.color));
         colorInfo.setOpaque(true);
-        colorInfo.setBackground(c);
+        colorInfo.setBackground(w.color);
     
         panel.add(wordLbl);
         panel.add(colorInfo);

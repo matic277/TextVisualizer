@@ -38,11 +38,6 @@ public class MainPanel extends JSplitPane {
         return this.parent.getChapters();
     }
     
-    public void onVisualTypeChange(VisualType selectedItem) {
-        topPanel.onVisualTypeChange(selectedItem);
-        bottomPanel.onVisualTypeChange(selectedItem);
-    }
-    
     public void onNewTextImport(Map<Pair<Integer, String>, List<Sentence>> processedChapters) {
         topPanel.onNewTextImport(processedChapters);
         bottomPanel.onNewTextImport(processedChapters);
