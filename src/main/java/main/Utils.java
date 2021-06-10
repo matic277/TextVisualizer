@@ -26,7 +26,7 @@ public class Utils {
     public static final Range<Integer> SENTENCE_HEIGHT_RANGE = Range.between(1, 300);
     public static final Dimension SENTENCE_SIZE = new Dimension(5, 50);
     
-    Color c = new Color(10, 226, 39, 133);
+    Color c = new Color(187, 187, 187, 133);
     
     public static final Dimension MENU_BUTTON_SIZE = new Dimension(40, 40);
     public static final Dimension MENU_BUTTON_SIZE_WIDE = new Dimension(100, 40);

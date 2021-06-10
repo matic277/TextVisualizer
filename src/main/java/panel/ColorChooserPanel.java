@@ -1,49 +1,63 @@
-package panel.tabs;
+package panel;
 
 import com.formdev.flatlaf.ui.FlatRoundBorder;
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import panel.VerticalFlowLayout;
+import panel.tabs.ColorTab;
 
+import javax.naming.Context;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
-public class ColorTab extends JPanel {
+public class ColorChooserPanel extends JPanel {
     
-    TabsPanel parent;
+    Dimension size;
     
-    public ColorTab(TabsPanel parent) {
-        this.parent = parent;
-        
-        //this.add(new JLabel("Unsupported"));
-        this.setLayout(new VerticalFlowLayout());
-        
-        initColorPanel();
-        
-        this.setMinimumSize(new Dimension(0,0));
-        
-        this.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0,1,1,0, new Color(0,0,0,0)),
-                BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray)));
+    ColorRef colorRef;
+    
+    int borderArc;
+    
+    // containerSize = new Dimension(370, 260);
+    public ColorChooserPanel(Color initialClr, Dimension size) {
+        this.size = size;
+        this.setPreferredSize(size);
+        //this.setMaximumSize(size);
+        this.setMinimumSize(size);
+    
+       this.setBorder(new FlatRoundBorder());
+       this.setLayout(new FlowLayout(FlowLayout.CENTER));
+       
+       clrContext = new ColorChooserContext();
+       clrContext.rainbowSelectedClr = initialClr;
     }
     
-    ColorChooserContext clrContext = new ColorChooserContext();
-    private static class ColorChooserContext {
-        final Dimension gradPanelSize = new Dimension(200, 200);
+    public void setColorChangeReference(ColorRef clrRef) {
+        this.colorRef = clrRef;
+    }
     
+    ColorChooserContext clrContext;
+    
+
+    
+    private class ColorChooserContext {
+        final Dimension gradPanelSize = new Dimension((int)(size.getHeight()*0.68), (int)(size.getHeight()*0.68));
+        public Dimension selectedClrCircle = new Dimension((int)(size.getWidth()*0.12), (int)(size.getWidth()*0.12));
+        public Dimension rainbowPanelSize = new Dimension(gradPanelSize.width, (int)(size.getHeight()*0.12));
+        
         // defaults at the start
         Color rainbowSelectedClr = Color.PINK;
         Color gradientSelectecClr = new Color(126, 106, 106);
         
         BufferedImage gradientImg = new BufferedImage(gradPanelSize.width, gradPanelSize.height, BufferedImage.TYPE_INT_RGB);
-        BufferedImage rainbowImg = new BufferedImage(gradPanelSize.width, 30, BufferedImage.TYPE_INT_RGB);
+        BufferedImage rainbowImg = new BufferedImage(rainbowPanelSize.width, rainbowPanelSize.height, BufferedImage.TYPE_INT_RGB);
         
         final Point mouseGradient = new Point(100, 100);
         final Point mouseRainbow = new Point(0, 0);
-    
+        
         // overwrite default border of FlatLaf, to decrease arc
         final FlatRoundBorder rgbValuesBorder = new FlatRoundBorder() {
             protected final int arc = 10;
@@ -55,49 +69,83 @@ public class ColorTab extends JPanel {
         };
     }
     
+    public void setBackground2(Color c) {
+        this.bg = c;
+    }
+    public void setBorderArc(int arc) {
+        this.arc = arc;
+    }
+    Color bg;
+    int arc;
     
-    private void initColorPanel() {
-        final Dimension containerSize = new Dimension(370, 260);
-        JPanel mainColorContainer = new JPanel();
-        mainColorContainer.setBorder(new FlatRoundBorder());
-        mainColorContainer.setPreferredSize(containerSize);
-        //mainColorContainer.setMaximumSize(containerSize);
-        //mainColorContainer.setMinimumSize(containerSize);
-        mainColorContainer.setLayout(new FlowLayout(FlowLayout.CENTER));
+    // needed to get rid of corners of panel, when it has a round border, because of highlighting on mouse hover
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D gr = (Graphics2D) g;
+        gr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
+        gr.setColor(getBackground());
+        gr.fillRect(0, 0 , getWidth(), getHeight());
         
+        gr.setPaint(bg);
+        gr.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, arc, arc);
+    }
+    
+    public void initColorPanel() {
         // RGB CONTAINER
-        final Dimension rgbSize = new Dimension(36, 25);
+        final Dimension rgbSize = new Dimension(36, 23);
+        
+        MouseListener parentHighlighter = new MouseListener() {
+            @Override public void mouseEntered(MouseEvent e) {
+                // force generate (simulate) a a call to parent
+                // so that it stays highlighted
+                colorRef.parent.getListeners(MouseListener.class)[0]
+                        .mouseEntered(new MouseEvent(
+                                ColorChooserPanel.this,0,0,0, 0, 0,
+                                0,0, 0, false, 0));
+            }
+            @Override public void mouseClicked(MouseEvent e) { }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+            @Override public void mouseExited(MouseEvent e) { }
+        };
+        
+        
         JLabel txtR = new JLabel("R");
         JTextField clrR = new JTextField("0");
         clrR.setPreferredSize(rgbSize);
         clrR.setBorder(clrContext.rgbValuesBorder);
+        clrR.addMouseListener(parentHighlighter);
         JLabel txtG = new JLabel("G");
         JTextField clrG = new JTextField("0");
         clrG.setPreferredSize(rgbSize);
         clrG.setBorder(clrContext.rgbValuesBorder);
+        clrG.addMouseListener(parentHighlighter);
         JLabel txtB = new JLabel("B");
         JTextField clrB = new JTextField("0");
         clrB.setPreferredSize(rgbSize);
         clrB.setBorder(clrContext.rgbValuesBorder);
+        clrB.addMouseListener(parentHighlighter);
         
         JPanel containerR = new JPanel();
-        containerR.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
+        containerR.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         containerR.add(txtR);
         containerR.add(clrR);
         
         JPanel containerG = new JPanel();
-        containerG.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
+        containerG.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         containerG.add(txtG);
         containerG.add(clrG);
         
         JPanel containerB = new JPanel();
-        containerB.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
+        containerB.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         containerB.add(txtB);
         containerB.add(clrB);
         
         JPanel rgbContainer = new JPanel();
-        rgbContainer.setLayout(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.CENTER, 0, 10));
+        rgbContainer.setLayout(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.CENTER, 0, 0));
         //rgbContainer.setBorder(new FlatRoundBorder());
         rgbContainer.add(containerR);
         rgbContainer.add(containerG);
@@ -118,13 +166,23 @@ public class ColorTab extends JPanel {
                 gr.setColor(Color.lightGray);
                 gr.drawOval(0, 0, getWidth()-1, getHeight()-1);
             }};
-        selectedColorPanel.setPreferredSize(new Dimension(75, 75));
+        selectedColorPanel.setPreferredSize(clrContext.selectedClrCircle);
         
         JPanel selectedClrAndRGBcontainer = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.CENTER, VerticalFlowLayout.TOP));
         selectedClrAndRGBcontainer.add(rgbContainer);
         selectedClrAndRGBcontainer.add(selectedColorPanel);
         //selectedClrAndRGBcontainer.setBorder(brd);
-        
+    
+        JButton applyBtn = new JButton("Apply");
+        applyBtn.setFont(new Font(UIManager.getFont("Button.font").getFontName(), Font.PLAIN, 10));
+        applyBtn.setPreferredSize(new Dimension(45, 23));
+        applyBtn.setMargin(new Insets(0, 0, 0, 0));
+        applyBtn.addMouseListener(parentHighlighter);
+        applyBtn.addActionListener(a -> {
+            System.out.println("Applying. TODO.");
+        });
+    
+        selectedClrAndRGBcontainer.add(applyBtn);
         
         
         // MAIN GRADIENT PANEL
@@ -171,6 +229,8 @@ public class ColorTab extends JPanel {
                 
                 // extract color
                 clrContext.gradientSelectecClr = new Color(clrContext.gradientImg.getRGB(e.getPoint().x, e.getPoint().y));
+                colorRef.circleColor = clrContext.gradientSelectecClr;
+                colorRef.panelToUpdate.repaint();
                 
                 clrR.setText(clrContext.gradientSelectecClr.getRed()+"");
                 clrG.setText(clrContext.gradientSelectecClr.getGreen()+"");
@@ -180,12 +240,13 @@ public class ColorTab extends JPanel {
                 gradientPanel.repaint();
             }
         });
+        gradientPanel.addMouseListener(parentHighlighter);
         gradientPanel.setPreferredSize(clrContext.gradPanelSize);
         
         
         
         // RAINBOW PANEL
-        Dimension rainbowPanelSize = new Dimension(new Dimension(clrContext.gradPanelSize.width, 30));
+        Dimension rainbowPanelSize = new Dimension(clrContext.rainbowPanelSize);
         JPanel rainbowPanel = new JPanel() {
             @Override
             public void paintComponent(Graphics g) {
@@ -224,7 +285,7 @@ public class ColorTab extends JPanel {
             @Override public void mouseDragged(MouseEvent e) {
                 if (!rainbowPanel.contains(e.getPoint())) return;
                 if (e.getPoint().getX() >= rainbowPanel.getWidth()-7) return; // subtract slider width
-    
+                
                 clrContext.mouseRainbow.setLocation(e.getPoint());
                 // extract color
                 clrContext.rainbowSelectedClr = new Color(clrContext.rainbowImg.getRGB(clrContext.mouseRainbow.x, clrContext.mouseRainbow.y));
@@ -242,19 +303,18 @@ public class ColorTab extends JPanel {
                                 0,0, 0, false, 0));
             }
         });
+        rainbowPanel.addMouseListener(parentHighlighter);
         rainbowPanel.setPreferredSize(rainbowPanelSize);
         
         
         JPanel gradientsContainer = new JPanel(new VerticalFlowLayout());
         gradientsContainer.add(gradientPanel);
         gradientsContainer.add(rainbowPanel);
-    
-        //selectedClrAndRGBcontainer.setMinimumSize(new Dimension(100, 400));
-        selectedClrAndRGBcontainer.setPreferredSize(new Dimension(100, 250));
-        mainColorContainer.add(gradientsContainer);
-        mainColorContainer.add(selectedClrAndRGBcontainer);
         
-        this.add(mainColorContainer);
+        //selectedClrAndRGBcontainer.setMinimumSize(new Dimension(100, 400));
+        //selectedClrAndRGBcontainer.setPreferredSize(new Dimension(100, 250));
+        this.add(gradientsContainer);
+        this.add(selectedClrAndRGBcontainer);
     }
     
     // thanks to https://stackoverflow.com/questions/7603400/how-to-make-a-rounded-corner-image-in-java
@@ -280,4 +340,3 @@ public class ColorTab extends JPanel {
         return output;
     }
 }
-

@@ -30,6 +30,7 @@ public class UpdateColorsSubtab extends JScrollPane {
         //initDictRowsPanel();
         
         this.setViewportView(mainPanel);
+        this.getVerticalScrollBar().setUnitIncrement(16);
     }
     
     private void initDictRowsPanel(UserDictionary selectedDict) {
