@@ -37,10 +37,11 @@ public class UpdateColorsSubtab extends JScrollPane {
         
         rowsPanel = new DictionaryRowsPanel(mainPanel, selectedDict);
         mainPanel.add(rowsPanel);
+        mainPanel.repaint();
     }
     
     private void initDictDropdownPanel() {
-        dropdownInfo = new JLabel("Select dictionary: ");
+        dropdownInfo = new JLabel("  Select dictionary: ");
         
         dictDropdown = new JComboBox<>();
         dictDropdown.addActionListener(a -> onNewDictionarySelected((String)dictDropdown.getSelectedItem()));
@@ -48,7 +49,7 @@ public class UpdateColorsSubtab extends JScrollPane {
         dictDropdownPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         dictDropdownPanel.add(dropdownInfo);
         dictDropdownPanel.add(dictDropdown);
-    
+        
         dictDropdownPanel.setBorder(new FlatRoundBorder());
         
         mainPanel.add(dictDropdownPanel);

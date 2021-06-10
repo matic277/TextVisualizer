@@ -1,5 +1,6 @@
 package main.UserDictionary;
 
+import dictionary.UserDictionaryCollection;
 import main.Utils;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public class UserDictionary {
     }
     
     public boolean addGroup(WordGroup group) {
-        if (groupMap.containsKey(group.name)) return false;
+        if (groupMap.containsKey(group.name.trim().toLowerCase())) return false;
         return groupMap.put(group.name, group) != null;
     }
     
@@ -39,7 +40,21 @@ public class UserDictionary {
         return null;
     }
     
-    public void setName(String name) { this.name = name; }
+    public boolean containsWord(Word w) {
+        boolean contains = false;
+        for (WordGroup wgroup : groupMap.values()) {
+            contains |= wgroup.containsWord(w);
+        }
+        return contains;
+    }
+    
+    public void setName(String name) {
+        UserDictionaryCollection dictColl = UserDictionaryCollection.get();
+        if (dictColl.getDictionaryNames().contains(name.trim().toLowerCase()))
+            throw new RuntimeException("User dictionary with name \""+name+"\" already exists. Can't have 2 dictionaries with the same name.");
+        this.name = name;
+    }
+    
     public String getName() { return this.name; }
     
     @Override

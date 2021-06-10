@@ -40,7 +40,7 @@ public class DictionaryReader {
         
         boolean firstLine = true;
         boolean secondLine = true;
-    
+        
         WordGroup currentGroup = null;
         
         for (String line : lines) {

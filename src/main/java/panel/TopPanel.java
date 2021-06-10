@@ -37,8 +37,7 @@ public class TopPanel extends JPanel {
         JPanel sentenceSizeType;
             JComboBox<SentenceSizeType> sentenceSizeTypeDropdown;
     
-    
-    
+            
     Map<Pair<Integer, String>, List<Sentence>> chapters;
     
     public TopPanel(MainPanel parent) {

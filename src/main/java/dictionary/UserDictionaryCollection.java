@@ -1,6 +1,7 @@
 package dictionary;
 
 import main.UserDictionary.UserDictionary;
+import main.UserDictionary.Word;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +32,12 @@ public class UserDictionaryCollection {
         return dictMap.keySet();
     }
     
-    //public void getWord(String word) {
-    //    for (Map.Entry<String, UserDictionary> entry : dictMap.entrySet()) {
-    //        entry.getValue().
-    //    }
-    //}
+    public boolean containsWord(Word w) {
+        boolean contains = false;
+        for (UserDictionary dict : dictMap.values()) {
+            contains |= dict.containsWord(w);
+        }
+        return contains;
+    }
+    
 }

@@ -1,5 +1,6 @@
 package main.UserDictionary;
 
+import dictionary.UserDictionaryCollection;
 import main.Utils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -40,6 +41,9 @@ public class WordGroup {
         Word wrd = Word.of(word, word, clr);
         if (words.contains(wrd) || specificColors.containsKey(wrd)) throw new RuntimeException("Trying to add word " + word + ", to group \"" + name + "\", but it already exists.");
         
+        if (UserDictionaryCollection.get().containsWord(wrd))
+            throw new RuntimeException("Word \""+wrd+"\" already exists in some dictionary. Dictionaries should have distinct entries.");
+        
         return this.specificColors.put(wrd, clr) != null;
     }
     
@@ -59,8 +63,12 @@ public class WordGroup {
         return this.words.add(wrd);
     }
     
+    public boolean containsWord(Word w) {
+        return specificColors.keySet().contains(w) || words.contains(w);
+    }
+    
     public WordGroup setGroupName(String n) {
-        this.name = n;
+        this.name = n.trim().toLowerCase();
         return this;
     }
     
