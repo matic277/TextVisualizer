@@ -35,30 +35,25 @@ public class ColorChooserPanel extends JPanel {
        clrContext.rainbowSelectedClr = initialClr;
     }
     
-    public void setColorChangeReference(ColorRef clrRef) {
-        this.colorRef = clrRef;
-    }
-    
     ColorChooserContext clrContext;
     
-
-    
     private class ColorChooserContext {
+    
         final Dimension gradPanelSize = new Dimension((int)(size.getHeight()*0.68), (int)(size.getHeight()*0.68));
         public Dimension selectedClrCircle = new Dimension((int)(size.getWidth()*0.12), (int)(size.getWidth()*0.12));
         public Dimension rainbowPanelSize = new Dimension(gradPanelSize.width, (int)(size.getHeight()*0.12));
-        
         // defaults at the start
+    
         Color rainbowSelectedClr = Color.PINK;
         Color gradientSelectecClr = new Color(126, 106, 106);
-        
         BufferedImage gradientImg = new BufferedImage(gradPanelSize.width, gradPanelSize.height, BufferedImage.TYPE_INT_RGB);
+    
         BufferedImage rainbowImg = new BufferedImage(rainbowPanelSize.width, rainbowPanelSize.height, BufferedImage.TYPE_INT_RGB);
-        
         final Point mouseGradient = new Point(100, 100);
+    
         final Point mouseRainbow = new Point(0, 0);
-        
         // overwrite default border of FlatLaf, to decrease arc
+    
         final FlatRoundBorder rgbValuesBorder = new FlatRoundBorder() {
             protected final int arc = 10;
             protected int getArc(Component c) {
@@ -68,17 +63,17 @@ public class ColorChooserPanel extends JPanel {
             }
         };
     }
-    
     public void setBackground2(Color c) {
         this.bg = c;
     }
+    
     public void setBorderArc(int arc) {
         this.arc = arc;
     }
     Color bg;
     int arc;
-    
     // needed to get rid of corners of panel, when it has a round border, because of highlighting on mouse hover
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -92,7 +87,6 @@ public class ColorChooserPanel extends JPanel {
         gr.setPaint(bg);
         gr.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, arc, arc);
     }
-    
     public void initColorPanel() {
         // RGB CONTAINER
         final Dimension rgbSize = new Dimension(36, 23);
@@ -178,10 +172,8 @@ public class ColorChooserPanel extends JPanel {
         applyBtn.setPreferredSize(new Dimension(45, 23));
         applyBtn.setMargin(new Insets(0, 0, 0, 0));
         applyBtn.addMouseListener(parentHighlighter);
-        applyBtn.addActionListener(a -> {
-            System.out.println("Applying. TODO.");
-        });
-    
+        applyBtn.addActionListener(a -> colorRef.onApplyButtonPress(clrContext.gradientSelectecClr)); // i don't think passing an argument is necessary, colors are already updated throu the colorcontextRef...
+        
         selectedClrAndRGBcontainer.add(applyBtn);
         
         
@@ -315,9 +307,30 @@ public class ColorChooserPanel extends JPanel {
         //selectedClrAndRGBcontainer.setPreferredSize(new Dimension(100, 250));
         this.add(gradientsContainer);
         this.add(selectedClrAndRGBcontainer);
+        
+        this.addMouseListener(new MouseListener() {
+            @Override public void mouseEntered(MouseEvent e) {
+                // force generate (simulate) a a call to parent
+                // so that it stays highlighted
+                
+                // this is also needed due to strange click behaviour
+                // (parent panel will detect click in THIS panel as a click
+                // on parent panel! - but when THIS gets hovered over, the
+                // parents onExit listener methods gets triggered - very funny)
+                colorRef.parent.getListeners(MouseListener.class)[0]
+                        .mouseEntered(new MouseEvent(
+                                ColorChooserPanel.this,0,0,0, 0, 0,
+                                0,0, 0, false, 0));
+            }
+            @Override public void mouseClicked(MouseEvent e) { }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseExited(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+        });
     }
     
     // thanks to https://stackoverflow.com/questions/7603400/how-to-make-a-rounded-corner-image-in-java
+    
     public static BufferedImage makeRoundedCorner(BufferedImage image, int cornerRadius) {
         int w = image.getWidth();
         int h = image.getHeight();
@@ -339,4 +352,6 @@ public class ColorChooserPanel extends JPanel {
         g2.dispose();
         return output;
     }
+    
+    public void setColorChangeReference(ColorRef clrRef) { this.colorRef = clrRef; }
 }

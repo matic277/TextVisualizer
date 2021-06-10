@@ -26,6 +26,8 @@ public class DictionaryImportAndEditSubtab extends JPanel {
     //            JTextArea dictionaryText; // CENTER
     
     JTextArea textArea;
+    JButton importBtn;
+    JButton updateBtn;
     
     public DictionaryImportAndEditSubtab(DictionaryTab parent) {
         this.parent = parent;
@@ -61,7 +63,7 @@ public class DictionaryImportAndEditSubtab extends JPanel {
         dictionaryInput.addActionListener(getImportListener(dictionaryInput, importInfo));
         // put the same listener to btn and field, so enter press and btn
         // press behaves the same
-        JButton importBtn = new JButton("Import");
+        importBtn = new JButton("Import");
         importBtn.addActionListener(a -> {
             updateInfo.setVisible(false);
             getImportListener(dictionaryInput, importInfo).actionPerformed(null);
@@ -93,7 +95,7 @@ public class DictionaryImportAndEditSubtab extends JPanel {
         //textArea.setWrapStyleWord(true);
         //textArea.setRows(5);
         
-        JButton updateBtn = new JButton("Apply update");
+        updateBtn = new JButton("Apply update");
         updateBtn.addActionListener(a -> {
             importInfo.setVisible(false);
             applyUpdate(updateInfo);
@@ -149,13 +151,16 @@ public class DictionaryImportAndEditSubtab extends JPanel {
     // Reading from JTextField
     private void applyUpdate(JLabel info) {
         CompletableFuture.runAsync(() ->{
+            importBtn.setEnabled(false);
+            updateBtn.setEnabled(false);
+            
             info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 10));
             info.setForeground(Utils.GREEN);
             info.setText(" Reading dictionary... ");
             info.setVisible(true);
             info.repaint();
             
-            java.util.List<String> lines = Arrays.stream(textArea.getText().split("\n")).collect(Collectors.toList());
+            List<String> lines = Arrays.stream(textArea.getText().split("\n")).collect(Collectors.toList());
             onNewDictionaryImport(info, lines);
         });
     }
@@ -175,6 +180,10 @@ public class DictionaryImportAndEditSubtab extends JPanel {
             info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 10));
             info.setForeground(Utils.RED);
             info.setText(e.getLocalizedMessage());
+    
+            importBtn.setEnabled(true);
+            updateBtn.setEnabled(true);
+            
             info.repaint();
             return;
         }
@@ -187,28 +196,41 @@ public class DictionaryImportAndEditSubtab extends JPanel {
         info.setVisible(false);
         info.setBorder(null);
         info.setText("");
+    
+        importBtn.setEnabled(true);
+        updateBtn.setEnabled(true);
     }
     
     // Reading from file
     private ActionListener getImportListener(JTextField dictionaryInput, JLabel info) {
         return a -> {
             CompletableFuture.runAsync(() -> {
-                System.out.println("Input: " + dictionaryInput.getText());
-                info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 10));
-                info.setForeground(Utils.GREEN);
-                info.setText(" Reading dictionary... ");
-                info.setVisible(true);
-                
-                DictionaryReader reader = new DictionaryReader(dictionaryInput.getText());
-                reader.readLines();
-                
-                textArea.setText("");
-                reader.fileLines.forEach(line -> {
-                    textArea.append(line);
-                    textArea.append("\n");
-                });
-                
-                onNewDictionaryImport(info, reader.getLines());
+                try {
+                    importBtn.setEnabled(false);
+                    updateBtn.setEnabled(false);
+                    
+                    System.out.println("Input: " + dictionaryInput.getText());
+                    info.setBorder(new Utils.RoundBorder(Utils.GREEN, null, new BasicStroke(2), 10));
+                    info.setForeground(Utils.GREEN);
+                    info.setText(" Reading dictionary... ");
+                    info.setVisible(true);
+                    
+                    DictionaryReader reader = new DictionaryReader(dictionaryInput.getText());
+                    reader.readLines();
+                    
+                    textArea.setText("");
+                    reader.fileLines.forEach(line -> {
+                        textArea.append(line);
+                        textArea.append("\n");
+                    });
+                    
+                    onNewDictionaryImport(info, reader.getLines());
+                } catch (Exception e) {
+                    info.setBorder(new Utils.RoundBorder(Utils.RED, null, new BasicStroke(2), 10));
+                    info.setForeground(Utils.RED);
+                    info.setText(" " + e.getLocalizedMessage() + " ");
+                    info.setVisible(true);
+                }
             });
         };
     }

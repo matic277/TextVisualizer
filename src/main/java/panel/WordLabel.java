@@ -24,7 +24,7 @@ public class WordLabel extends JLabel {
         this.containerParent = containerParent;
         this.word = word;
         
-        CURRENT_COLOR = word.color;
+        CURRENT_COLOR = word.getColor();
         HOVERED_COLOR = CURRENT_COLOR.brighter();
         
         this.setOpaque(true);
@@ -38,7 +38,7 @@ public class WordLabel extends JLabel {
         this.setFont(Utils.getFont(14));
         this.setOpaque(true);
         
-        CURRENT_COLOR = word.color;
+        CURRENT_COLOR = word.getColor();
         HOVERED_COLOR = CURRENT_COLOR.brighter();
         
         this.setBackground(CURRENT_COLOR);

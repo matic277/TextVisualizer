@@ -359,28 +359,28 @@ public class RightPanel extends JScrollPane {
             }
             return c;
         }}
-    static class ActivationCustomRenderer extends DefaultTableCellRenderer {
-        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (value instanceof String s) {
-                double wordValue = parseStringToDouble(s);
-                setForeground(AbsMeasurableWord.isHighActivation(wordValue) ?
-                        SentenceLabel.ACTIVATION_HIGH_COLOR.darker() : AbsMeasurableWord.isMediumActivation(wordValue) ?
-                        SentenceLabel.ACTIVATION_MED_COLOR.darker() : SentenceLabel.ACTIVATION_LOW_COLOR.darker());
-            }
-            return c;
-        }}
-    static class ImageryCustomRenderer extends DefaultTableCellRenderer {
-        @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (value instanceof String s) {
-                double wordValue = parseStringToDouble(s);
-                setForeground(AbsMeasurableWord.isHighImagery(wordValue) ?
-                        SentenceLabel.IMAGERY_HIGH_COLOR.darker() : AbsMeasurableWord.isMediumActivation(wordValue) ?
-                        SentenceLabel.IMAGERY_MED_COLOR.darker() : SentenceLabel.IMAGERY_LOW_COLOR.darker());
-            }
-            return c;
-        }}
+    //static class ActivationCustomRenderer extends DefaultTableCellRenderer {
+    //    @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    //        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    //        if (value instanceof String s) {
+    //            double wordValue = parseStringToDouble(s);
+    //            setForeground(AbsMeasurableWord.isHighActivation(wordValue) ?
+    //                    SentenceLabel.ACTIVATION_HIGH_COLOR.darker() : AbsMeasurableWord.isMediumActivation(wordValue) ?
+    //                    SentenceLabel.ACTIVATION_MED_COLOR.darker() : SentenceLabel.ACTIVATION_LOW_COLOR.darker());
+    //        }
+    //        return c;
+    //    }}
+    //static class ImageryCustomRenderer extends DefaultTableCellRenderer {
+    //    @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    //        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    //        if (value instanceof String s) {
+    //            double wordValue = parseStringToDouble(s);
+    //            setForeground(AbsMeasurableWord.isHighImagery(wordValue) ?
+    //                    SentenceLabel.IMAGERY_HIGH_COLOR.darker() : AbsMeasurableWord.isMediumActivation(wordValue) ?
+    //                    SentenceLabel.IMAGERY_MED_COLOR.darker() : SentenceLabel.IMAGERY_LOW_COLOR.darker());
+    //        }
+    //        return c;
+    //    }}
     
     // What a fucking mess
     // MeasAbsWord.DecimalFormat formats negative words with strange "-" sign,

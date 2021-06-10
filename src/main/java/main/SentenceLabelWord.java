@@ -1,19 +1,21 @@
 package main;
 
 import SentenceLabel.SentenceLabel;
+import main.UserDictionary.ColorChangeObserver;
 import main.UserDictionary.Word;
 
 import java.awt.*;
 
-public class SentenceLabelWord {
+public class SentenceLabelWord implements ColorChangeObserver {
     
     Word word;
     
     public SentenceLabelWord(Word word) {
         this.word = word;
-        this.currentColor = word.color;
-        this.normalColor = word.color;
-        this.hoveredColor = word.color.brighter();
+        word.addObserver(this);
+        this.currentColor = word.getColor();
+        this.normalColor = word.getColor();
+        this.hoveredColor = word.getColor().brighter();
     }
     
     // position in SentenceLabel
@@ -43,9 +45,17 @@ public class SentenceLabelWord {
         hoveredColor = newColor.brighter();
     }
     
+    @Override
+    public void onColorChange() {
+        currentColor = word.getColor();
+        normalColor = word.getColor();
+        hoveredColor = word.getColor().brighter();
+    }
+    
     public String getProcessedText() { return this.word.getProcessedText(); }
     
     public int getProcessedWordLength() { return this.word.getProcessedWordLength(); }
     
     public Word getWord() { return this.word; }
+    
 }

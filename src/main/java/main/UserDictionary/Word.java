@@ -5,11 +5,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import word.AbsWord;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Word {
+public class Word implements ColorChangeObservable {
     
     // SINGLETONS
     private final static Map<String, Word> singletonMap = new HashMap<>(30_000);
@@ -17,6 +18,7 @@ public class Word {
     public static Word of(String source, String clean, Color clr) {
         Word w =  singletonMap.computeIfAbsent(clean, k -> new Word(source, clean, clr));
         w.color = clr;
+        w.notifyColorChange(); // hmm ?
         return w;
     }
     
@@ -24,8 +26,10 @@ public class Word {
     
     public String sourceText;
     public String processedText;
-    public Color color;
+    private Color color;
     private static final Color UNRECOGNIZED_WORD_COLOR = Utils.GRAY2;
+    
+    ArrayList<ColorChangeObserver> observers;
     
     Map<MapKey, String> statsMap;
     
@@ -53,7 +57,8 @@ public class Word {
         this.sourceText = source;
         this.processedText = clean;
         this.color = clr;
-    
+        
+        this.observers = new ArrayList<>(10);
         this.statsMap = new HashMap<>(10);
         updateKeyMap();
     }
@@ -62,10 +67,16 @@ public class Word {
         this.sourceText = source;
         this.processedText = clean;
         this.color = UNRECOGNIZED_WORD_COLOR;
-    
+        
+        this.observers = new ArrayList<>(10);
         this.statsMap = new HashMap<>(10);
         updateKeyMap();
     }
+    
+    @Override public void addObserver(ColorChangeObserver observer) { this.observers.add(observer); }
+    @Override public void notifyColorChange() { this.observers.forEach(ColorChangeObserver::onColorChange); }
+    
+    public void setNewColor(Color c) { this.color = c; notifyColorChange(); }
     
     public int getProcessedWordLength() { return this.processedText.length(); }
     
@@ -75,6 +86,7 @@ public class Word {
     
     public Map<MapKey, String> getStatsMap() { return this.statsMap; }
     
+    public Color getColor() { return this.color; }
     
     @Override
     public int hashCode() {

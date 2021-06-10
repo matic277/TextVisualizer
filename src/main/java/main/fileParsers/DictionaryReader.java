@@ -28,7 +28,7 @@ public class DictionaryReader {
     
     public void readLines() {
         try { fileLines = Files.readAllLines(Paths.get(file)); }
-        catch (IOException e) { System.out.println("Cannot read file specified: \"" + file+ "\"."); e.printStackTrace(); }
+        catch (IOException e) { e.printStackTrace(); throw new RuntimeException("Cannot read specified file: \"" + file+ "\"."); }
     }
     
     public List<String> getLines() {

@@ -47,5 +47,5 @@ public class DictionaryTab extends JTabbedPane {
         //        BorderFactory.createMatteBorder(0,1,1,1, Color.lightGray)));
     }
     
-    
+    public TabsPanel getTabsPanel() { return this.parent; }
 }

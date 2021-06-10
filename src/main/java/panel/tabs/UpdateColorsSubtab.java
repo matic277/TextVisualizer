@@ -36,7 +36,7 @@ public class UpdateColorsSubtab extends JScrollPane {
     private void initDictRowsPanel(UserDictionary selectedDict) {
         if (rowsPanel != null) mainPanel.remove(rowsPanel);
         
-        rowsPanel = new DictionaryRowsPanel(mainPanel, selectedDict);
+        rowsPanel = new DictionaryRowsPanel(mainPanel, selectedDict, this);
         mainPanel.add(rowsPanel);
         mainPanel.repaint();
     }
@@ -64,4 +64,6 @@ public class UpdateColorsSubtab extends JScrollPane {
         String[] dictNames = dictCollection.getDictionaryNames().toArray(String[]::new);
         dictDropdown.setModel(new DefaultComboBoxModel<>(dictNames));
     }
+    
+    public DictionaryTab getDictionaryTab() { return this.parent; }
 }

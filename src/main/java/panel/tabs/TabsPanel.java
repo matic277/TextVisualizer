@@ -44,4 +44,6 @@ public class TabsPanel extends JTabbedPane {
     //    g.setColor(Color.lightGray);
     //    g.drawRect(3, 2, getWidth()-3, getHeight());
     //}
+    
+    public ChaptersPanel getChaptersPanel() { return this.chaptersPanel; }
 }

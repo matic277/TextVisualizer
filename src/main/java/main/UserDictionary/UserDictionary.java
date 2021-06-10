@@ -31,14 +31,14 @@ public class UserDictionary {
      * Returns null if word isn't in any group.
      * (Unspecified in user dictionary)
      */
-    public Color getColorForWord(String word) {
-        for (String key : groupMap.keySet()) {
-            WordGroup wrdGrp = groupMap.get(key);
-            Color potentialColor = wrdGrp.getColorForWord(word);
-            if (potentialColor != null) return potentialColor;
-        }
-        return null;
-    }
+    //public Color getColorForWord(String word) {
+    //    for (String key : groupMap.keySet()) {
+    //        WordGroup wrdGrp = groupMap.get(key);
+    //        Color potentialColor = wrdGrp.getColorForWord(word);
+    //        if (potentialColor != null) return potentialColor;
+    //    }
+    //    return null;
+    //}
     
     public boolean containsWord(Word w) {
         boolean contains = false;

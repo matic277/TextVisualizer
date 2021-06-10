@@ -62,28 +62,6 @@ public class SentenceLabel extends JLabel {
     public BiConsumer<Graphics2D, SentenceLabel> selectionBorderDrawer = nullBorderDrawer;
     public BiConsumer<Graphics2D, SentenceLabel> searchWordBorderDrawer = nullBorderDrawer;
     
-    // sentiment
-    public static final Color SENTIMENT_HIGH_COLOR = Utils.GREEN;
-    public static final Color SENTIMENT_MED_COLOR = Utils.GRAY2;
-    public static final Color SENTIMENT_LOW_COLOR = Utils.RED;
-    public static final Color SENTIMENT_POSITIVE_COLOR_HOVERED = SENTIMENT_HIGH_COLOR.brighter();
-    public static final Color SENTIMENT_NEUTRAL_COLOR_HOVERED = SENTIMENT_MED_COLOR.brighter();
-    public static final Color SENTIMENT_NEGATIVE_COLOR_HOVERED = SENTIMENT_LOW_COLOR.brighter();
-    // imagery
-    public static final Color IMAGERY_HIGH_COLOR = new Color(219, 219, 219);
-    public static final Color IMAGERY_MED_COLOR = new Color(137, 177, 238);
-    public static final Color IMAGERY_LOW_COLOR = new Color(204, 227, 246);
-    public static final Color IMAGERY_HIGH_COLOR_HOVERED = IMAGERY_HIGH_COLOR.brighter();
-    public static final Color IMAGERY_MED_COLOR_HOVERED = IMAGERY_MED_COLOR.brighter();
-    public static final Color IMAGERY_LOW_COLOR_HOVERED = IMAGERY_LOW_COLOR.brighter();
-    // activation
-    public static final Color ACTIVATION_HIGH_COLOR = new Color(128, 66,244);
-    public static final Color ACTIVATION_MED_COLOR = new Color(172, 134, 243);
-    public static final Color ACTIVATION_LOW_COLOR = new Color(212, 193, 246);
-    public static final Color ACTIVATION_HIGH_COLOR_HOVERED = ACTIVATION_HIGH_COLOR.brighter();
-    public static final Color ACTIVATION_MED_COLOR_HOVERED = ACTIVATION_MED_COLOR.brighter();
-    public static final Color ACTIVATION_LOW_COLOR_HOVERED = ACTIVATION_LOW_COLOR.brighter();
-    
     public VisualType currentVisualType;
     public ChapterType currentChapterType;
     public SentenceLabelVisualType currentLabelVisualType;
@@ -186,7 +164,7 @@ public class SentenceLabel extends JLabel {
             //w.setNormalRenderColor(newColor);
             //w.setCurrentRenderColor(newColor);
             //w.setHoveredRenderColor(newColor.brighter());
-            w.updateColors(w.getWord().color);
+            w.updateColors(w.getWord().getColor());
         });
     }
     
