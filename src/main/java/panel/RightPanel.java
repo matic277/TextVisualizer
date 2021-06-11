@@ -7,19 +7,15 @@ import main.UserDictionary.Word;
 import main.Utils;
 import main.VisualType;
 import org.apache.commons.lang3.math.NumberUtils;
+import panel.sentenceRows.RightSentenceRowPanel;
 import word.AbsMeasurableWord;
-import word.AbsWord;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -210,22 +206,22 @@ public class RightPanel extends JScrollPane {
         allSelectedSentences.forEach(s -> appendWordsToTable(s.getSentence().getWords()));
     }
     
-    public void onRemoveSentencePress(SentenceRowPanel sentencePanel) {
+    public void onRemoveSentencePress(RightSentenceRowPanel sentencePanel) {
         boolean removed = allSelectedSentences.removeIf(s -> {
-            if (s == sentencePanel.sentenceLabel) {
+            if (s == sentencePanel.sentenceLbl) {
                 s.onUnselect();
                 return true;
             }
             return false;
         });
-        if (!removed) throw new RuntimeException("Not removed! Couldn't find sentence:\n" + sentencePanel.sentenceLabel.sentence);
+        if (!removed) throw new RuntimeException("Not removed! Couldn't find sentence:\n" + sentencePanel.sentenceLbl.sentence);
         
         // returns void, don't know how else to check
         int beforeRemoving = sentencesPanel.getComponents().length;
         sentencesPanel.remove(sentencePanel);
         int afterRemoving = sentencesPanel.getComponents().length;
         // should be one less exactly
-        if ((beforeRemoving  - afterRemoving) != 1) throw new RuntimeException("Not removed! Couldn't find " + SentenceRowPanel.class.getSimpleName() + ".");
+        if ((beforeRemoving  - afterRemoving) != 1) throw new RuntimeException("Not removed! Couldn't find " + RightSentenceRowPanel.class.getSimpleName() + ".");
         
         sentencesPanel.setPreferredSize(new Dimension(sentencesPanel.getSize().width, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height));
         sentencesPanel.revalidate();
@@ -242,11 +238,13 @@ public class RightPanel extends JScrollPane {
         sentencesPanel.revalidate();
         sentencesPanel.doLayout();
         sentencesPanel.repaint();
+        
+        this.getVerticalScrollBar().setValue(0); // scroll to the top
     }
     
     public boolean removeSentence(SentenceLabel sentence) {
         Component sentenceRowToRemove = Arrays.stream(sentencesPanel.getComponents())
-                .map(jpnl -> (SentenceRowPanel) jpnl)
+                .map(jpnl -> (RightSentenceRowPanel) jpnl)
                 .filter(srpnl -> srpnl.representsSentenceLabel(sentence))
                 .findFirst()
                 .orElseThrow(() -> { throw new RuntimeException("Cannot find sentence label in sentencesPanel, " + sentence); });
@@ -270,37 +268,12 @@ public class RightPanel extends JScrollPane {
     
         System.out.println("sentence added");
         
-        // TODO
-        // move this stuff to sentenceRowPnl class
-        SentenceRowPanel mainSentencePanel = new SentenceRowPanel(sentencesPanel, clickedSentence, currentVisualType);
-        mainSentencePanel.setRightPanel(this);
-//        mainSentencePanel.setLayout(new BorderLayout());
-        mainSentencePanel.setBackground(Utils.GRAY3);
-        mainSentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-        mainSentencePanel.addMouseListener(new MouseListener() {
-            @Override public void mouseClicked(MouseEvent e) {
-                // all words are clicked
-                onWordsClick(clickedSentence.getSentence().getWords());
-            }
-            @Override public void mouseEntered(MouseEvent e) {
-                mainSentencePanel.setBackground(Color.white);
-                mainSentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
-                mainSentencePanel.repaint();
-            }
-            @Override public void mouseExited(MouseEvent e) {
-                mainSentencePanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
-                mainSentencePanel.setBackground(Utils.GRAY3);
-                mainSentencePanel.repaint();
-            }
-            @Override public void mousePressed(MouseEvent e) { }
-            @Override public void mouseReleased(MouseEvent e) { }
-        });
-        
+        RightSentenceRowPanel mainSentencePanel = new RightSentenceRowPanel(this, sentencesPanel, clickedSentence);
         sentencesPanel.add(mainSentencePanel);
         
         // some resizing
         // -20 for scrollbar, +1 so border is visible (or else it just barely gets cut-off on last sentence for some reason)
-        sentencesPanel.setPreferredSize(new Dimension(this.getSize().width-20, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height+1));
+        sentencesPanel.setPreferredSize(new Dimension(this.getSize().width-14, sentencesPanel.getLayout().preferredLayoutSize(sentencesPanel).height+1));
         sentencesPanel.setMaximumSize(sentencesPanel.getPreferredSize());
         sentencesPanel.setMinimumSize(sentencesPanel.getPreferredSize());
         sentencesPanel.revalidate();
@@ -347,6 +320,8 @@ public class RightPanel extends JScrollPane {
         // immediately, but only after resize happens
         this.parent.updateUI();
     }
+    
+    public BottomPanel getBottomPanel() { return parent; }
     
     static class SentimentCustomRenderer extends DefaultTableCellRenderer {
         @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

@@ -91,7 +91,7 @@ public class DictionaryGroupRowPanel extends JPanel implements Consumer<Color> {
         final Color normalClr = panel.getBackground();
         final Color hoveredClr = panel.getBackground().brighter();
         
-        
+        JSpinner s;
         
         // SELECTED COLOR CIRCLE
         ColorRef clrRef = new ColorRef(panel, group.getDefaultColor());

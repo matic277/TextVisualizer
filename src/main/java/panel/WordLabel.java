@@ -1,6 +1,7 @@
 package panel;
 
 import main.Sentence;
+import main.UserDictionary.ColorChangeObserver;
 import main.UserDictionary.Word;
 import main.Utils;
 import main.VisualType;
@@ -8,43 +9,46 @@ import main.VisualType;
 import javax.swing.*;
 import java.awt.*;
 
-public class WordLabel extends JLabel {
+public class WordLabel extends JLabel implements ColorChangeObserver {
     
-    Sentence parentSentence;
     Word word;
+    Sentence parentSentence;
     JComponent parent;
-    JPanel containerParent;
+    
+    private static final int BORDER_THICKNESS = 2;
     
     public Color CURRENT_COLOR = new Color(0, 0, 0);
     public Color HOVERED_COLOR = new Color(0, 0, 0);
     
-    public WordLabel (JComponent parent, JPanel containerParent, Word word) {
+    public WordLabel (JPanel parent, Word word) {
         super(" " + word.getSourceText() + " ");
         this.parent = parent;
-        this.containerParent = containerParent;
         this.word = word;
         
+        word.addObserver(this);
+        
         CURRENT_COLOR = word.getColor();
         HOVERED_COLOR = CURRENT_COLOR.brighter();
-        
-        this.setOpaque(true);
-        this.setFont(Utils.getFont(14));
-        
         this.setBackground(CURRENT_COLOR);
-    }
+        this.setOpaque(true);
+        
+        this.setBorder(BorderFactory.createMatteBorder(BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, CURRENT_COLOR.darker()));
     
-    public WordLabel (Word word) {
-        super(" " + word.getSourceText() + " ");
         this.setFont(Utils.getFont(14));
-        this.setOpaque(true);
-        
-        CURRENT_COLOR = word.getColor();
-        HOVERED_COLOR = CURRENT_COLOR.brighter();
-        
-        this.setBackground(CURRENT_COLOR);
     }
     
     public void setParentSentence(Sentence parent) {
         this.parentSentence = parent;
+    }
+    
+    @Override
+    public void onColorChange() {
+        CURRENT_COLOR = word.getColor();
+        HOVERED_COLOR = word.getColor().brighter();
+        
+        this.setBorder(BorderFactory.createMatteBorder(BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, CURRENT_COLOR.darker()));
+        
+        this.setBackground(CURRENT_COLOR);
+        this.repaint();
     }
 }

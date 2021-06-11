@@ -1,11 +1,11 @@
-package panel;
+package panel.sentenceRows;
 
 import SentenceLabel.SentenceLabel;
-import main.Sentence;
 import main.UserDictionary.Word;
 import main.Utils;
-import main.VisualType;
-import word.AbsWord;
+import panel.RightPanel;
+import panel.WordLabel;
+import panel.WrapLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,15 +15,12 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.List;
-import java.util.function.Function;
 
-public class SentenceRowPanel extends JPanel {
+public class RightSentenceRowPanel extends SentenceRowPanel {
     
-    VisualType currentVisualType = VisualType.SENTIMENT; // default
-    
-    JPanel mainSentencePanel;
-    RightPanel rightPanel;
-    SentenceLabel sentenceLabel;
+    RightPanel parent;
+    JPanel parentContainer;
+    public SentenceLabel sentenceLbl;
     
     JPanel statsPanel;
         JLabel visualTypeLbl;
@@ -36,15 +33,18 @@ public class SentenceRowPanel extends JPanel {
         format.setDecimalFormatSymbols(symbols);
     }
     
-    public SentenceRowPanel(JPanel parent, SentenceLabel sentenceLabel, VisualType visualType) {
-        this.mainSentencePanel = parent;
-        this.sentenceLabel = sentenceLabel;
-        this.currentVisualType = visualType;
+    public RightSentenceRowPanel(RightPanel parent, JPanel parentContainer, SentenceLabel sentenceLbl) {
+        super(parent.getBottomPanel());
+        this.parent = parent;
+        this.parentContainer = parentContainer;
+        this.sentenceLbl = sentenceLbl;
         
         this.setLayout(new BorderLayout());
+        this.setBackground(Utils.GRAY3);
+        this.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
         
         initStatsPanel();
-        initSentencePanel(currentVisualType);
+        initSentencePanel();
     }
     
     private void initStatsPanel() {
@@ -60,7 +60,7 @@ public class SentenceRowPanel extends JPanel {
         statsPanel.setLayout(new BorderLayout());
 //        statsPanel.setLayout(new WrapLayout(WrapLayout.LEFT));
         statsPanel.setOpaque(false);
-    
+        
         Font hoveredFont = Utils.getBoldFont(14);
         Font normalFont = Utils.getFont(14);
         JLabel removeSentenceLbl = new JLabel(" x ");
@@ -72,7 +72,7 @@ public class SentenceRowPanel extends JPanel {
             final Color NORMAL_COLOR = Color.gray;
             final Color HOVERED_COLOR = Color.darkGray.darker();
             @Override public void mouseClicked(MouseEvent e) {
-                rightPanel.onRemoveSentencePress(SentenceRowPanel.this);
+                parent.onRemoveSentencePress(RightSentenceRowPanel.this);
             }
             @Override public void mouseEntered(MouseEvent e) {
                 removeSentenceLbl.setForeground(HOVERED_COLOR);
@@ -93,7 +93,7 @@ public class SentenceRowPanel extends JPanel {
             @Override public void mousePressed(MouseEvent e) { }
         });
         
-        JLabel wordsNumLbl = getStatLabel("Number of words: " + sentenceLabel.getSentence().getWords().size() + "   | ");
+        JLabel wordsNumLbl = getStatLabel("Number of words: " + sentenceLbl.getSentence().getWords().size() + "   | ");
         wordsNumLbl.setPreferredSize(new Dimension(wordsNumLbl.getPreferredSize().width, 11));
         infoContainer.add(wordsNumLbl);
         
@@ -104,22 +104,25 @@ public class SentenceRowPanel extends JPanel {
         this.add(statsContainer, BorderLayout.NORTH);
     }
     
-    private void initSentencePanel(VisualType visualType) {
+    private void initSentencePanel() {
         sentencePanel = new JPanel();
         sentencePanel.setLayout(new WrapLayout(WrapLayout.LEFT));
         sentencePanel.setBackground(new Color(0, 0, 0, 0));
         
-        words = new ArrayList<>(sentenceLabel.getSentence().getWords().size());
+        words = new ArrayList<>(sentenceLbl.getSentence().getWords().size());
         
-        // SELECTED SENTENCE
-        for (Word word : sentenceLabel.getSentence().getWords()) {
-            WordLabel wrdLbl = new WordLabel(this, null, word);
-            wrdLbl.setParentSentence(sentenceLabel.getSentence());
+        // TODO calling super method here wont work due to highlighting problem
+        // annoying (the "abstract" method is only called from 1 place - loses its abstraction meaning)
+        // but whatever
+        
+        for (Word word : sentenceLbl.getSentence().getWords()) {
+            WordLabel wrdLbl = new WordLabel(this, word);
+            wrdLbl.setParentSentence(sentenceLbl.getSentence());
             wrdLbl.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     // only one word is clicked
-                    rightPanel.onWordsClick(Collections.singletonList(word));
+                    parent.onWordsClick(Collections.singletonList(word));
                 }
                 @Override public void mouseEntered(MouseEvent e) {
                     wrdLbl.setBackground(wrdLbl.HOVERED_COLOR);
@@ -140,6 +143,26 @@ public class SentenceRowPanel extends JPanel {
             words.add(wrdLbl);
         }
         this.add(sentencePanel, BorderLayout.CENTER);
+        
+        
+        this.addMouseListener(new MouseListener() {
+            @Override public void mouseClicked(MouseEvent e) {
+                // all words are clicked
+                parent.onWordsClick(sentenceLbl.getSentence().getWords());
+            }
+            @Override public void mouseEntered(MouseEvent e) {
+               setBackground(Color.white);
+               setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY));
+               repaint();
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                setBorder(BorderFactory.createMatteBorder(1,1,1,1,Utils.GRAY3));
+                setBackground(Utils.GRAY3);
+                repaint();
+            }
+            @Override public void mousePressed(MouseEvent e) { }
+            @Override public void mouseReleased(MouseEvent e) { }
+        });
     }
     
     private JLabel getStatLabel(String text) {
@@ -151,15 +174,5 @@ public class SentenceRowPanel extends JPanel {
         return lbl;
     }
     
-    public void setRightPanel(RightPanel rightPanel) {
-        this.rightPanel = rightPanel;
-    }
-    
-//    public void setSentencePanelParent(JPanel parent) {
-//        this.sentencePanelParent = parent;
-//    }
-    
-    public boolean representsSentenceLabel(SentenceLabel sentence) {
-        return sentenceLabel == sentence;
-    }
+    public boolean representsSentenceLabel(SentenceLabel sentence) { return sentenceLbl == sentence; }
 }
